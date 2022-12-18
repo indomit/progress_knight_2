@@ -45,7 +45,7 @@ class Task {
 
     increaseXp() {
         if (this.isFinished) {
-            if (Math.random() < 0.001)
+            if (Math.random() < (0.02 / updateSpeed)) // approx 1 level every 50 seconds
                 this.level += 1
             return
         }

@@ -73,7 +73,7 @@ var tempData = {}
 
 var autoBuyEnabled = true
 
-const updateSpeed = 20
+const updateSpeed = 60
 const baseLifespan = 365 * 70
 const baseGameSpeed = 4
 const heroIncomeMult = 2500000000000000000
