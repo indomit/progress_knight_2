@@ -157,6 +157,8 @@ function renderSideBar() {
         gameData.requirements["Dark Matter info"].completed = false
 }
 
+// Quick hack, should be refactored out at some point
+let needInitRenderJobs = true
 function renderJobs() {
     for (const key in gameData.taskData) {
         let task = gameData.taskData[key]
@@ -174,7 +176,8 @@ function renderJobs() {
             tooltip += getHeroicRequiredTooltip(key)
         }
 
-        row.querySelector(".tooltipText").innerHTML = tooltip
+        if(row.querySelector(".tooltipText").innerHTML != tooltip)
+            row.querySelector(".tooltipText").innerHTML = tooltip
 
         const maxLevel = row.getElementsByClassName("maxLevel")[0]
         maxLevel.textContent = formatLevel(task.maxLevel)
@@ -205,14 +208,18 @@ function renderJobs() {
 
         task == gameData.currentJob ? progressFill.classList.add(task.isHero ? "current-hero" : "current") : progressFill.classList.remove("current", "current-hero")
 
-        const valueElement = row.querySelector(".value")
-        valueElement.querySelector(".income").style.display = task instanceof Job
-        valueElement.querySelector(".effect").style.display = task instanceof Skill
-
-        formatCoins(task.getIncome(), valueElement.querySelector(".income"))
+        if(needInitRenderJobs){
+            row.querySelector(".income").style.display = task instanceof Job
+            row.querySelector(".effect").style.display = task instanceof Skill // wait this is impossible
+        }
+        if(task instanceof Job){
+            formatCoins(task.getIncome(), row.querySelector(".income"))
+        }
     }
+    needInitRenderJobs = false
 }
 
+let needInitRenderSkills = true
 function renderSkills() {
     for (const key in gameData.taskData) {
         let task = gameData.taskData[key]
@@ -231,7 +238,8 @@ function renderSkills() {
             tooltip += getHeroicRequiredTooltip(key)
         }
 
-        row.querySelector(".tooltipText").innerHTML = tooltip
+        if(row.querySelector(".tooltipText").innerHTML!= tooltip)
+            row.querySelector(".tooltipText").innerHTML = tooltip
 
         const maxLevel = row.getElementsByClassName("maxLevel")[0]
         maxLevel.textContent = formatLevel(task.maxLevel)
@@ -263,12 +271,14 @@ function renderSkills() {
 
         task == gameData.currentJob ? progressFill.classList.add(task.isHero ? "current-hero" : "current") : progressFill.classList.remove("current", "current-hero")
 
-        const valueElement = row.querySelector(".value")
-        valueElement.querySelector(".income").style.display = task instanceof Job
-        valueElement.querySelector(".effect").style.display = task instanceof Skill
+        if(needInitRenderSkills){
+            row.querySelector(".income").style.display = task instanceof Job
+            row.querySelector(".effect").style.display = task instanceof Skill
+        }
 
-        valueElement.querySelector(".effect").textContent = task.getEffectDescription()
+        row.querySelector(".effect").textContent = task.getEffectDescription()
     }
+    needInitRenderSkills = false
 }
 
 function renderShop() {
@@ -857,8 +867,26 @@ function getMilestoneQuerySelector(milestoneName) {
     return "#row" + removeSpaces(removeStrangeCharacters(milestone.name))
 }
 
+
+const taskRows = {};
+// Yay ducktyping
+class taskRow{
+    constructor(element){
+        this.selectors = {}
+        this.classes = {}
+        this.element = element
+    }
+    querySelector(sel){
+        return this.selectors[sel] ?? (this.selectors[sel] = this.element.querySelector(sel))
+    }
+    getElementsByClassName(clz){
+        return this.classes[clz] ?? (this.classes[clz] = this.element.getElementsByClassName(clz))
+    }
+}
+
 function getTaskRowByName(name) {
-    return document.getElementById("row" + removeSpaces(removeStrangeCharacters(name)))
+    name = removeSpaces(removeStrangeCharacters(name))
+    return taskRows[name] ?? (taskRows[name] = new taskRow(document.getElementById("row" + name)))
 }
 
 const Tab = Object.freeze({
