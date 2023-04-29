@@ -938,6 +938,8 @@ function rebirthReset(set_tab_to_jobs = true) {
 }
 
 function getLifespan() {
+    if (gameData.rebirthFiveCount > 0) return Infinity
+
     const immortality = gameData.taskData["Life Essence"]
     const superImmortality = gameData.taskData["Astral Body"]
     const higherDimensions = gameData.taskData["Higher Dimensions"]
@@ -949,8 +951,6 @@ function getLifespan() {
         * cosmicLongevity.getEffect() * higherDimensions.getEffect() * lifeIsValueable * speedSpeedSpeed
 
     if (gameData.active_challenge == "legends_never_die" || gameData.active_challenge == "the_darkest_time") return Math.pow(lifespan, 0.72) + 365 * 25
-
-    if (gameData.rebirthFiveCount > 0) return Infinity
 
     return lifespan
 }
