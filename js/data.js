@@ -135,7 +135,7 @@ const metaverseUnlocks = ["Reduce Boost Cooldown", "Increase Boost Duration", "I
     "Essence gain multiplier", "Challenges are not reset", "Dark Matter gain multiplier"]
 
 const jobBaseData = {
-    "Beggar": { name: "Beggar", maxXp: 50, income: 5, heroxp: 36 },
+    "Mendigo": { name: "Mendigo", maxXp: 50, income: 5, heroxp: 36 },
     "Farmer": { name: "Farmer", maxXp: 100, income: 9, heroxp: 37 },
     "Fisherman": { name: "Fisherman", maxXp: 200, income: 15, heroxp: 38 },
     "Miner": { name: "Miner", maxXp: 400, income: 40, heroxp: 39 },
@@ -341,8 +341,8 @@ const requirementsBaseData = {
     "Hypercubes info": new HypercubeRequirement(["#hypercubesInfo"], [{ requirement: 1 }]),
 
     // Common work
-    "Beggar": new TaskRequirement([getQuerySelector("Beggar")], []),
-    "Farmer": new TaskRequirement([getQuerySelector("Farmer")], [{ task: "Beggar", requirement: 10 }]),
+    "Mendigo": new TaskRequirement([getQuerySelector("Mendigo")], []),
+    "Farmer": new TaskRequirement([getQuerySelector("Farmer")], [{ task: "Mendigo", requirement: 10 }]),
     "Fisherman": new TaskRequirement([getQuerySelector("Fisherman")], [{ task: "Farmer", requirement: 10 }]),
     "Miner": new TaskRequirement([getQuerySelector("Miner")], [{ task: "Strength", requirement: 10 }, { task: "Fisherman", requirement: 10 }]),
     "Blacksmith": new TaskRequirement([getQuerySelector("Blacksmith")], [{ task: "Strength", requirement: 30 }, { task: "Miner", requirement: 10 }]),
@@ -553,7 +553,7 @@ const requirementsBaseData = {
 }
 
 const jobCategories = {
-    "Common work": ["Beggar", "Farmer", "Fisherman", "Miner", "Blacksmith", "Merchant"],
+    "Common work": ["Mendigo", "Farmer", "Fisherman", "Miner", "Blacksmith", "Merchant"],
     "Military": ["Squire", "Footman", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
