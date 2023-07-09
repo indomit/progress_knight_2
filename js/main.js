@@ -895,7 +895,7 @@ function rebirthReset(set_tab_to_jobs = true) {
     gameData.coins = 0
     gameData.days = 365 * 14
     gameData.realtime = 0
-    gameData.currentJob = gameData.taskData["Beggar"]
+    gameData.currentJob = gameData.taskData["Mendigo"]
     gameData.currentProperty = gameData.itemData["Homeless"]
     gameData.currentMisc = []
     gameData.stats.EssencePerSecond = 0
@@ -1394,7 +1394,7 @@ createGameObjects(gameData.taskData, skillBaseData)
 createGameObjects(gameData.itemData, itemBaseData)
 createGameObjects(milestoneData, milestoneBaseData)
 
-gameData.currentJob = gameData.taskData["Beggar"]
+gameData.currentJob = gameData.taskData["Mendigo"]
 gameData.currentProperty = gameData.itemData["Homeless"]
 gameData.currentMisc = []
 
