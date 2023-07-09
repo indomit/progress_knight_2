@@ -883,7 +883,7 @@ function updateRequiredRows(data, categoryType) {
                     hypercubeElement.textContent = format(requirements[0].requirement) + " hypercubes"
                 } else if (requirementObject instanceof AgeRequirement) {
                     essenceElement.classList.remove("hiddenTask")
-                    essenceElement.textContent = "Age " + format(requirements[0].requirement)
+                    essenceElement.textContent = "Idade " + format(requirements[0].requirement)
                 }
                 else {
                     levelElement.classList.remove("hiddenTask")
