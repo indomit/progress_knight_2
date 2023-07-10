@@ -162,7 +162,7 @@ function formatAge(days) {
     const years = daysToYears(days)
     const day = getCurrentDay(days)
     if (years > 10000)
-        return "Idade: " + format(years) + " anos
+        return "Idade: " + format(years) + " anos"
     else
         return "Idade: " + years + " anos, " + day + " dias"
 }
