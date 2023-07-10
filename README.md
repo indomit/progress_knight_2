@@ -1,1 +1,1 @@
-Progress Knight Quest BR, Mod de tradução de Progress Knight Quest, jogo desenvolvido por indomit e modificado por malconsilveira
+Progress Knight Quest BR, Mod de tradução para português brasileiro do jogo Progress Knight Quest, desenvolvido por indomit (e outros) e modificado por malconsilveira. Sinta-se à vontade para copiar e utilizar o código, desde que dê os devidos créditos.
