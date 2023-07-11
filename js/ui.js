@@ -752,7 +752,7 @@ function createHeaderRow(templates, categoryType, categoryName) {
 
 
     if (categoryType == jobCategories || categoryType == skillCategories) {
-        headerRow.getElementsByClassName("valueType")[0].textContent = categoryType == jobCategories ? "Renda/dia" : "Effect"
+        headerRow.getElementsByClassName("valueType")[0].textContent = categoryType == jobCategories ? "Renda/dia" : "Efeito"
     }
 
     headerRow.style.backgroundColor = headerRowColors[categoryName]
