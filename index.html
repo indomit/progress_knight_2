@@ -26,7 +26,7 @@
 						<div class="sidebarChallengeReward rich_and_the_poor hidden"><span class="color-income">Renda</span> x<span id="sidebarCurrentChallengeBuff2"></span> / x<span id="sidebarChallengeBuff2"></span></div>
 						<div class="sidebarChallengeReward time_does_not_fly hidden"><span class="color-time-warping">Time Warping</span> x<span id="sidebarCurrentChallengeBuff3"></span> / x<span id="sidebarChallengeBuff3"></span></div>
 						<div class="sidebarChallengeReward dance_with_the_devil hidden"><span class="color-essence">Essence</span> x<span id="sidebarCurrentChallengeBuff4"></span> / x<span id="sidebarChallengeBuff4"></span></div>
-						<div class="sidebarChallengeReward legends_never_die hidden"><span class="color-evil">Evil</span> x<span id="sidebarCurrentChallengeBuff5"></span> / x<span id="sidebarChallengeBuff5"></span></div>
+						<div class="sidebarChallengeReward legends_never_die hidden"><span class="color-evil">\Mal</span> x<span id="sidebarCurrentChallengeBuff5"></span> / x<span id="sidebarChallengeBuff5"></span></div>
 						<div class="sidebarChallengeReward the_darkest_time hidden"><span class="color-dark-matter">Dark Matter</span> x<span id="sidebarCurrentChallengeBuff6"></span> / x<span id="sidebarChallengeBuff6"></span></div>
 					</div>
 				</div>
@@ -98,7 +98,7 @@
 				<div class="text-caption" style="padding-top: 0.2em"><span class="color-happiness">Felicidade: </span><span id="happinessDisplay"></span></div>
 				<div style="color: gray" class="sidebar-element">Afeta todo o ganho de XP</div>
 				<div id="evilInfo" class="hidden">
-					<div class="text-caption"><span class="color-evil">Evil: </span><span id="evilDisplay"></span></div>
+					<div class="text-caption"><span class="color-evil">Mal: </span><span id="evilDisplay"></span></div>
 					<div style="color: gray" class="sidebar-element">Affects Dark Magic XP gain</div>
 				</div>
 				<div id="essenceInfo" class="hidden">
@@ -144,7 +144,7 @@
 					<div class="w3-button w3-bar-item tabButton baritem hidden" id="shopTabButton" onClick="setTab('shop')">Loja</div>
 					<div class="w3-button w3-bar-item tabButton baritem" id="challengesTabButton" onClick="setTab('challenges')">Challenges</div>
 					<div class="w3-button w3-bar-item tabButton baritem" id="milestonesTabButton" onClick="setTab('milestones')">Milestones</div>
-					<div class="w3-button w3-bar-item tabButton baritem" id="rebirthTabButton" onClick="setTab('rebirth')">Amulet</div>
+					<div class="w3-button w3-bar-item tabButton baritem" id="rebirthTabButton" onClick="setTab('rebirth')">Amuleto</div>
 					<div class="w3-button w3-bar-item tabButton baritem" id="darkMatterTabButton" onClick="setTab('darkMatter')">Dark Matter</div>
 					<div class="w3-button w3-bar-item tabButton baritem" id="metaverseTabButton" onClick="setTab('metaverse')">Metaverse</div>
 					<div class="w3-button w3-bar-item tabButton baritem" id="settingsTabButton" onClick="setTab('settings')">Configurações</div>
@@ -298,7 +298,7 @@
 										<div class="currentChallengeReward rich_and_the_poor hidden" style="display: inline; padding-left:1em">Current reward: Multiplies <span class="color-income">Renda</span> by x<span id="currentChallengeBuff2"></span></div>
 										<div class="currentChallengeReward time_does_not_fly hidden" style="display: inline; padding-left:1em">Current reward: Multiplies <span class="color-time-warping">Time Warping</span> by x<span id="currentChallengeBuff3"></span></div>
 										<div class="currentChallengeReward dance_with_the_devil hidden" style="display: inline; padding-left:1em">Current reward: Multiplies <span class="color-essence">Essence</span> gain by x<span id="currentChallengeBuff4"></span></div>
-										<div class="currentChallengeReward legends_never_die hidden" style="display: inline; padding-left:1em">Current reward: Multiplies <span class="color-evil">Evil</span> gain by x<span id="currentChallengeBuff5"></span></div>
+										<div class="currentChallengeReward legends_never_die hidden" style="display: inline; padding-left:1em">Current reward: Multiplies <span class="color-evil">Mal</span> gain by x<span id="currentChallengeBuff5"></span></div>
 										<div class="currentChallengeReward the_darkest_time hidden" style="display: inline; padding-left:1em">Current reward: Multiplies <span class="color-dark-matter">Dark Matter</span> gain by x<span id="currentChallengeBuff6"></span></div>
 									</div>
 									<div id="anUnhappyLifeChallenge" style="padding-top:2em">
@@ -332,7 +332,7 @@
 									<div id="danceWithTheDevilChallenge" style="padding-top:2em">
 										<div class="text-caption challenge-title">4. Dance with the devil</div>
 										<div style="color: gray; padding-bottom: 0.3em">Reduces Dark Magic and Almightiness XP effect enormously, max level reduces XP gain and happiness is reduced by ^0.075</div>
-										<div style="color: gold; padding-bottom: 0.3em">Goal: Reach <span id="challengeGoal4">5.8k</span> <span class="color-evil">Evil</span> gain</div>
+										<div style="color: gold; padding-bottom: 0.3em">Goal: Reach <span id="challengeGoal4">5.8k</span> <span class="color-evil">Amuleto</span> gain</div>
 										<div id="challengeReward4" class="reward">Reward: Multiplies <span class="color-essence">Essence</span> gain by x<span id="challengeEssenceGainBuff">1</span></div>
 										<button id="challengeButton4" class="w3-button button" onclick="enterChallenge('dance_with_the_devil')">Enter challenge</button>
 									</div>
@@ -340,7 +340,7 @@
 										<div class="text-caption challenge-title">5. Legends never die</div>
 										<div style="color: gray; padding-bottom: 0.3em">Reduces your lifespan by ^0.72, happiness does nothing and Dark Magic XP effect is always 1x. <span id="challenge5MetaverseLifespanDebuff">The "Lifespan is now Infinity" buff from Metaverse is disabled.</span></div>
 										<div style="color: gold; padding-bottom: 0.3em">Goal: Reach <span id="challengeGoal5">Chairman lvl 1227</span></div>
-										<div id="challengeReward5" class="reward">Reward: Multiplies <span class="color-evil">Evil</span> gain by x<span id="challengeEvilGainBuff">1</span></div>
+										<div id="challengeReward5" class="reward">Reward: Multiplies <span class="color-evil">Mal</span> gain by x<span id="challengeEvilGainBuff">1</span></div>
 										<button id="challengeButton5" class="w3-button button" onclick="enterChallenge('legends_never_die')">Enter challenge</button>
 									</div>
 									<div id="theDarkestTimeChallenge" style="padding-top:2em">
@@ -559,7 +559,7 @@
 											<button id="speedIsLife1" class="w3-button button" onclick="buySpeedOfLife(1)">Buy</button> -
 											Multiply <span class="color-time-warping">Time Warping</span> by <b>3x</b><span class="negative-effect">
 												,
-												but divide <span class="color-evil">Evil</span> gain by <b>2x</b>
+												but divide <span class="color-evil">Mal</span> gain by <b>2x</b>
 											</span>
 										</div>
 										<div class="darkMatterSkillOR" style="padding: 0.6em">OR</div>
@@ -700,7 +700,7 @@
 									</div>
 									<div id="EvilAltar" style="padding-top:2em">
 										<div class="text-caption metaverse-title">Gain evil at new transcension</div>
-										<div style="color:gray; padding-bottom: 0.3em;">Current gain: <b id="evilTranGain"></b> <span class="color-evil">Evil</span></div>
+										<div style="color:gray; padding-bottom: 0.3em;">Current gain: <b id="evilTranGain"></b> <span class="color-evil">Mal</span></div>
 										<div style="color:gray; padding-bottom: 0.5em;">Cost: <b id="evilTranCost"></b> <span class="color-hypercubes">Hypercubes</span></div>
 										<button class="w3-button button" id="evilTranBuyButton" onclick="buyEvilTran()">Sacrifice</button>
 									</div>
@@ -880,7 +880,7 @@
 											<li>You have embraced evil <span id="rebirthTwoCountDisplay"></span> times.</li>
 											<li>You have spent <span id="rebirthTwoTimeDisplay"></span> in this embrace.</li>
 											<li>Your fastest embrace is in <span id="rebirthTwoFastestDisplay"></span>.</li>
-											<li id="statsEvilGain" class="hidden">You gain <span id="evilPerSecondDisplay"></span> evil/s. Maximum <span id="maxEvilPerSecondDisplay"></span> evil/s was at <span id="maxEvilPerSecondRtDisplay"></span>.</li>
+											<li id="statsEvilGain" class="hidden">You gain <span id="evilPerSecondDisplay"></span> mal/s. Maximum <span id="maxEvilPerSecondDisplay"></span> mal/s was at <span id="maxEvilPerSecondRtDisplay"></span>.</li>
 										</ul>
 									</div>
 									<div id="statsRebirth3" class="hidden">
