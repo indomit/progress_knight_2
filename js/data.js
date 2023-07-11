@@ -139,8 +139,8 @@ const jobBaseData = {
     "Agricultor": { name: "Agricultor", maxXp: 100, income: 9, heroxp: 37 },
     "Pescador": { name: "Pescador", maxXp: 200, income: 15, heroxp: 38 },
     "Minerador": { name: "Minerador", maxXp: 400, income: 40, heroxp: 39 },
-    "Blacksmith": { name: "Blacksmith", maxXp: 800, income: 80, heroxp: 40 },
-    "Merchant": { name: "Merchant", maxXp: 1600, income: 150, heroxp: 41 },
+    "Ferreiro": { name: "Ferreiro", maxXp: 800, income: 80, heroxp: 40 },
+    "Comerciante": { name: "Comerciante", maxXp: 1600, income: 150, heroxp: 41 },
 
     "Escudeiro": { name: "Escudeiro", maxXp: 42, income: 5, heroxp: 51 },
     "Soldado": { name: "Soldado", maxXp: 1000, income: 50, heroxp: 52 },
@@ -345,10 +345,10 @@ const requirementsBaseData = {
     "Agricultor": new TaskRequirement([getQuerySelector("Agricultor")], [{ task: "Mendigo", requirement: 10 }]),
     "Pescador": new TaskRequirement([getQuerySelector("Pescador")], [{ task: "Agricultor", requirement: 10 }]),
     "Minerador": new TaskRequirement([getQuerySelector("Minerador")], [{ task: "Strength", requirement: 10 }, { task: "Pescador", requirement: 10 }]),
-    "Blacksmith": new TaskRequirement([getQuerySelector("Blacksmith")], [{ task: "Strength", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
-    "Merchant": new TaskRequirement([getQuerySelector("Merchant")], [{ task: "Bargaining", requirement: 50 }, { task: "Blacksmith", requirement: 10 }]),
+    "Ferreiro": new TaskRequirement([getQuerySelector("Ferreiro")], [{ task: "Strength", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
+    "Comerciante": new TaskRequirement([getQuerySelector("Comerciante")], [{ task: "Bargaining", requirement: 50 }, { task: "Ferreiro", requirement: 10 }]),
 
-    // Military
+    // Militar
     "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Strength", requirement: 5 }]),
     "Soldado": new TaskRequirement([getQuerySelector("Soldado")], [{ task: "Strength", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
     "Veteran footman": new TaskRequirement([getQuerySelector("Veteran footman")], [{ task: "Battle Tactics", requirement: 40 }, { task: "Soldado", requirement: 10 }]),
@@ -553,8 +553,8 @@ const requirementsBaseData = {
 }
 
 const jobCategories = {
-    "Trabalho comum": ["Mendigo", "Agricultor", "Pescador", "Minerador", "Blacksmith", "Merchant"],
-    "Military": ["Escudeiro", "Soldado", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
+    "Trabalho comum": ["Mendigo", "Agricultor", "Pescador", "Minerador", "Ferreiro", "Comerciante"],
+    "Militar": ["Escudeiro", "Soldado", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
     "Galactic Council": ["Eternal Wanderer", "Nova", "Sigma Proioxis", "Acallaris", "One Above All"],
@@ -579,7 +579,7 @@ const itemCategories = {
 
 const headerRowColors = {
     "Trabalho comum": "#55a630",
-    "Military": "#e63946",
+    "Militar": "#e63946",
     "The Arcane Association": "#C71585",
     "The Void": "#762B91",
     "Galactic Council": "#D5C010",
@@ -604,7 +604,7 @@ const headerRowColors = {
 
 const headerRowTextColors = {
     "Trabalho comum": "darkblue",
-    "Military": "purple",
+    "Militar": "purple",
     "The Arcane Association": "magenta",
     "The Void": "white",
     "Galactic Council": "purple",
