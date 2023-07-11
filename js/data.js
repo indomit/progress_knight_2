@@ -182,7 +182,7 @@ const jobBaseData = {
 }
 
 const skillBaseData = {
-    "Concentration": { name: "Concentration", maxXp: 100, heroxp: 36, effect: 0.01, description: "Skill XP" },
+    "Concentração": { name: "Concentração", maxXp: 100, heroxp: 36, effect: 0.01, description: "Skill XP" },
     "Productivity": { name: "Productivity", maxXp: 100, heroxp: 37, effect: 0.01, description: "Hero XP" },
     "Bargaining": { name: "Bargaining", maxXp: 100, heroxp: 38, effect: -0.01, description: "Reduced Expenses" },
     "Meditation": { name: "Meditation", maxXp: 100, heroxp: 39, effect: 0.01, description: "Happiness" },
@@ -298,7 +298,7 @@ const itemBaseData = {
 
 const requirementsBaseData = {
     // Categories
-    "The Arcane Association": new TaskRequirement([removeSpaces(".The Arcane Association")], [{ task: "Concentration", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
+    "The Arcane Association": new TaskRequirement([removeSpaces(".The Arcane Association")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
     "Galactic Council": new AgeRequirement([removeSpaces(".Galactic Council")], [{ requirement: 10000 }]),
     "The Void": new AgeRequirement([removeSpaces(".The Void")], [{ requirement: 1000 }]),
     "Void Manipulation": new AgeRequirement([removeSpaces(".Void Manipulation")], [{ requirement: 1000 }]),
@@ -359,14 +359,14 @@ const requirementsBaseData = {
     "Lieutenant General": new TaskRequirement([getQuerySelector("Lieutenant General")], [{ task: "Mana Control", requirement: 1000 }, { task: "Battle Tactics", requirement: 1000 }, { task: "Holy Knight", requirement: 10 }]),
 
     // The Arcane Association
-    "Student": new TaskRequirement([getQuerySelector("Student")], [{ task: "Concentration", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
+    "Student": new TaskRequirement([getQuerySelector("Student")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
     "Apprentice Mage": new TaskRequirement([getQuerySelector("Apprentice Mage")], [{ task: "Mana Control", requirement: 400 }, { task: "Student", requirement: 10 }]),
     "Adept Mage": new TaskRequirement([getQuerySelector("Adept Mage")], [{ task: "Mana Control", requirement: 700 }, { task: "Apprentice Mage", requirement: 10 }]),
     "Master Wizard": new TaskRequirement([getQuerySelector("Master Wizard")], [{ task: "Mana Control", requirement: 1000 }, { task: "Adept Mage", requirement: 10 }]),
     "Archmage": new TaskRequirement([getQuerySelector("Archmage")], [{ task: "Mana Control", requirement: 1200 }, { task: "Master Wizard", requirement: 10 }]),
     "Chronomancer": new TaskRequirement([getQuerySelector("Chronomancer")], [{ task: "Mana Control", requirement: 1500 }, { task: "Meditation", requirement: 1500 }, { task: "Archmage", requirement: 25 }]),
     "Chairman": new TaskRequirement([getQuerySelector("Chairman")], [{ task: "Mana Control", requirement: 2000 }, { task: "Productivity", requirement: 2000 }, { task: "Chronomancer", requirement: 50 }]),
-    "Imperator": new TaskRequirement([getQuerySelector("Imperator")], [{ task: "All Seeing Eye", requirement: 3000, herequirement: 650 }, { task: "Concentration", requirement: 3000 }, { task: "Chairman", requirement: 666 }]),
+    "Imperator": new TaskRequirement([getQuerySelector("Imperator")], [{ task: "All Seeing Eye", requirement: 3000, herequirement: 650 }, { task: "Concentração", requirement: 3000 }, { task: "Chairman", requirement: 666 }]),
 
     // The Void
     "Corrupted": new AgeRequirement([getQuerySelector("Corrupted")], [{ requirement: 1000 }]),
@@ -392,18 +392,18 @@ const requirementsBaseData = {
     "Omega": new TaskRequirement([getQuerySelector("Omega")], [{ task: "Lost in the dark", requirement: 25000, herequirement: 185000 }]),
 
     // Fundamentos
-    "Concentration": new TaskRequirement([getQuerySelector("Concentration")], []),
-    "Productivity": new TaskRequirement([getQuerySelector("Productivity")], [{ task: "Concentration", requirement: 5 }]),
-    "Bargaining": new TaskRequirement([getQuerySelector("Bargaining")], [{ task: "Concentration", requirement: 20 }]),
-    "Meditation": new TaskRequirement([getQuerySelector("Meditation")], [{ task: "Concentration", requirement: 30 }, { task: "Productivity", requirement: 20 }]),
+    "Concentração": new TaskRequirement([getQuerySelector("Concentração")], []),
+    "Productivity": new TaskRequirement([getQuerySelector("Productivity")], [{ task: "Concentração", requirement: 5 }]),
+    "Bargaining": new TaskRequirement([getQuerySelector("Bargaining")], [{ task: "Concentração", requirement: 20 }]),
+    "Meditation": new TaskRequirement([getQuerySelector("Meditation")], [{ task: "Concentração", requirement: 30 }, { task: "Productivity", requirement: 20 }]),
 
     // Combat
     "Strength": new TaskRequirement([getQuerySelector("Strength")], []),
-    "Battle Tactics": new TaskRequirement([getQuerySelector("Battle Tactics")], [{ task: "Concentration", requirement: 20 }]),
-    "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentration", requirement: 30 }, { task: "Strength", requirement: 30 }]),
+    "Battle Tactics": new TaskRequirement([getQuerySelector("Battle Tactics")], [{ task: "Concentração", requirement: 20 }]),
+    "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Strength", requirement: 30 }]),
 
     // Magic
-    "Mana Control": new TaskRequirement([getQuerySelector("Mana Control")], [{ task: "Concentration", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
+    "Mana Control": new TaskRequirement([getQuerySelector("Mana Control")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
     "Life Essence": new TaskRequirement([getQuerySelector("Life Essence")], [{ task: "Apprentice Mage", requirement: 10 }]),
     "Time Warping": new TaskRequirement([getQuerySelector("Time Warping")], [{ task: "Adept Mage", requirement: 10 }]),
     "Astral Body": new TaskRequirement([getQuerySelector("Astral Body")], [{ task: "Archmage", requirement: 10 }]),
@@ -562,7 +562,7 @@ const jobCategories = {
 }
 
 const skillCategories = {
-    "Fundamentos": ["Concentration", "Productivity", "Bargaining", "Meditation"],
+    "Fundamentos": ["Concentração", "Productivity", "Bargaining", "Meditation"],
     "Combat": ["Strength", "Battle Tactics", "Muscle Memory"],
     "Magic": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
