@@ -752,7 +752,7 @@ function createHeaderRow(templates, categoryType, categoryName) {
 
 
     if (categoryType == jobCategories || categoryType == skillCategories) {
-        headerRow.getElementsByClassName("valueType")[0].textContent = categoryType == jobCategories ? "Income/day" : "Effect"
+        headerRow.getElementsByClassName("valueType")[0].textContent = categoryType == jobCategories ? "Renda/dia" : "Effect"
     }
 
     headerRow.style.backgroundColor = headerRowColors[categoryName]
@@ -865,7 +865,7 @@ function updateRequiredRows(data, categoryType) {
             if (data == gameData.taskData) {
                 const task = gameData.taskData[nextEntity.name]
                 effectElement.classList.remove("hiddenTask")
-                effectValueElement.textContent = task.unlocked ? (task.baseData.description != null ? task.baseData.description : "Income") : "Unknown"
+                effectValueElement.textContent = task.unlocked ? (task.baseData.description != null ? task.baseData.description : "Renda") : "Unknown"
 
                 if (requirementObject instanceof EvilRequirement) {
                     evilElement.classList.remove("hiddenTask")                    
