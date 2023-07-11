@@ -340,7 +340,7 @@ const requirementsBaseData = {
     "Dark Orbs info": new DarkOrbsRequirement(["#darkOrbsInfo"], [{ requirement: 1 }]),
     "Hypercubes info": new HypercubeRequirement(["#hypercubesInfo"], [{ requirement: 1 }]),
 
-    // Common work
+    // Trabalho comum
     "Mendigo": new TaskRequirement([getQuerySelector("Mendigo")], []),
     "Agricultor": new TaskRequirement([getQuerySelector("Agricultor")], [{ task: "Mendigo", requirement: 10 }]),
     "Fisherman": new TaskRequirement([getQuerySelector("Fisherman")], [{ task: "Agricultor", requirement: 10 }]),
@@ -553,7 +553,7 @@ const requirementsBaseData = {
 }
 
 const jobCategories = {
-    "Common work": ["Mendigo", "Agricultor", "Fisherman", "Miner", "Blacksmith", "Merchant"],
+    "Trabalho comum": ["Mendigo", "Agricultor", "Fisherman", "Miner", "Blacksmith", "Merchant"],
     "Military": ["Squire", "Footman", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
@@ -578,7 +578,7 @@ const itemCategories = {
 }
 
 const headerRowColors = {
-    "Common work": "#55a630",
+    "Trabalho comum": "#55a630",
     "Military": "#e63946",
     "The Arcane Association": "#C71585",
     "The Void": "#762B91",
@@ -603,7 +603,7 @@ const headerRowColors = {
 }
 
 const headerRowTextColors = {
-    "Common work": "darkblue",
+    "Trabalho comum": "darkblue",
     "Military": "purple",
     "The Arcane Association": "magenta",
     "The Void": "white",
