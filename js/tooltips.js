@@ -7,7 +7,7 @@ const tooltips = {
     "Ferreiro": "Smelt ores and carefully forge weapons for the military. A respectable and OK paying commoner job.",
     "Comerciante": "Travel from town to town, bartering fine goods. The job pays decently well and is a lot less manually-intensive.",
 
-    // Militar
+    // Militares
     "Escudeiro": "Carry around your knight's shield and sword along the battlefield. Very meager pay but the work experience is quite valuable.",
     "Soldado": "Put down your life to battle with enemy soldiers. A courageous, respectable job but you are still worthless in the grand scheme of things.",
     "Veteran footman": "More experienced and useful than the average footman, take out the enemy forces in battle with your might. The pay is not that bad.",
