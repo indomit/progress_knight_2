@@ -865,7 +865,7 @@ function updateRequiredRows(data, categoryType) {
             if (data == gameData.taskData) {
                 const task = gameData.taskData[nextEntity.name]
                 effectElement.classList.remove("hiddenTask")
-                effectValueElement.textContent = task.unlocked ? (task.baseData.description != null ? task.baseData.description : "Renda") : "Unknown"
+                effectValueElement.textContent = task.unlocked ? (task.baseData.description != null ? task.baseData.description : "Renda") : "Desconhecido"
 
                 if (requirementObject instanceof EvilRequirement) {
                     evilElement.classList.remove("hiddenTask")                    
@@ -903,7 +903,7 @@ function updateRequiredRows(data, categoryType) {
                 const item = gameData.itemData[nextEntity.name]
                 
                 effectElement.classList.remove("hiddenTask")
-                effectValueElement.textContent = item.unlocked ? (item.baseData.description != null ? item.baseData.description : "Happiness") : "Unknown"
+                effectValueElement.textContent = item.unlocked ? (item.baseData.description != null ? item.baseData.description : "Happiness") : "Desconhecido"
             }
             else if (data == milestoneData) {
                 essenceElement.classList.remove("hiddenTask")
@@ -912,7 +912,7 @@ function updateRequiredRows(data, categoryType) {
                 const milestone = milestoneData[nextEntity.name]
                 if (milestone.baseData.description != null) {
                     effectElement.classList.remove("hiddenTask")
-                    effectValueElement.textContent = (gameData.stats.maxEssenceReached > milestone.expense) ? milestone.baseData.description : "Unknown"
+                    effectValueElement.textContent = (gameData.stats.maxEssenceReached > milestone.expense) ? milestone.baseData.description : "Desconhecido"
                 }
             }
         }
