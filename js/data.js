@@ -348,7 +348,7 @@ const requirementsBaseData = {
     "Ferreiro": new TaskRequirement([getQuerySelector("Ferreiro")], [{ task: "Strength", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
     "Comerciante": new TaskRequirement([getQuerySelector("Comerciante")], [{ task: "Bargaining", requirement: 50 }, { task: "Ferreiro", requirement: 10 }]),
 
-    // Militar
+    // Militares
     "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Strength", requirement: 5 }]),
     "Soldado": new TaskRequirement([getQuerySelector("Soldado")], [{ task: "Strength", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
     "Veteran footman": new TaskRequirement([getQuerySelector("Veteran footman")], [{ task: "Battle Tactics", requirement: 40 }, { task: "Soldado", requirement: 10 }]),
@@ -579,7 +579,7 @@ const itemCategories = {
 
 const headerRowColors = {
     "Trabalho comum": "#55a630",
-    "Militar": "#e63946",
+    "Militares": "#e63946",
     "The Arcane Association": "#C71585",
     "The Void": "#762B91",
     "Galactic Council": "#D5C010",
@@ -604,7 +604,7 @@ const headerRowColors = {
 
 const headerRowTextColors = {
     "Trabalho comum": "darkblue",
-    "Militar": "purple",
+    "Militares": "purple",
     "The Arcane Association": "magenta",
     "The Void": "white",
     "Galactic Council": "purple",
