@@ -279,7 +279,7 @@ const itemBaseData = {
     "Study Desk": { name: "Study Desk", expense: 1000000, effect: 2, description: "Skill XP", heromult: 5, heroeffect: 10 },
     "Library": { name: "Library", expense: 1e7, effect: 2, description: "Skill XP", heromult: 5, heroeffect: 10 },
     "Observatory": { name: "Observatory", expense: 1.4e8, effect: 5, description: "Magic XP", heromult: 6, heroeffect: 10 },
-    "Mind's Eye": { name: "Mind's Eye", expense: 3.25e9, effect: 10, description: "Fundamentals XP", heromult: 8, heroeffect: 10 },
+    "Mind's Eye": { name: "Mind's Eye", expense: 3.25e9, effect: 10, description: "Fundamentos XP", heromult: 8, heroeffect: 10 },
     "Void Necklace": { name: "Void Necklace", expense: 2.8e10, effect: 3, description: "Void Manipulation XP", heromult: 10, heroeffect: 10 },
     "Void Armor": { name: "Void Armor", expense: 1.97e11, effect: 3, description: "The Void XP", heromult: 10, heroeffect: 10 },
     "Void Blade": { name: "Void Blade", expense: 5e11, effect: 3, description: "Skill XP", heromult: 11, heroeffect: 10 },
@@ -391,7 +391,7 @@ const requirementsBaseData = {
     "Lost in the dark": new TaskRequirement([getQuerySelector("Lost in the dark")], [{ task: "Player One", requirement: 2500, herequirement: 158000 }]),
     "Omega": new TaskRequirement([getQuerySelector("Omega")], [{ task: "Lost in the dark", requirement: 25000, herequirement: 185000 }]),
 
-    // Fundamentals
+    // Fundamentos
     "Concentration": new TaskRequirement([getQuerySelector("Concentration")], []),
     "Productivity": new TaskRequirement([getQuerySelector("Productivity")], [{ task: "Concentration", requirement: 5 }]),
     "Bargaining": new TaskRequirement([getQuerySelector("Bargaining")], [{ task: "Concentration", requirement: 20 }]),
@@ -562,7 +562,7 @@ const jobCategories = {
 }
 
 const skillCategories = {
-    "Fundamentals": ["Concentration", "Productivity", "Bargaining", "Meditation"],
+    "Fundamentos": ["Concentration", "Productivity", "Bargaining", "Meditation"],
     "Combat": ["Strength", "Battle Tactics", "Muscle Memory"],
     "Magic": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
@@ -583,7 +583,7 @@ const headerRowColors = {
     "The Arcane Association": "#C71585",
     "The Void": "#762B91",
     "Galactic Council": "#D5C010",
-    "Fundamentals": "#55a630",
+    "Fundamentos": "#55a630",
     "Combat": "#e63946",
     "Magic": "#C71585",
     "Dark Magic": "#73000f",
@@ -608,7 +608,7 @@ const headerRowTextColors = {
     "The Arcane Association": "magenta",
     "The Void": "white",
     "Galactic Council": "purple",
-    "Fundamentals": "purple",
+    "Fundamentos": "purple",
     "Combat": "pink",
     "Magic": "purple",
     "Dark Magic": "pink",
