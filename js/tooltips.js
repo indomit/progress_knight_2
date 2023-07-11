@@ -51,7 +51,7 @@ const tooltips = {
     "Omega": "ω",
 
     // Fundamentals
-    "Concentration": "Improve your learning speed through practising intense concentration activities.",
+    "Concentração": "Improve your learning speed through practising intense concentration activities.",
     "Productivity": "Learn to procrastinate less at work and receive more job experience per day.",
     "Bargaining": "Study the tricks of the trade and persuasive skills to lower any type of expense.",
     "Meditation": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
