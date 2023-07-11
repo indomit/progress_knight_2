@@ -554,7 +554,7 @@ const requirementsBaseData = {
 
 const jobCategories = {
     "Trabalho comum": ["Mendigo", "Agricultor", "Pescador", "Minerador", "Ferreiro", "Comerciante"],
-    "Militar": ["Escudeiro", "Soldado", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
+    "Militares": ["Escudeiro", "Soldado", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
     "Galactic Council": ["Eternal Wanderer", "Nova", "Sigma Proioxis", "Acallaris", "One Above All"],
