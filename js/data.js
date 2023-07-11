@@ -137,8 +137,8 @@ const metaverseUnlocks = ["Reduce Boost Cooldown", "Increase Boost Duration", "I
 const jobBaseData = {
     "Mendigo": { name: "Mendigo", maxXp: 50, income: 5, heroxp: 36 },
     "Agricultor": { name: "Agricultor", maxXp: 100, income: 9, heroxp: 37 },
-    "Fisherman": { name: "Fisherman", maxXp: 200, income: 15, heroxp: 38 },
-    "Miner": { name: "Miner", maxXp: 400, income: 40, heroxp: 39 },
+    "Pescador": { name: "Pescador", maxXp: 200, income: 15, heroxp: 38 },
+    "Minerador": { name: "Minerador", maxXp: 400, income: 40, heroxp: 39 },
     "Blacksmith": { name: "Blacksmith", maxXp: 800, income: 80, heroxp: 40 },
     "Merchant": { name: "Merchant", maxXp: 1600, income: 150, heroxp: 41 },
 
@@ -343,9 +343,9 @@ const requirementsBaseData = {
     // Trabalho comum
     "Mendigo": new TaskRequirement([getQuerySelector("Mendigo")], []),
     "Agricultor": new TaskRequirement([getQuerySelector("Agricultor")], [{ task: "Mendigo", requirement: 10 }]),
-    "Fisherman": new TaskRequirement([getQuerySelector("Fisherman")], [{ task: "Agricultor", requirement: 10 }]),
-    "Miner": new TaskRequirement([getQuerySelector("Miner")], [{ task: "Strength", requirement: 10 }, { task: "Fisherman", requirement: 10 }]),
-    "Blacksmith": new TaskRequirement([getQuerySelector("Blacksmith")], [{ task: "Strength", requirement: 30 }, { task: "Miner", requirement: 10 }]),
+    "Pescador": new TaskRequirement([getQuerySelector("Pescador")], [{ task: "Agricultor", requirement: 10 }]),
+    "Minerador": new TaskRequirement([getQuerySelector("Minerador")], [{ task: "Strength", requirement: 10 }, { task: "Pescador", requirement: 10 }]),
+    "Blacksmith": new TaskRequirement([getQuerySelector("Blacksmith")], [{ task: "Strength", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
     "Merchant": new TaskRequirement([getQuerySelector("Merchant")], [{ task: "Bargaining", requirement: 50 }, { task: "Blacksmith", requirement: 10 }]),
 
     // Military
@@ -553,7 +553,7 @@ const requirementsBaseData = {
 }
 
 const jobCategories = {
-    "Trabalho comum": ["Mendigo", "Agricultor", "Fisherman", "Miner", "Blacksmith", "Merchant"],
+    "Trabalho comum": ["Mendigo", "Agricultor", "Pescador", "Minerador", "Blacksmith", "Merchant"],
     "Military": ["Squire", "Footman", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
