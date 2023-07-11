@@ -75,7 +75,7 @@ function addMultipliers() {
             task.xpMultipliers.push(getEvilXpGain)
         } else if (skillCategories["Almightiness"].includes(task.name)) {
             task.xpMultipliers.push(getEssenceXpGain)
-        } else if (skillCategories["Fundamentals"].includes(task.name)) {
+        } else if (skillCategories["Fundamentos"].includes(task.name)) {
             task.xpMultipliers.push(getBindedItemEffect("Mind's Eye"))
         } else if (skillCategories["Darkness"].includes(task.name)) {
             task.xpMultipliers.push(getDarknessXpGain)
