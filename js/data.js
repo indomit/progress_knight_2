@@ -142,7 +142,7 @@ const jobBaseData = {
     "Blacksmith": { name: "Blacksmith", maxXp: 800, income: 80, heroxp: 40 },
     "Merchant": { name: "Merchant", maxXp: 1600, income: 150, heroxp: 41 },
 
-    "Squire": { name: "Squire", maxXp: 42, income: 5, heroxp: 51 },
+    "Escudeiro": { name: "Escudeiro", maxXp: 42, income: 5, heroxp: 51 },
     "Footman": { name: "Footman", maxXp: 1000, income: 50, heroxp: 52 },
     "Veteran footman": { name: "Veteran footman", maxXp: 10000, income: 120, heroxp: 53 },
     "Centenary": { name: "Centenary", maxXp: 100000, income: 300, heroxp: 54 },
@@ -349,8 +349,8 @@ const requirementsBaseData = {
     "Merchant": new TaskRequirement([getQuerySelector("Merchant")], [{ task: "Bargaining", requirement: 50 }, { task: "Blacksmith", requirement: 10 }]),
 
     // Military
-    "Squire": new TaskRequirement([getQuerySelector("Squire")], [{ task: "Strength", requirement: 5 }]),
-    "Footman": new TaskRequirement([getQuerySelector("Footman")], [{ task: "Strength", requirement: 20 }, { task: "Squire", requirement: 10 }]),
+    "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Strength", requirement: 5 }]),
+    "Footman": new TaskRequirement([getQuerySelector("Footman")], [{ task: "Strength", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
     "Veteran footman": new TaskRequirement([getQuerySelector("Veteran footman")], [{ task: "Battle Tactics", requirement: 40 }, { task: "Footman", requirement: 10 }]),
     "Centenary": new TaskRequirement([getQuerySelector("Centenary")], [{ task: "Strength", requirement: 100 }, { task: "Veteran footman", requirement: 10 }]),
     "Knight": new TaskRequirement([getQuerySelector("Knight")], [{ task: "Battle Tactics", requirement: 150 }, { task: "Centenary", requirement: 10 }]),
@@ -554,7 +554,7 @@ const requirementsBaseData = {
 
 const jobCategories = {
     "Trabalho comum": ["Mendigo", "Agricultor", "Pescador", "Minerador", "Blacksmith", "Merchant"],
-    "Military": ["Squire", "Footman", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
+    "Military": ["Escudeiro", "Footman", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
     "Galactic Council": ["Eternal Wanderer", "Nova", "Sigma Proioxis", "Acallaris", "One Above All"],
