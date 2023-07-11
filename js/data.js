@@ -144,7 +144,7 @@ const jobBaseData = {
 
     "Escudeiro": { name: "Escudeiro", maxXp: 42, income: 5, heroxp: 51 },
     "Soldado": { name: "Soldado", maxXp: 1000, income: 50, heroxp: 52 },
-    "Veteran footman": { name: "Veteran footman", maxXp: 10000, income: 120, heroxp: 53 },
+    "Soldado veterano": { name: "Soldado veterano", maxXp: 10000, income: 120, heroxp: 53 },
     "Centenary": { name: "Centenary", maxXp: 100000, income: 300, heroxp: 54 },
     "Knight": { name: "Knight", maxXp: 1000000, income: 1000, heroxp: 63 },
     "Veteran Knight": { name: "Veteran Knight", maxXp: 7500000, income: 3000, heroxp: 63 },
@@ -351,8 +351,8 @@ const requirementsBaseData = {
     // Militares
     "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Strength", requirement: 5 }]),
     "Soldado": new TaskRequirement([getQuerySelector("Soldado")], [{ task: "Strength", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
-    "Veteran footman": new TaskRequirement([getQuerySelector("Veteran footman")], [{ task: "Battle Tactics", requirement: 40 }, { task: "Soldado", requirement: 10 }]),
-    "Centenary": new TaskRequirement([getQuerySelector("Centenary")], [{ task: "Strength", requirement: 100 }, { task: "Veteran footman", requirement: 10 }]),
+    "Soldado veterano": new TaskRequirement([getQuerySelector("Soldado veterano")], [{ task: "Battle Tactics", requirement: 40 }, { task: "Soldado", requirement: 10 }]),
+    "Centenary": new TaskRequirement([getQuerySelector("Centenary")], [{ task: "Strength", requirement: 100 }, { task: "Soldado veterano", requirement: 10 }]),
     "Knight": new TaskRequirement([getQuerySelector("Knight")], [{ task: "Battle Tactics", requirement: 150 }, { task: "Centenary", requirement: 10 }]),
     "Veteran Knight": new TaskRequirement([getQuerySelector("Veteran Knight")], [{ task: "Strength", requirement: 300 }, { task: "Knight", requirement: 10 }]),
     "Holy Knight": new TaskRequirement([getQuerySelector("Holy Knight")], [{ task: "Mana Control", requirement: 500 }, { task: "Veteran Knight", requirement: 10 }]),
@@ -554,7 +554,7 @@ const requirementsBaseData = {
 
 const jobCategories = {
     "Trabalho comum": ["Mendigo", "Agricultor", "Pescador", "Minerador", "Ferreiro", "Comerciante"],
-    "Militares": ["Escudeiro", "Soldado", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
+    "Militares": ["Escudeiro", "Soldado", "Soldado veterano", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
     "Galactic Council": ["Eternal Wanderer", "Nova", "Sigma Proioxis", "Acallaris", "One Above All"],
