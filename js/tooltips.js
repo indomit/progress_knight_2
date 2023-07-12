@@ -1,11 +1,11 @@
 const tooltips = {
     // Trabalho comum
-    "Mendigo": "Struggle day and night for a couple of copper coins. It feels like you are at the brink of death each day.",
-    "Agricultor": "Plow the fields and grow the crops. It's not much but it's honest work.",
-    "Pescador": "Reel in various fish and sell them for a handful of coins. A relaxing but still poor paying job.",
-    "Minerador": "Delve into dangerous caverns and mine valuable ores. The pay is quite meager compared to the risk involved.",
-    "Ferreiro": "Smelt ores and carefully forge weapons for the military. A respectable and OK paying commoner job.",
-    "Comerciante": "Travel from town to town, bartering fine goods. The job pays decently well and is a lot less manually-intensive.",
+    "Mendigo": "Lute dia e noite por algumas moedas de cobre.  Parece que você está à beira da morte a cada dia.",
+    "Agricultor": "Are os campos e cultive as colheitas.  Não é muito, mas é um trabalho honesto.",
+    "Pescador": "Enrole vários peixes e venda-os por um punhado de moedas.  Um trabalho relaxante, mas ainda mal remunerado.",
+    "Minerador": "Mergulhe em cavernas perigosas e extraia minérios valiosos.  O salário é bastante escasso em comparação com o risco envolvido.",
+    "Ferreiro": "Funda minérios e forje armas cuidadosamente para os militares.  Um trabalho comum respeitável e bem pago.",
+    "Comerciante": "Viaje de cidade em cidade, negociando boas mercadorias.  O trabalho paga decentemente bem e é muito menos intensivo manualmente.",
 
     // Militares
     "Escudeiro": "Carry around your knight's shield and sword along the battlefield. Very meager pay but the work experience is quite valuable.",
