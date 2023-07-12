@@ -185,7 +185,7 @@ const skillBaseData = {
     "Concentração": { name: "Concentração", maxXp: 100, heroxp: 36, effect: 0.01, description: "Skill XP" },
     "Produtividade": { name: "Produtividade", maxXp: 100, heroxp: 37, effect: 0.01, description: "Hero XP" },
     "Bargaining": { name: "Bargaining", maxXp: 100, heroxp: 38, effect: -0.01, description: "Reduced Expenses" },
-    "Meditation": { name: "Meditation", maxXp: 100, heroxp: 39, effect: 0.01, description: "Happiness" },
+    "Meditação": { name: "Meditação", maxXp: 100, heroxp: 39, effect: 0.01, description: "Happiness" },
 
     "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Military Pay" },
     "Táticas de Batalha": { name: "Táticas de Batalha", maxXp: 100, heroxp: 41, effect: 0.01, description: "Military XP" },
@@ -298,7 +298,7 @@ const itemBaseData = {
 
 const requirementsBaseData = {
     // Categories
-    "The Arcane Association": new TaskRequirement([removeSpaces(".The Arcane Association")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
+    "The Arcane Association": new TaskRequirement([removeSpaces(".The Arcane Association")], [{ task: "Concentração", requirement: 200 }, { task: "Meditação", requirement: 200 }]),
     "Galactic Council": new AgeRequirement([removeSpaces(".Galactic Council")], [{ requirement: 10000 }]),
     "The Void": new AgeRequirement([removeSpaces(".The Void")], [{ requirement: 1000 }]),
     "Void Manipulation": new AgeRequirement([removeSpaces(".Void Manipulation")], [{ requirement: 1000 }]),
@@ -359,12 +359,12 @@ const requirementsBaseData = {
     "Lieutenant General": new TaskRequirement([getQuerySelector("Lieutenant General")], [{ task: "Mana Control", requirement: 1000 }, { task: "Táticas de Batalha", requirement: 1000 }, { task: "Holy Knight", requirement: 10 }]),
 
     // The Arcane Association
-    "Student": new TaskRequirement([getQuerySelector("Student")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
+    "Student": new TaskRequirement([getQuerySelector("Student")], [{ task: "Concentração", requirement: 200 }, { task: "Meditação", requirement: 200 }]),
     "Apprentice Mage": new TaskRequirement([getQuerySelector("Apprentice Mage")], [{ task: "Mana Control", requirement: 400 }, { task: "Student", requirement: 10 }]),
     "Adept Mage": new TaskRequirement([getQuerySelector("Adept Mage")], [{ task: "Mana Control", requirement: 700 }, { task: "Apprentice Mage", requirement: 10 }]),
     "Master Wizard": new TaskRequirement([getQuerySelector("Master Wizard")], [{ task: "Mana Control", requirement: 1000 }, { task: "Adept Mage", requirement: 10 }]),
     "Archmage": new TaskRequirement([getQuerySelector("Archmage")], [{ task: "Mana Control", requirement: 1200 }, { task: "Master Wizard", requirement: 10 }]),
-    "Chronomancer": new TaskRequirement([getQuerySelector("Chronomancer")], [{ task: "Mana Control", requirement: 1500 }, { task: "Meditation", requirement: 1500 }, { task: "Archmage", requirement: 25 }]),
+    "Chronomancer": new TaskRequirement([getQuerySelector("Chronomancer")], [{ task: "Mana Control", requirement: 1500 }, { task: "Meditação", requirement: 1500 }, { task: "Archmage", requirement: 25 }]),
     "Chairman": new TaskRequirement([getQuerySelector("Chairman")], [{ task: "Mana Control", requirement: 2000 }, { task: "Produtividade", requirement: 2000 }, { task: "Chronomancer", requirement: 50 }]),
     "Imperator": new TaskRequirement([getQuerySelector("Imperator")], [{ task: "All Seeing Eye", requirement: 3000, herequirement: 650 }, { task: "Concentração", requirement: 3000 }, { task: "Chairman", requirement: 666 }]),
 
@@ -383,7 +383,7 @@ const requirementsBaseData = {
     "Nova": new TaskRequirement([getQuerySelector("Nova")], [{ task: "Eternal Wanderer", requirement: 15 }, { task: "Cosmic Longevity", requirement: 4000, herequirement: 180 }]),
     "Sigma Proioxis": new TaskRequirement([getQuerySelector("Sigma Proioxis")], [{ task: "Nova", requirement: 200 }, { task: "Cosmic Recollection", requirement: 4500, herequirement: 350 }]),
     "Acallaris": new TaskRequirement([getQuerySelector("Acallaris")], [{ task: "Galactic Command", requirement: 5000, herequirement: 250 }, { task: "Sigma Proioxis", requirement: 1000, herequirement: 480 }]),
-    "One Above All": new TaskRequirement([getQuerySelector("One Above All")], [{ task: "Meditation", requirement: 6300 }, { task: "Acallaris", requirement: 1400, herequirement: 500 }]),
+    "One Above All": new TaskRequirement([getQuerySelector("One Above All")], [{ task: "Meditação", requirement: 6300 }, { task: "Acallaris", requirement: 1400, herequirement: 500 }]),
 
     // Metaverse Guards
     "Snow Crash": new EssenceRequirement([getQuerySelector("Snow Crash")], [{ requirement: 1e90, herequirement: 1e120 }]),
@@ -395,7 +395,7 @@ const requirementsBaseData = {
     "Concentração": new TaskRequirement([getQuerySelector("Concentração")], []),
     "Produtividade": new TaskRequirement([getQuerySelector("Produtividade")], [{ task: "Concentração", requirement: 5 }]),
     "Bargaining": new TaskRequirement([getQuerySelector("Bargaining")], [{ task: "Concentração", requirement: 20 }]),
-    "Meditation": new TaskRequirement([getQuerySelector("Meditation")], [{ task: "Concentração", requirement: 30 }, { task: "Produtividade", requirement: 20 }]),
+    "Meditação": new TaskRequirement([getQuerySelector("Meditação")], [{ task: "Concentração", requirement: 30 }, { task: "Produtividade", requirement: 20 }]),
 
     // Combate
     "Força": new TaskRequirement([getQuerySelector("Força")], []),
@@ -403,7 +403,7 @@ const requirementsBaseData = {
     "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Força", requirement: 30 }]),
 
     // Magia
-    "Mana Control": new TaskRequirement([getQuerySelector("Mana Control")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
+    "Mana Control": new TaskRequirement([getQuerySelector("Mana Control")], [{ task: "Concentração", requirement: 200 }, { task: "Meditação", requirement: 200 }]),
     "Life Essence": new TaskRequirement([getQuerySelector("Life Essence")], [{ task: "Apprentice Mage", requirement: 10 }]),
     "Time Warping": new TaskRequirement([getQuerySelector("Time Warping")], [{ task: "Adept Mage", requirement: 10 }]),
     "Astral Body": new TaskRequirement([getQuerySelector("Astral Body")], [{ task: "Archmage", requirement: 10 }]),
@@ -434,7 +434,7 @@ const requirementsBaseData = {
 
     // Celestial Powers
     "Cosmic Longevity": new TaskRequirement([getQuerySelector("Cosmic Longevity")], [{ task: "Eternal Wanderer", requirement: 1 }]),
-    "Cosmic Recollection": new TaskRequirement([getQuerySelector("Cosmic Recollection")], [{ task: "Nova", requirement: 50 }, { task: "Meditation", requirement: 4200 }, { task: "Mind Release", requirement: 900 }]),
+    "Cosmic Recollection": new TaskRequirement([getQuerySelector("Cosmic Recollection")], [{ task: "Nova", requirement: 50 }, { task: "Meditação", requirement: 4200 }, { task: "Mind Release", requirement: 900 }]),
     "Essence Collector": new TaskRequirement([getQuerySelector("Essence Collector")], [{ task: "Sigma Proioxis", requirement: 500, herequirement: 360 }, { task: "Absolute Wish", requirement: 4900, herequirement: 2900 }, { task: "Dark Knowledge", requirement: 6300, herequirement: 3400 }]),
     "Galactic Command": new TaskRequirement([getQuerySelector("Galactic Command")], [{ task: "Essence Collector", requirement: 5000, herequirement: 210 }, { task: "Bargaining", requirement: 5000 }]),
 
@@ -562,7 +562,7 @@ const jobCategories = {
 }
 
 const skillCategories = {
-    "Fundamentos": ["Concentração", "Produtividade", "Bargaining", "Meditation"],
+    "Fundamentos": ["Concentração", "Produtividade", "Bargaining", "Meditação"],
     "Combate": ["Força", "Táticas de Batalha", "Muscle Memory"],
     "Magia": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
