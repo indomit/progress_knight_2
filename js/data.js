@@ -238,7 +238,7 @@ const skillBaseData = {
 
 const itemBaseData = {
      
-    "Homeless": { name: "Homeless", expense: 0, effect: 1, heromult: 2, heroeffect: 2e6 },
+    "Sem-teto": { name: "Sem-teto", expense: 0, effect: 1, heromult: 2, heroeffect: 2e6 },
     "Tent": { name: "Tent", expense: 15, effect: 1.4, heromult: 2, heroeffect: 2e7 },
 
     "Wooden Hut": { name: "Wooden Hut", expense: 100, effect: 2, heromult: 3, heroeffect: 2e8 },
@@ -453,7 +453,7 @@ const requirementsBaseData = {
     "Blinded By Darkness": new DarkMatterRequirement([getQuerySelector("Blinded By Darkness")], [{ requirement: 1e4 }]),
 
     // Propriedades
-    "Homeless": new CoinRequirement([getQuerySelector("Homeless")], [{ requirement: 0 }]),
+    "Sem-teto": new CoinRequirement([getQuerySelector("Sem-teto")], [{ requirement: 0 }]),
     "Tent": new CoinRequirement([getQuerySelector("Tent")], [{ requirement: 0 }]),
     "Wooden Hut": new CoinRequirement([getQuerySelector("Wooden Hut")], [{ requirement: itemBaseData["Wooden Hut"].expense * 100 }]),
     "Cottage": new CoinRequirement([getQuerySelector("Cottage")], [{ requirement: itemBaseData["Cottage"].expense * 100 }]),
@@ -573,7 +573,7 @@ const skillCategories = {
 }
 
 const itemCategories = {
-    "Propriedades": ["Homeless", "Tent", "Wooden Hut", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
+    "Propriedades": ["Sem-teto", "Tent", "Wooden Hut", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
     "Misc": ["Book", "Dumbbells", "Personal Squire", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
 }
 
