@@ -51,13 +51,13 @@ const tooltips = {
     "Omega": "ω",
 
     // Fundamentals
-    "Concentração": "Improve your learning speed through practising intense concentration activities.",
+    "Concentração": "Melhore sua velocidade de aprendizado praticando atividades intensas de concentração.",
     "Produtividade": "Learn to procrastinate less at work and receive more job experience per day.",
     "Bargaining": "Study the tricks of the trade and persuasive skills to lower any type of expense.",
     "Meditação": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
 
     // Combat
-    "Força": "Condition your body and strength through harsh training. Stronger individuals are paid more in the military.",
+    "Força": "Condicione seu corpo e sua força por meio de um treinamento intenso. Indivíduos mais fortes são mais bem pagos no serviço militar.",
     "Táticas de Batalha": "Create and revise battle strategies, improving experience gained in the military.",
     "Muscle Memory": "Strengthen your neurons through habit and repetition, improving strength gains throughout the body.",
 
