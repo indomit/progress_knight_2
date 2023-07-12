@@ -46,10 +46,10 @@ function addMultipliers() {
         }
 
         if (jobCategories["Militares"].includes(task.name)) {
-            task.incomeMultipliers.push(getBindedTaskEffect("Strength"))
+            task.incomeMultipliers.push(getBindedTaskEffect("Força"))
             task.xpMultipliers.push(getBindedTaskEffect("Battle Tactics"))
             task.xpMultipliers.push(getBindedItemEffect("Steel Longsword"))
-        } else if (task.name == "Strength") {
+        } else if (task.name == "Força") {
             task.xpMultipliers.push(getBindedTaskEffect("Muscle Memory"))
             task.xpMultipliers.push(getBindedItemEffect("Dumbbells"))
         } else if (skillCategories["Magic"].includes(task.name)) {
