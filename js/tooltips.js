@@ -57,7 +57,7 @@ const tooltips = {
     "Meditation": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
 
     // Combat
-    "Strength": "Condition your body and strength through harsh training. Stronger individuals are paid more in the military.",
+    "Força": "Condition your body and strength through harsh training. Stronger individuals are paid more in the military.",
     "Battle Tactics": "Create and revise battle strategies, improving experience gained in the military.",
     "Muscle Memory": "Strengthen your neurons through habit and repetition, improving strength gains throughout the body.",
 
