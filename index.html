@@ -781,47 +781,47 @@
 													<td>Notação monetária</td>
 													<td style="padding: 0.4em">
 														<button class="w3-button button CurrencyNotation selected" onclick="setCurrency(0)">Medieval</button>
-														<button class="w3-button button CurrencyNotation" onclick="setCurrency(1)">Extended</button>
-														<button class="w3-button button CurrencyNotation" onclick="setCurrency(2)">British £sd</button>
-														<button class="w3-button button CurrencyNotation" onclick="setCurrency(3)">Modern $</button>
+														<button class="w3-button button CurrencyNotation" onclick="setCurrency(1)">Extendido</button>
+														<button class="w3-button button CurrencyNotation" onclick="setCurrency(2)">Briânico £sd</button>
+														<button class="w3-button button CurrencyNotation" onclick="setCurrency(3)">Estadunidense $</button>
 													</td>
 												</tr>
 												<tr>
 													<td>Notação numérica</td>
 													<td style="padding: 0.4em">
-														<button class="w3-button button Notation selected" onclick="setNotation(0)">Standard</button>
-														<button class="w3-button button Notation" onclick="setNotation(1)">Scientific</button>
-														<button class="w3-button button Notation" onclick="setNotation(2)">Engineering</button>
+														<button class="w3-button button Notation selected" onclick="setNotation(0)">Padrão</button>
+														<button class="w3-button button Notation" onclick="setNotation(1)">Científico</button>
+														<button class="w3-button button Notation" onclick="setNotation(2)">Engenharia</button>
 													</td>
 												</tr>
 												<tr>
 													<td>Layout</td>
 													<td style="padding: 0.4em">
-														<button class="w3-button button Layout" onclick="setLayout(1)">Standard</button>
-														<button class="w3-button button Layout" onclick="setLayout(0)">W I D E</button>
+														<button class="w3-button button Layout" onclick="setLayout(1)">Padrão</button>
+														<button class="w3-button button Layout" onclick="setLayout(0)">L A R G O</button>
 													</td>
 												</tr>
 												<tr>
 													<td>Tamanho da fonte</td>
 													<td style="padding: 0.4em">
-														<button class="w3-button button" onmouseover="onFontButtonHover()" onmouseout="onFontButtonStopHover()" onclick="setFontSize(gameData.settings.fontSize - 1)">Smaller</button>
-														<button class="w3-button button" onmouseover="onFontButtonHover()" onmouseout="onFontButtonStopHover()" onclick="setFontSize(gameData.settings.fontSize + 1)">Larger</button>
-														<span class="tooltiptext hidden" id="fontSizeTooltip" style="color: gray">Keep pressing to change more</span>
+														<button class="w3-button button" onmouseover="onFontButtonHover()" onmouseout="onFontButtonStopHover()" onclick="setFontSize(gameData.settings.fontSize - 1)">Diminuir</button>
+														<button class="w3-button button" onmouseover="onFontButtonHover()" onmouseout="onFontButtonStopHover()" onclick="setFontSize(gameData.settings.fontSize + 1)">Aumentar</button>
+														<span class="tooltiptext hidden" id="fontSizeTooltip" style="color: gray">Continue pressionando para alterar mais</span>
 													</td>
 												</tr>
 												<tr>
 													<td> Esquema de cores</td>
 													<td style="padding: 0.4em">
-														<button class="w3-button button Theme" onClick="setTheme(0, true)">Light</button>
-														<button class="w3-button button Theme" onClick="setTheme(1, true)">Dark</button>
-														<button class="w3-button button Theme" onClick="setTheme(2, true)">Color Blind Friendly</button>
+														<button class="w3-button button Theme" onClick="setTheme(0, true)">Claro</button>
+														<button class="w3-button button Theme" onClick="setTheme(1, true)">Escuro</button>
+														<button class="w3-button button Theme" onClick="setTheme(2, true)">Amigável para Daltônicos</button>
 													</td>
 												</tr>
 												<tr>
 													<td> Atalhos de teclado perigosos</td>
 													<td style="padding: 0.4em">
-														<button class="w3-button button EnableKeybinds" onClick="setEnableKeybinds(true)">Enabled</button>
-														<button class="w3-button button EnableKeybinds" onClick="setEnableKeybinds(false)">Disabled</button>
+														<button class="w3-button button EnableKeybinds" onClick="setEnableKeybinds(true)">Habilitado</button>
+														<button class="w3-button button EnableKeybinds" onClick="setEnableKeybinds(false)">Desabilitado</button>
 													</td>
 												</tr>
 											</table>
