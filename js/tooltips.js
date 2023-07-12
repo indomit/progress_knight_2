@@ -52,7 +52,7 @@ const tooltips = {
 
     // Fundamentals
     "Concentração": "Melhore sua velocidade de aprendizado praticando atividades intensas de concentração.",
-    "Produtividade": "Learn to procrastinate less at work and receive more job experience per day.",
+    "Produtividade": "Aprenda a procrastinar menos no trabalho e receba mais experiência profissional por dia.",
     "Bargaining": "Study the tricks of the trade and persuasive skills to lower any type of expense.",
     "Meditação": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
 
