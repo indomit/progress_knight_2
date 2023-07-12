@@ -1,5 +1,5 @@
 versão 2.3.2.1 / 12.07.2023
-* início do jogo traduzido;
+* parte inicial do jogo traduzida;
 * pequena mudança na barra lateral (a palavra "Saldo" está sobre o saldo monetário);
-*Aba de Configurações externa adaptada (dimensão);
+* aba de Configurações externa adaptada (redimensionada);
 * cabeçalho parcialmente remodelado (BR em verde e amarelo).
