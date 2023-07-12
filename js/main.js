@@ -45,7 +45,7 @@ function addMultipliers() {
             task.xpMultipliers.push(getBindedTaskEffect("Dark Prince"))
         }
 
-        if (jobCategories["Militares"].includes(task.name)) {
+        if (jobCategories["Militar"].includes(task.name)) {
             task.incomeMultipliers.push(getBindedTaskEffect("Força"))
             task.xpMultipliers.push(getBindedTaskEffect("Táticas de Batalha"))
             task.xpMultipliers.push(getBindedItemEffect("Steel Longsword"))
