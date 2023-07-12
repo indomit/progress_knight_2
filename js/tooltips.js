@@ -54,7 +54,7 @@ const tooltips = {
     "Concentração": "Improve your learning speed through practising intense concentration activities.",
     "Produtividade": "Learn to procrastinate less at work and receive more job experience per day.",
     "Bargaining": "Study the tricks of the trade and persuasive skills to lower any type of expense.",
-    "Meditation": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
+    "Meditação": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
 
     // Combat
     "Força": "Condition your body and strength through harsh training. Stronger individuals are paid more in the military.",
