@@ -589,7 +589,7 @@ function autoBuy() {
             const item = gameData.itemData[key]
             const expense = item.getExpense()
 
-            if (itemCategories['Properties'].indexOf(key) != -1) {
+            if (itemCategories['Propriedades'].indexOf(key) != -1) {
                 if (expense < income && expense >= usedExpense) {
                     gameData.currentProperty = item
                     usedExpense = expense
