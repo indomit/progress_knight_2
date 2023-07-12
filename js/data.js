@@ -402,7 +402,7 @@ const requirementsBaseData = {
     "Battle Tactics": new TaskRequirement([getQuerySelector("Battle Tactics")], [{ task: "Concentração", requirement: 20 }]),
     "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Força", requirement: 30 }]),
 
-    // Magic
+    // Magia
     "Mana Control": new TaskRequirement([getQuerySelector("Mana Control")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
     "Life Essence": new TaskRequirement([getQuerySelector("Life Essence")], [{ task: "Apprentice Mage", requirement: 10 }]),
     "Time Warping": new TaskRequirement([getQuerySelector("Time Warping")], [{ task: "Adept Mage", requirement: 10 }]),
@@ -564,7 +564,7 @@ const jobCategories = {
 const skillCategories = {
     "Fundamentos": ["Concentração", "Produtividade", "Bargaining", "Meditation"],
     "Combate": ["Força", "Battle Tactics", "Muscle Memory"],
-    "Magic": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
+    "Magia": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
     "Void Manipulation": ["Absolute Wish", "Void Amplification", "Mind Release", "Ceaseless Abyss", "Void Symbiosis", "Void Embodiment", "Abyss Manipulation"],
     "Celestial Powers": ["Cosmic Longevity", "Cosmic Recollection", "Essence Collector", "Galactic Command"],
@@ -585,7 +585,7 @@ const headerRowColors = {
     "Galactic Council": "#D5C010",
     "Fundamentos": "#55a630",
     "Combate": "#e63946",
-    "Magic": "#C71585",
+    "Magia": "#C71585",
     "Dark Magic": "#73000f",
     "Almightiness": "#18d2d9",
     "Darkness": "#8c6a0b",
@@ -610,7 +610,7 @@ const headerRowTextColors = {
     "Galactic Council": "purple",
     "Fundamentos": "purple",
     "Combate": "pink",
-    "Magic": "purple",
+    "Magia": "purple",
     "Dark Magic": "pink",
     "Almightiness": "purple",
     "Darkness": "gold",
