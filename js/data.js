@@ -182,7 +182,7 @@ const jobBaseData = {
 }
 
 const skillBaseData = {
-    "Concentração": { name: "Concentração", maxXp: 100, heroxp: 36, effect: 0.01, description: "XP Habilidade" },
+    "Concentração": { name: "Concentração", maxXp: 100, heroxp: 36, effect: 0.01, description: "Habilidade XP" },
     "Produtividade": { name: "Produtividade", maxXp: 100, heroxp: 37, effect: 0.01, description: "Hero XP" },
     "Bargaining": { name: "Bargaining", maxXp: 100, heroxp: 38, effect: -0.01, description: "Reduced Expenses" },
     "Meditação": { name: "Meditação", maxXp: 100, heroxp: 39, effect: 0.01, description: "Happiness" },
@@ -209,12 +209,12 @@ const skillBaseData = {
 
     "Void Influence": { name: "Void Influence", maxXp: 100, heroxp: 206, effect: 0.0028, description: "All XP" },
     "Time Loop": { name: "Time Loop", maxXp: 100, heroxp: 207, effect: 0.001, description: "Gamespeed" },
-    "Evil Incarnate": { name: "Evil Incarnate", maxXp: 100, heroxp: 208, effect: 0.01, description: "XP Habilidade" },
+    "Evil Incarnate": { name: "Evil Incarnate", maxXp: 100, heroxp: 208, effect: 0.01, description: "Habilidade XP" },
     "Absolute Wish": { name: "Absolute Wish", maxXp: 100, heroxp: 198, effect: 0.005, description: "Evil Gain" },
     "Void Amplification": { name: "Void Amplification", maxXp: 100, heroxp: 251, effect: 0.01, description: "The Void XP" },
     "Mind Release": { name: "Mind Release", maxXp: 100, heroxp: 251, effect: 0.0006, description: "Increased Happiness" },
     "Ceaseless Abyss": { name: "Ceaseless Abyss", maxXp: 100, heroxp: 251, effect: 0.000585, description: "Longer Lifespan" },
-    "Void Symbiosis": { name: "Void Symbiosis", maxXp: 100, heroxp: 253, effect: 0.0015, description: "XP Habilidade" },
+    "Void Symbiosis": { name: "Void Symbiosis", maxXp: 100, heroxp: 253, effect: 0.0015, description: "Habilidade XP" },
     "Void Embodiment": { name: "Void Embodiment", maxXp: 100, heroxp: 258, effect: 0.0025, description: "Evil Gain" },
     "Abyss Manipulation": { name: "Abyss Manipulation", maxXp: 100, heroxp: 266, effect: -0.01, description: "Reduced Expenses" },
 
@@ -228,7 +228,7 @@ const skillBaseData = {
     "Higher Dimensions": { name: "Higher Dimensions", maxXp: 100, heroxp: 300, effect: 0.001, description: "Longer Lifespan" },
     "Epiphany": { name: "Epiphany", maxXp: 100, heroxp: 280, effect: 0.012, description: "Galactic Council XP" },
 
-    "Dark Prince": { name: "Dark Prince", maxXp: 100, heroxp: 350, effect: 0.01, description: "XP Habilidade" },
+    "Dark Prince": { name: "Dark Prince", maxXp: 100, heroxp: 350, effect: 0.01, description: "Habilidade XP" },
     "Dark Ruler": { name: "Dark Ruler", maxXp: 100, heroxp: 375, effect: 0.0000015, description: "Dark Matter Gain" },
     "Immortal Ruler": { name: "Immortal Ruler", maxXp: 100, heroxp: 425, effect: 0.01, description: "All XP" },
     "Dark Magician": { name: "Dark Magician", maxXp: 100, heroxp: 475, effect: 0.0000025, description: "Essence Gain" },
@@ -270,29 +270,29 @@ const itemBaseData = {
     "Boötes Void": { name: "Boötes Void", expense: 3e74, effect: 1000000000000, heromult: 40, heroeffect: 1e80 },
 
     // Misc
-    "Book": { name: "Book", expense: 10, effect: 1.5, description: "XP Habilidade", heromult: 2, heroeffect: 10 },
+    "Book": { name: "Book", expense: 10, effect: 1.5, description: "Habilidade XP", heromult: 2, heroeffect: 10 },
     "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "Força XP", heromult: 2, heroeffect: 10 },
     "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "Hero XP", heromult: 3, heroeffect: 10 },
     "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "Military XP", heromult: 3, heroeffect: 10 },
     "Butler": { name: "Butler", expense: 7500, effect: 1.5, description: "Happiness", heromult: 4, heroeffect: 10 },
     "Sapphire Charm": { name: "Sapphire Charm", expense: 50000, effect: 3, description: "Magic XP", heromult: 4, heroeffect: 10 },
-    "Study Desk": { name: "Study Desk", expense: 1000000, effect: 2, description: "XP Habilidade", heromult: 5, heroeffect: 10 },
-    "Library": { name: "Library", expense: 1e7, effect: 2, description: "XP Habilidade", heromult: 5, heroeffect: 10 },
+    "Study Desk": { name: "Study Desk", expense: 1000000, effect: 2, description: "Habilidade XP", heromult: 5, heroeffect: 10 },
+    "Library": { name: "Library", expense: 1e7, effect: 2, description: "Habilidade XP", heromult: 5, heroeffect: 10 },
     "Observatory": { name: "Observatory", expense: 1.4e8, effect: 5, description: "Magic XP", heromult: 6, heroeffect: 10 },
     "Mind's Eye": { name: "Mind's Eye", expense: 3.25e9, effect: 10, description: "Fundamentos XP", heromult: 8, heroeffect: 10 },
     "Void Necklace": { name: "Void Necklace", expense: 2.8e10, effect: 3, description: "Void Manipulation XP", heromult: 10, heroeffect: 10 },
     "Void Armor": { name: "Void Armor", expense: 1.97e11, effect: 3, description: "The Void XP", heromult: 10, heroeffect: 10 },
-    "Void Blade": { name: "Void Blade", expense: 5e11, effect: 3, description: "XP Habilidade", heromult: 11, heroeffect: 10 },
+    "Void Blade": { name: "Void Blade", expense: 5e11, effect: 3, description: "Habilidade XP", heromult: 11, heroeffect: 10 },
     "Void Orb": { name: "Void Orb", expense: 1.2e12, effect: 3, description: "Void Manipulation XP", heromult: 11, heroeffect: 10 },
     "Void Dust": { name: "Void Dust", expense: 2.5e13, effect: 3, description: "The Void XP", heromult: 12, heroeffect: 10 },
     "Celestial Robe": { name: "Celestial Robe", expense: 3e14, effect: 5, description: "Galactic Council XP", heromult: 12, heroeffect: 10 },
-    "Universe Fragment": { name: "Universe Fragment", expense: 1.85e16, effect: 3, description: "XP Habilidade", heromult: 13, heroeffect: 1000000 },
+    "Universe Fragment": { name: "Universe Fragment", expense: 1.85e16, effect: 3, description: "Habilidade XP", heromult: 13, heroeffect: 1000000 },
     "Multiverse Fragment": { name: "Multiverse Fragment", expense: 2e17, effect: 5, description: "Happiness", heromult: 15, heroeffect: 1000000 },
     "Stairway to heaven": { name: "Stairway to heaven", expense: 1e38, effect: 10, description: "Happiness", heromult: 30, heroeffect: 1000000 },
     "Highway to hell": { name: "Highway to hell", expense: 1e42, effect: 10, description: "Evil Gain", heromult: 30, heroeffect: 1000000 },
     "Tesseract": { name: "Tesseract", expense: 1e48, effect: 1, description: "Hypercube Gain", heromult: 30, heroeffect: 10 },
     "Desintegration": { name: "Desintegration", expense: 1e55, effect: 1, description: "Dark Matter Gain", heromult: 30, heroeffect: 100 },
-    "Custom Galaxy": { name: "Custom Galaxy", expense: 1e64, effect: 1, description: "XP Habilidade", heromult: 30, heroeffect: 1e100 },
+    "Custom Galaxy": { name: "Custom Galaxy", expense: 1e64, effect: 1, description: "Habilidade XP", heromult: 30, heroeffect: 1e100 },
     "Hypersphere": { name: "Hypersphere", expense: 1e91, effect: 1, description: "Hypercube Gain", heromult: 30, heroeffect: 1e50 },
 }
 
