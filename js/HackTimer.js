@@ -38,7 +38,7 @@ onmessage = function (event) {
 			}
 			break;
 	}
-}\
+}
 "]);
 			// Obtain a blob URL reference to our worker 'file'.
 			workerScript = window.URL.createObjectURL(blob);
