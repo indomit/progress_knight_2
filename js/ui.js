@@ -903,7 +903,7 @@ function updateRequiredRows(data, categoryType) {
                 const item = gameData.itemData[nextEntity.name]
                 
                 effectElement.classList.remove("hiddenTask")
-                effectValueElement.textContent = item.unlocked ? (item.baseData.description != null ? item.baseData.description : "Happiness") : "Desconhecido"
+                effectValueElement.textContent = item.unlocked ? (item.baseData.description != null ? item.baseData.description : "Felicidade") : "Desconhecido"
             }
             else if (data == milestoneData) {
                 essenceElement.classList.remove("hiddenTask")
