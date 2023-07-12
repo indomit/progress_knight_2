@@ -397,7 +397,7 @@ const requirementsBaseData = {
     "Bargaining": new TaskRequirement([getQuerySelector("Bargaining")], [{ task: "Concentração", requirement: 20 }]),
     "Meditation": new TaskRequirement([getQuerySelector("Meditation")], [{ task: "Concentração", requirement: 30 }, { task: "Produtividade", requirement: 20 }]),
 
-    // Combat
+    // Combate
     "Força": new TaskRequirement([getQuerySelector("Força")], []),
     "Battle Tactics": new TaskRequirement([getQuerySelector("Battle Tactics")], [{ task: "Concentração", requirement: 20 }]),
     "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Força", requirement: 30 }]),
@@ -563,7 +563,7 @@ const jobCategories = {
 
 const skillCategories = {
     "Fundamentos": ["Concentração", "Produtividade", "Bargaining", "Meditation"],
-    "Combat": ["Força", "Battle Tactics", "Muscle Memory"],
+    "Combate": ["Força", "Battle Tactics", "Muscle Memory"],
     "Magic": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
     "Void Manipulation": ["Absolute Wish", "Void Amplification", "Mind Release", "Ceaseless Abyss", "Void Symbiosis", "Void Embodiment", "Abyss Manipulation"],
@@ -584,7 +584,7 @@ const headerRowColors = {
     "The Void": "#762B91",
     "Galactic Council": "#D5C010",
     "Fundamentos": "#55a630",
-    "Combat": "#e63946",
+    "Combate": "#e63946",
     "Magic": "#C71585",
     "Dark Magic": "#73000f",
     "Almightiness": "#18d2d9",
@@ -609,7 +609,7 @@ const headerRowTextColors = {
     "The Void": "white",
     "Galactic Council": "purple",
     "Fundamentos": "purple",
-    "Combat": "pink",
+    "Combate": "pink",
     "Magic": "purple",
     "Dark Magic": "pink",
     "Almightiness": "purple",
