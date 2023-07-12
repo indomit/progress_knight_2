@@ -7,7 +7,7 @@ const tooltips = {
     "Ferreiro": "Funda minérios e forje armas cuidadosamente para os militares.  Um trabalho comum respeitável e bem pago.",
     "Comerciante": "Viaje de cidade em cidade, negociando boas mercadorias.  O trabalho paga decentemente bem e é muito menos intensivo manualmente.",
 
-    // Militares
+    // Militar
     "Escudeiro": "Carregue o escudo e a espada do seu cavaleiro pelo campo de batalha.  Salário muito escasso, mas a experiência de trabalho é bastante valiosa.",
     "Lacaio": "Arrisque sua vida para lutar contra os soldados inimigos.  Um trabalho corajoso e respeitável, mas você ainda é inútil no grande esquema das coisas.",
     "Lacaio veterano": "Mais experiente e útil do que o lacaio médio, elimine as forças inimigas na batalha com sua força.  O salário não é tão ruim.",
