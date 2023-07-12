@@ -140,7 +140,7 @@ const tooltips = {
     "Quantum World": "You try to find at least some place that is still beyond your control, but all in vain.",
     "Boötes Void": "The Great Nothing",
 
-    // Misc
+    // Diversos
     "Livro": "A place to write down all your thoughts and discoveries, allowing you to learn a lot more quickly.",
     "Dumbbells": "Heavy tools used in strenuous exercise to toughen up and accumulate strength even faster than before.",
     "Personal Squire": "Assists you in completing day to day activities, giving you more time to be productive at work.",
