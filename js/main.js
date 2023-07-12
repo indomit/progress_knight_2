@@ -47,7 +47,7 @@ function addMultipliers() {
 
         if (jobCategories["Militares"].includes(task.name)) {
             task.incomeMultipliers.push(getBindedTaskEffect("Força"))
-            task.xpMultipliers.push(getBindedTaskEffect("Battle Tactics"))
+            task.xpMultipliers.push(getBindedTaskEffect("Táticas de Batalha"))
             task.xpMultipliers.push(getBindedItemEffect("Steel Longsword"))
         } else if (task.name == "Força") {
             task.xpMultipliers.push(getBindedTaskEffect("Muscle Memory"))
