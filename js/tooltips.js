@@ -56,7 +56,7 @@ const tooltips = {
     "Bargaining": "Study the tricks of the trade and persuasive skills to lower any type of expense.",
     "Meditação": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
 
-    // Combat
+    // Combate
     "Força": "Condicione seu corpo e sua força por meio de um treinamento intenso. Indivíduos mais fortes são mais bem pagos no serviço militar.",
     "Táticas de Batalha": "Create and revise battle strategies, improving experience gained in the military.",
     "Muscle Memory": "Strengthen your neurons through habit and repetition, improving strength gains throughout the body.",
@@ -111,9 +111,9 @@ const tooltips = {
     "Universal Ruler": "No one dares to challenge your rule when ruling with an iron fist.",
     "Blinded By Darkness": "Blinded by darkness, you can no longer control yourself. You start to destroy everything in existance to calm yourself.",
 
-    // Properties
-    "Sem-teto": "Sleep on the uncomfortable, filthy streets while almost freezing to death every night. It cannot get any worse than this.",
-    "Tenda": "A thin sheet of tattered cloth held up by a couple of feeble, wooden sticks. Horrible living conditions but at least you have a roof over your head.",
+    // Propriedades
+    "Sem-teto": "Durma nas ruas desconfortáveis ​​e imundas enquanto quase morre de frio todas as noites.  Não pode ficar pior do que isso.",
+    "Tenda": "Uma fina folha de pano esfarrapado sustentada por um par de varetas de madeira fracas.  Condições de vida horríveis, mas pelo menos você tem um teto sobre sua cabeça.",
     "Wooden Hut": "Shabby logs and dirty hay glued together with horse manure. Much more sturdy than a tent, however, the stench isn't very pleasant.",
     "Cottage": "Structured with a timber frame and a thatched roof. Provides decent living conditions for a fair price.",
     "House": "A building formed from stone bricks and sturdy timber, which contains a few rooms. Although quite expensive, it is a comfortable abode.",
@@ -141,7 +141,7 @@ const tooltips = {
     "Boötes Void": "The Great Nothing",
 
     // Diversos
-    "Livro": "A place to write down all your thoughts and discoveries, allowing you to learn a lot more quickly.",
+    "Livro": "Um lugar para anotar todos os seus pensamentos e descobertas, permitindo que você aprenda muito mais rapidamente.",
     "Dumbbells": "Heavy tools used in strenuous exercise to toughen up and accumulate strength even faster than before.",
     "Personal Squire": "Assists you in completing day to day activities, giving you more time to be productive at work.",
     "Steel Longsword": "A fine blade used to slay enemies even quicker in combat and therefore gain more experience.",
