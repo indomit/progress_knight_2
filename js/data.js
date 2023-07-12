@@ -187,9 +187,9 @@ const skillBaseData = {
     "Bargaining": { name: "Bargaining", maxXp: 100, heroxp: 38, effect: -0.01, description: "Reduced Expenses" },
     "Meditation": { name: "Meditation", maxXp: 100, heroxp: 39, effect: 0.01, description: "Happiness" },
 
-    "Strength": { name: "Strength", maxXp: 100, heroxp: 40, effect: 0.01, description: "Military Pay" },
+    "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Military Pay" },
     "Battle Tactics": { name: "Battle Tactics", maxXp: 100, heroxp: 41, effect: 0.01, description: "Military XP" },
-    "Muscle Memory": { name: "Muscle Memory", maxXp: 100, heroxp: 42, effect: 0.01, description: "Strength XP" },
+    "Muscle Memory": { name: "Muscle Memory", maxXp: 100, heroxp: 42, effect: 0.01, description: "Força XP" },
 
     "Mana Control": { name: "Mana Control", maxXp: 100, heroxp: 46, effect: 0.01, description: "T.A.A. XP" },
     "Life Essence": { name: "Life Essence", maxXp: 100, heroxp: 82, effect: 0.01, description: "Longer Lifespan" },
@@ -271,7 +271,7 @@ const itemBaseData = {
 
     // Misc
     "Book": { name: "Book", expense: 10, effect: 1.5, description: "Skill XP", heromult: 2, heroeffect: 10 },
-    "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "Strength XP", heromult: 2, heroeffect: 10 },
+    "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "Força XP", heromult: 2, heroeffect: 10 },
     "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "Hero XP", heromult: 3, heroeffect: 10 },
     "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "Military XP", heromult: 3, heroeffect: 10 },
     "Butler": { name: "Butler", expense: 7500, effect: 1.5, description: "Happiness", heromult: 4, heroeffect: 10 },
@@ -344,17 +344,17 @@ const requirementsBaseData = {
     "Mendigo": new TaskRequirement([getQuerySelector("Mendigo")], []),
     "Agricultor": new TaskRequirement([getQuerySelector("Agricultor")], [{ task: "Mendigo", requirement: 10 }]),
     "Pescador": new TaskRequirement([getQuerySelector("Pescador")], [{ task: "Agricultor", requirement: 10 }]),
-    "Minerador": new TaskRequirement([getQuerySelector("Minerador")], [{ task: "Strength", requirement: 10 }, { task: "Pescador", requirement: 10 }]),
-    "Ferreiro": new TaskRequirement([getQuerySelector("Ferreiro")], [{ task: "Strength", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
+    "Minerador": new TaskRequirement([getQuerySelector("Minerador")], [{ task: "Força", requirement: 10 }, { task: "Pescador", requirement: 10 }]),
+    "Ferreiro": new TaskRequirement([getQuerySelector("Ferreiro")], [{ task: "Força", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
     "Comerciante": new TaskRequirement([getQuerySelector("Comerciante")], [{ task: "Bargaining", requirement: 50 }, { task: "Ferreiro", requirement: 10 }]),
 
     // Militares
-    "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Strength", requirement: 5 }]),
-    "Lacaio": new TaskRequirement([getQuerySelector("Lacaio")], [{ task: "Strength", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
+    "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Força", requirement: 5 }]),
+    "Lacaio": new TaskRequirement([getQuerySelector("Lacaio")], [{ task: "Força", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
     "Lacaio veterano": new TaskRequirement([getQuerySelector("Lacaio veterano")], [{ task: "Battle Tactics", requirement: 40 }, { task: "Lacaio", requirement: 10 }]),
-    "Centurião": new TaskRequirement([getQuerySelector("Centurião")], [{ task: "Strength", requirement: 100 }, { task: "Lacaio veterano", requirement: 10 }]),
+    "Centurião": new TaskRequirement([getQuerySelector("Centurião")], [{ task: "Força", requirement: 100 }, { task: "Lacaio veterano", requirement: 10 }]),
     "Knight": new TaskRequirement([getQuerySelector("Knight")], [{ task: "Battle Tactics", requirement: 150 }, { task: "Centurião", requirement: 10 }]),
-    "Veteran Knight": new TaskRequirement([getQuerySelector("Veteran Knight")], [{ task: "Strength", requirement: 300 }, { task: "Knight", requirement: 10 }]),
+    "Veteran Knight": new TaskRequirement([getQuerySelector("Veteran Knight")], [{ task: "Força", requirement: 300 }, { task: "Knight", requirement: 10 }]),
     "Holy Knight": new TaskRequirement([getQuerySelector("Holy Knight")], [{ task: "Mana Control", requirement: 500 }, { task: "Veteran Knight", requirement: 10 }]),
     "Lieutenant General": new TaskRequirement([getQuerySelector("Lieutenant General")], [{ task: "Mana Control", requirement: 1000 }, { task: "Battle Tactics", requirement: 1000 }, { task: "Holy Knight", requirement: 10 }]),
 
@@ -398,9 +398,9 @@ const requirementsBaseData = {
     "Meditation": new TaskRequirement([getQuerySelector("Meditation")], [{ task: "Concentração", requirement: 30 }, { task: "Produtividade", requirement: 20 }]),
 
     // Combat
-    "Strength": new TaskRequirement([getQuerySelector("Strength")], []),
+    "Força": new TaskRequirement([getQuerySelector("Força")], []),
     "Battle Tactics": new TaskRequirement([getQuerySelector("Battle Tactics")], [{ task: "Concentração", requirement: 20 }]),
-    "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Strength", requirement: 30 }]),
+    "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Força", requirement: 30 }]),
 
     // Magic
     "Mana Control": new TaskRequirement([getQuerySelector("Mana Control")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
@@ -563,7 +563,7 @@ const jobCategories = {
 
 const skillCategories = {
     "Fundamentos": ["Concentração", "Produtividade", "Bargaining", "Meditation"],
-    "Combat": ["Strength", "Battle Tactics", "Muscle Memory"],
+    "Combat": ["Força", "Battle Tactics", "Muscle Memory"],
     "Magic": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
     "Void Manipulation": ["Absolute Wish", "Void Amplification", "Mind Release", "Ceaseless Abyss", "Void Symbiosis", "Void Embodiment", "Abyss Manipulation"],
