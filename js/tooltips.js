@@ -112,7 +112,7 @@ const tooltips = {
     "Blinded By Darkness": "Blinded by darkness, you can no longer control yourself. You start to destroy everything in existance to calm yourself.",
 
     // Properties
-    "Homeless": "Sleep on the uncomfortable, filthy streets while almost freezing to death every night. It cannot get any worse than this.",
+    "Sem-teto": "Sleep on the uncomfortable, filthy streets while almost freezing to death every night. It cannot get any worse than this.",
     "Tent": "A thin sheet of tattered cloth held up by a couple of feeble, wooden sticks. Horrible living conditions but at least you have a roof over your head.",
     "Wooden Hut": "Shabby logs and dirty hay glued together with horse manure. Much more sturdy than a tent, however, the stench isn't very pleasant.",
     "Cottage": "Structured with a timber frame and a thatched roof. Provides decent living conditions for a fair price.",
