@@ -606,7 +606,7 @@ function autoBuy() {
         if (gameData.requirements[key].isCompleted()) {
             const item = gameData.itemData[key]
             const expense = item.getExpense()
-            if (itemCategories['Misc'].indexOf(key) != -1) {
+            if (itemCategories['Diversos'].indexOf(key) != -1) {
                 if (expense < income - usedExpense) {
                     if (gameData.currentMisc.indexOf(item) == -1) {
                         gameData.currentMisc.push(item)
