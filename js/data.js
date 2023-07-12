@@ -452,7 +452,7 @@ const requirementsBaseData = {
     "Universal Ruler": new DarkMatterRequirement([getQuerySelector("Universal Ruler")], [{ requirement: 1e3 }]),
     "Blinded By Darkness": new DarkMatterRequirement([getQuerySelector("Blinded By Darkness")], [{ requirement: 1e4 }]),
 
-    // Properties
+    // Propriedades
     "Homeless": new CoinRequirement([getQuerySelector("Homeless")], [{ requirement: 0 }]),
     "Tent": new CoinRequirement([getQuerySelector("Tent")], [{ requirement: 0 }]),
     "Wooden Hut": new CoinRequirement([getQuerySelector("Wooden Hut")], [{ requirement: itemBaseData["Wooden Hut"].expense * 100 }]),
@@ -573,7 +573,7 @@ const skillCategories = {
 }
 
 const itemCategories = {
-    "Properties": ["Homeless", "Tent", "Wooden Hut", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
+    "Propriedades": ["Homeless", "Tent", "Wooden Hut", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
     "Misc": ["Book", "Dumbbells", "Personal Squire", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
 }
 
@@ -593,7 +593,7 @@ const headerRowColors = {
     "Celestial Powers": "#D5C010",
     "Properties_Auto": "#21cc5e",
     "Misc_Auto": "#f54546",
-    "Properties": "#219ebc",
+    "Propriedades": "#219ebc",
     "Misc": "#b56576",
     "Essence Milestones": "#0066ff",
     "Heroic Milestones": "#ff6600",
@@ -618,7 +618,7 @@ const headerRowTextColors = {
     "Celestial Powers": "purple",
     "Properties_Auto": "purple",
     "Misc_Auto": "purple",
-    "Properties": "purple",
+    "Propriedades": "purple",
     "Misc": "purple",
     "Essence Milestones": "purple",
     "Heroic Milestones": "purple",
