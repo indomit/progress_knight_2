@@ -113,7 +113,7 @@ const tooltips = {
 
     // Propriedades
     "Sem-teto": "Durma nas ruas desconfortáveis ​​e imundas enquanto quase morre de frio todas as noites.  Não pode ficar pior do que isso.",
-    "Tenda": "Uma fina folha de pano esfarrapado sustentada por um par de varetas de madeira fracas.  Condições de vida horríveis, mas pelo menos você tem um teto sobre sua cabeça.",
+    "Tenda": "Uma fina folha de pano esfarrapado sustentada por um par de varetas de madeira fracas.  Condições de vida horríveis, mas pelo menos você tem um teto sobre si.",
     "Wooden Hut": "Shabby logs and dirty hay glued together with horse manure. Much more sturdy than a tent, however, the stench isn't very pleasant.",
     "Cottage": "Structured with a timber frame and a thatched roof. Provides decent living conditions for a fair price.",
     "House": "A building formed from stone bricks and sturdy timber, which contains a few rooms. Although quite expensive, it is a comfortable abode.",
