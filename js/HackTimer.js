@@ -20,7 +20,7 @@ onmessage = function (event) {/
 		case 'clearInterval':/
 			if (fakeIdToId.hasOwnProperty (fakeId)) {/
 				clearInterval(fakeIdToId[fakeId]);/
-				delete fakeIdToId[fakeId];
+				delete fakeIdToId[fakeId];/
 			}/
 			break;/
 		case 'setTimeout':/
