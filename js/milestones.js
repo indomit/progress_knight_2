@@ -8,7 +8,7 @@ const milestoneBaseData = {
     "Eternal Time": { name: "Eternal Time", expense: 75000, tier: 5, description: "x2 Time Warping" },
     "Hell Portal": { name: "Hell Portal", expense: 120000, tier: 6, description: "Passively gain a huge amount of Evil" },
     "Inferno": { name: "Inferno", expense: 170000, tier: 7, description: "x5 Evil gain" },
-    "God's Blessings": { name: "God's Blessings", expense: 250000, tier: 8, description: "x10M Happiness" },
+    "God's Blessings": { name: "God's Blessings", expense: 250000, tier: 8, description: "x10M Felicidade" },
     "Faint Hope": { name: "Faint Hope", expense: 400000, tier: 9, description: "Essence gain (increases over time, influenced by time warping)" },
     "New Beginning": { name: "New Beginning", expense: 5000000, tier: 10, description: "Heroic jobs, skills and items are unlocked" },
 
