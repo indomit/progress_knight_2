@@ -52,7 +52,7 @@ function addMultipliers() {
         } else if (task.name == "Força") {
             task.xpMultipliers.push(getBindedTaskEffect("Muscle Memory"))
             task.xpMultipliers.push(getBindedItemEffect("Dumbbells"))
-        } else if (skillCategories["Magic"].includes(task.name)) {
+        } else if (skillCategories["Magia"].includes(task.name)) {
             task.xpMultipliers.push(getBindedItemEffect("Sapphire Charm"))
             task.xpMultipliers.push(getBindedItemEffect("Observatory"))
             task.xpMultipliers.push(getBindedTaskEffect("Universal Ruler"))
