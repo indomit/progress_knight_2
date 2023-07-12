@@ -141,7 +141,7 @@ const tooltips = {
     "Boötes Void": "The Great Nothing",
 
     // Misc
-    "Book": "A place to write down all your thoughts and discoveries, allowing you to learn a lot more quickly.",
+    "Livro": "A place to write down all your thoughts and discoveries, allowing you to learn a lot more quickly.",
     "Dumbbells": "Heavy tools used in strenuous exercise to toughen up and accumulate strength even faster than before.",
     "Personal Squire": "Assists you in completing day to day activities, giving you more time to be productive at work.",
     "Steel Longsword": "A fine blade used to slay enemies even quicker in combat and therefore gain more experience.",
