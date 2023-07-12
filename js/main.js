@@ -425,7 +425,7 @@ function applyExpenses() {
 
 function goBankrupt() {
     gameData.coins = 0
-    gameData.currentProperty = gameData.itemData["Homeless"]
+    gameData.currentProperty = gameData.itemData["Sem-teto"]
     gameData.currentMisc = []
     autoBuyEnabled = true
 }
@@ -896,7 +896,7 @@ function rebirthReset(set_tab_to_jobs = true) {
     gameData.days = 365 * 14
     gameData.realtime = 0
     gameData.currentJob = gameData.taskData["Mendigo"]
-    gameData.currentProperty = gameData.itemData["Homeless"]
+    gameData.currentProperty = gameData.itemData["Sem-teto"]
     gameData.currentMisc = []
     gameData.stats.EssencePerSecond = 0
     gameData.stats.maxEssencePerSecond = 0
@@ -1025,7 +1025,7 @@ function makeHeroes() {
         if (item.isHero)
             continue
         item.isHero = true
-        gameData.currentProperty = gameData.itemData["Homeless"]
+        gameData.currentProperty = gameData.itemData["Sem-teto"]
         gameData.currentMisc = []
     }
 }
@@ -1395,7 +1395,7 @@ createGameObjects(gameData.itemData, itemBaseData)
 createGameObjects(milestoneData, milestoneBaseData)
 
 gameData.currentJob = gameData.taskData["Mendigo"]
-gameData.currentProperty = gameData.itemData["Homeless"]
+gameData.currentProperty = gameData.itemData["Sem-teto"]
 gameData.currentMisc = []
 
 gameData.requirements = requirementsBaseData
