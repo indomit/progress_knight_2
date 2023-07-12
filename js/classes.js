@@ -213,7 +213,7 @@ class Item {
         let effect = this.baseData.effect
 
         if (this.isHero) {
-            if (itemCategories["Misc"].includes(this.name))
+            if (itemCategories["Diversos"].includes(this.name))
             {
                 if (gameData.currentMisc.includes(this)) {
                     effect *= this.baseData.heroeffect                    
@@ -244,7 +244,7 @@ class Item {
         let effect = this.baseData.effect
 
         if (this.isHero) {
-            if (itemCategories["Misc"].includes(this.name)) {
+            if (itemCategories["Diversos"].includes(this.name)) {
                 effect *= this.baseData.heroeffect
             }
 
