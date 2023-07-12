@@ -221,7 +221,7 @@ class Item {
                 }
             }
 
-            if (itemCategories["Properties"].includes(this.name)) {
+            if (itemCategories["Propriedades"].includes(this.name)) {
                 if (gameData.currentProperty == this) {
                     effect = this.baseData.heroeffect
                     this.unlocked = true
@@ -248,13 +248,13 @@ class Item {
                 effect *= this.baseData.heroeffect
             }
 
-            if (itemCategories["Properties"].includes(this.name)) {
+            if (itemCategories["Propriedades"].includes(this.name)) {
                 description = "Happiness"
                 effect = this.baseData.heroeffect
             }
         }
         else {
-            if (itemCategories["Properties"].includes(this.name)) description = "Happiness"
+            if (itemCategories["Propriedades"].includes(this.name)) description = "Happiness"
         }
 
         return "x" + format(effect) + " " + description
