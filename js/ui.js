@@ -324,7 +324,7 @@ function renderShop() {
         const active = row.querySelector(".active")
         const color = autoBuyEnabled
             ? itemCategories["Propriedades"].includes(item.name) ? headerRowColors["Properties_Auto"] : headerRowColors["Misc_Auto"]
-            : itemCategories["Propriedades"].includes(item.name) ? headerRowColors["Propriedades"] : headerRowColors["Misc"]
+            : itemCategories["Propriedades"].includes(item.name) ? headerRowColors["Propriedades"] : headerRowColors["Diversos"]
 
         active.style.backgroundColor = gameData.currentMisc.includes(item) || item == gameData.currentProperty ? color : "white"
         row.querySelector(".effect").textContent = item.getEffectDescription()
