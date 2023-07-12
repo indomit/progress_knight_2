@@ -348,7 +348,7 @@ const requirementsBaseData = {
     "Ferreiro": new TaskRequirement([getQuerySelector("Ferreiro")], [{ task: "Força", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
     "Comerciante": new TaskRequirement([getQuerySelector("Comerciante")], [{ task: "Bargaining", requirement: 50 }, { task: "Ferreiro", requirement: 10 }]),
 
-    // Militares
+    // Militar
     "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Força", requirement: 5 }]),
     "Lacaio": new TaskRequirement([getQuerySelector("Lacaio")], [{ task: "Força", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
     "Lacaio veterano": new TaskRequirement([getQuerySelector("Lacaio veterano")], [{ task: "Táticas de Batalha", requirement: 40 }, { task: "Lacaio", requirement: 10 }]),
@@ -554,7 +554,7 @@ const requirementsBaseData = {
 
 const jobCategories = {
     "Trabalho comum": ["Mendigo", "Agricultor", "Pescador", "Minerador", "Ferreiro", "Comerciante"],
-    "Militares": ["Escudeiro", "Lacaio", "Lacaio veterano", "Centurião", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
+    "Militar": ["Escudeiro", "Lacaio", "Lacaio veterano", "Centurião", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
     "The Arcane Association": ["Student", "Apprentice Mage", "Adept Mage", "Master Wizard", "Archmage", "Chronomancer", "Chairman", "Imperator"],
     "The Void": ["Corrupted", "Void Slave", "Void Fiend", "Abyss Anomaly", "Void Wraith", "Void Reaver", "Void Lord", "Abyss God"],
     "Galactic Council": ["Eternal Wanderer", "Nova", "Sigma Proioxis", "Acallaris", "One Above All"],
@@ -579,7 +579,7 @@ const itemCategories = {
 
 const headerRowColors = {
     "Trabalho comum": "#55a630",
-    "Militares": "#e63946",
+    "Militar": "#e63946",
     "The Arcane Association": "#C71585",
     "The Void": "#762B91",
     "Galactic Council": "#D5C010",
@@ -604,7 +604,7 @@ const headerRowColors = {
 
 const headerRowTextColors = {
     "Trabalho comum": "darkblue",
-    "Militares": "purple",
+    "Militar": "purple",
     "The Arcane Association": "magenta",
     "The Void": "white",
     "Galactic Council": "purple",
