@@ -188,7 +188,7 @@ const skillBaseData = {
     "Meditation": { name: "Meditation", maxXp: 100, heroxp: 39, effect: 0.01, description: "Happiness" },
 
     "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Military Pay" },
-    "Battle Tactics": { name: "Battle Tactics", maxXp: 100, heroxp: 41, effect: 0.01, description: "Military XP" },
+    "Táticas de Batalha": { name: "Táticas de Batalha", maxXp: 100, heroxp: 41, effect: 0.01, description: "Military XP" },
     "Muscle Memory": { name: "Muscle Memory", maxXp: 100, heroxp: 42, effect: 0.01, description: "Força XP" },
 
     "Mana Control": { name: "Mana Control", maxXp: 100, heroxp: 46, effect: 0.01, description: "T.A.A. XP" },
@@ -351,12 +351,12 @@ const requirementsBaseData = {
     // Militares
     "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Força", requirement: 5 }]),
     "Lacaio": new TaskRequirement([getQuerySelector("Lacaio")], [{ task: "Força", requirement: 20 }, { task: "Escudeiro", requirement: 10 }]),
-    "Lacaio veterano": new TaskRequirement([getQuerySelector("Lacaio veterano")], [{ task: "Battle Tactics", requirement: 40 }, { task: "Lacaio", requirement: 10 }]),
+    "Lacaio veterano": new TaskRequirement([getQuerySelector("Lacaio veterano")], [{ task: "Táticas de Batalha", requirement: 40 }, { task: "Lacaio", requirement: 10 }]),
     "Centurião": new TaskRequirement([getQuerySelector("Centurião")], [{ task: "Força", requirement: 100 }, { task: "Lacaio veterano", requirement: 10 }]),
-    "Knight": new TaskRequirement([getQuerySelector("Knight")], [{ task: "Battle Tactics", requirement: 150 }, { task: "Centurião", requirement: 10 }]),
+    "Knight": new TaskRequirement([getQuerySelector("Knight")], [{ task: "Táticas de Batalha", requirement: 150 }, { task: "Centurião", requirement: 10 }]),
     "Veteran Knight": new TaskRequirement([getQuerySelector("Veteran Knight")], [{ task: "Força", requirement: 300 }, { task: "Knight", requirement: 10 }]),
     "Holy Knight": new TaskRequirement([getQuerySelector("Holy Knight")], [{ task: "Mana Control", requirement: 500 }, { task: "Veteran Knight", requirement: 10 }]),
-    "Lieutenant General": new TaskRequirement([getQuerySelector("Lieutenant General")], [{ task: "Mana Control", requirement: 1000 }, { task: "Battle Tactics", requirement: 1000 }, { task: "Holy Knight", requirement: 10 }]),
+    "Lieutenant General": new TaskRequirement([getQuerySelector("Lieutenant General")], [{ task: "Mana Control", requirement: 1000 }, { task: "Táticas de Batalha", requirement: 1000 }, { task: "Holy Knight", requirement: 10 }]),
 
     // The Arcane Association
     "Student": new TaskRequirement([getQuerySelector("Student")], [{ task: "Concentração", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
@@ -399,7 +399,7 @@ const requirementsBaseData = {
 
     // Combate
     "Força": new TaskRequirement([getQuerySelector("Força")], []),
-    "Battle Tactics": new TaskRequirement([getQuerySelector("Battle Tactics")], [{ task: "Concentração", requirement: 20 }]),
+    "Táticas de Batalha": new TaskRequirement([getQuerySelector("Táticas de Batalha")], [{ task: "Concentração", requirement: 20 }]),
     "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Força", requirement: 30 }]),
 
     // Magia
@@ -563,7 +563,7 @@ const jobCategories = {
 
 const skillCategories = {
     "Fundamentos": ["Concentração", "Produtividade", "Bargaining", "Meditation"],
-    "Combate": ["Força", "Battle Tactics", "Muscle Memory"],
+    "Combate": ["Força", "Táticas de Batalha", "Muscle Memory"],
     "Magia": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
     "Void Manipulation": ["Absolute Wish", "Void Amplification", "Mind Release", "Ceaseless Abyss", "Void Symbiosis", "Void Embodiment", "Abyss Manipulation"],
