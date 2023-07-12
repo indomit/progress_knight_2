@@ -33,7 +33,7 @@ function addMultipliers() {
             task.xpMultipliers.push(getBindedTaskEffect("Dark Knowledge"))
             task.xpMultipliers.push(getBindedItemEffect("Personal Squire"))
         } else if (task instanceof Skill) {
-            task.xpMultipliers.push(getBindedTaskEffect("Concentration"))
+            task.xpMultipliers.push(getBindedTaskEffect("Concentração"))
             task.xpMultipliers.push(getBindedItemEffect("Book"))
             task.xpMultipliers.push(getBindedItemEffect("Study Desk"))
             task.xpMultipliers.push(getBindedItemEffect("Library"))
