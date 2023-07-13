@@ -1304,7 +1304,7 @@ function updateStats() {
 function resetGameData() {
     clearInterval(saveloop)
     clearInterval(gameloop)
-    if (!confirm('Are you sure you want to reset the game?')) {
+    if (!confirm('Tem certeza de que deseja redefinir o jogo?')) {
         gameloop = setInterval(update, 1000 / updateSpeed)
         saveloop = setInterval(saveGameData, 3000)
         return
