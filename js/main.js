@@ -446,7 +446,7 @@ async function downloadFile() {
 document.querySelector("#changelogTabTabButton").addEventListener('click', async function () {
     try {
         let text_data = await downloadFile();
-        document.querySelector("#changelog").textConBarraca = text_data;
+        document.querySelector("#changelog").textContent = text_data;
     }
     catch (e) {
         alert(e.message);
@@ -1137,7 +1137,7 @@ function peekSettingFromSave(setting) {
     } catch (error) {
         console.error(error)
         console.log(localStorage.getItem("gameDataSave"))
-        alert("It looks like you tried to load a corrupted save... If this issue persists, feel free to contact the developers!")
+        alert("Parece que você tentou carregar um save corrompido... Se o problema persistir, sinta-se à vontade para entrar em contato com os desenvolvedores!")
     }
 }
 
