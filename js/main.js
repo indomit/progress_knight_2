@@ -51,7 +51,7 @@ function addMultipliers() {
             task.xpMultipliers.push(getBindedItemEffect("Steel Longsword"))
         } else if (task.name == "Força") {
             task.xpMultipliers.push(getBindedTaskEffect("Memória Muscular"))
-            task.xpMultipliers.push(getBindedItemEffect("Dumbbells"))
+            task.xpMultipliers.push(getBindedItemEffect("Halteres"))
         } else if (skillCategories["Magia"].includes(task.name)) {
             task.xpMultipliers.push(getBindedItemEffect("Sapphire Charm"))
             task.xpMultipliers.push(getBindedItemEffect("Observatory"))
@@ -446,7 +446,7 @@ async function downloadFile() {
 document.querySelector("#changelogTabTabButton").addEventListener('click', async function () {
     try {
         let text_data = await downloadFile();
-        document.querySelector("#changelog").textContent = text_data;
+        document.querySelector("#changelog").textConBarraca = text_data;
     }
     catch (e) {
         alert(e.message);
