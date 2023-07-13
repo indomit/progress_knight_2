@@ -183,7 +183,7 @@ const jobBaseData = {
 
 const skillBaseData = {
     "Concentração": { name: "Concentração", maxXp: 100, heroxp: 36, effect: 0.01, description: "XP de Habilidade" },
-    "Produtividade": { name: "Produtividade", maxXp: 100, heroxp: 37, effect: 0.01, description: "Hero XP" },
+    "Produtividade": { name: "Produtividade", maxXp: 100, heroxp: 37, effect: 0.01, description: "XP de Herói" },
     "Bargaining": { name: "Bargaining", maxXp: 100, heroxp: 38, effect: -0.01, description: "Reduced Expenses" },
     "Meditação": { name: "Meditação", maxXp: 100, heroxp: 39, effect: 0.01, description: "Felicidade" },
 
@@ -205,7 +205,7 @@ const skillBaseData = {
     "Demon Training": { name: "Demon Training", maxXp: 100, heroxp: 174, effect: 0.01, description: "All XP" },
     "Blood Meditation": { name: "Blood Meditation", maxXp: 100, heroxp: 176, effect: 0.01, description: "Evil Gain" },
     "Demon's Wealth": { name: "Demon's Wealth", maxXp: 100, heroxp: 178, effect: 0.002, description: "Hero Pay" },
-    "Dark Knowledge": { name: "Dark Knowledge", maxXp: 100, heroxp: 180, effect: 0.003, description: "Hero XP" },
+    "Dark Knowledge": { name: "Dark Knowledge", maxXp: 100, heroxp: 180, effect: 0.003, description: "XP de Herói" },
 
     "Void Influence": { name: "Void Influence", maxXp: 100, heroxp: 206, effect: 0.0028, description: "All XP" },
     "Time Loop": { name: "Time Loop", maxXp: 100, heroxp: 207, effect: 0.001, description: "Gamespeed" },
@@ -272,7 +272,7 @@ const itemBaseData = {
     // Diversos
     "Livro": { name: "Livro", expense: 10, effect: 1.5, description: "XP de Habilidade", heromult: 2, heroeffect: 10 },
     "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "Força XP", heromult: 2, heroeffect: 10 },
-    "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "Hero XP", heromult: 3, heroeffect: 10 },
+    "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "XP de Herói", heromult: 3, heroeffect: 10 },
     "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "Military XP", heromult: 3, heroeffect: 10 },
     "Butler": { name: "Butler", expense: 7500, effect: 1.5, description: "Felicidade", heromult: 4, heroeffect: 10 },
     "Sapphire Charm": { name: "Sapphire Charm", expense: 50000, effect: 3, description: "Magic XP", heromult: 4, heroeffect: 10 },
