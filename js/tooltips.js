@@ -54,12 +54,12 @@ const tooltips = {
     "Concentração": "Melhore sua velocidade de aprendizado praticando atividades intensas de concentração.",
     "Produtividade": "Aprenda a procrastinar menos no trabalho e receba mais experiência profissional por dia.",
     "Barganha": "Estude os truques da negociação e as habilidades persuasivas para diminuir qualquer tipo de gasto.",
-    "Meditação": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
+    "Meditação": "Preencha sua mente com paz e tranquilidade para explorar uma felicidade maior por dentro.",
 
     // Combate
     "Força": "Condicione seu corpo e sua força por meio de um treinamento intenso. Indivíduos mais fortes são mais bem pagos no serviço militar.",
-    "Táticas de Batalha": "Create and revise battle strategies, improving experience gained in the military.",
-    "Muscle Memory": "Strengthen your neurons through habit and repetition, improving strength gains throughout the body.",
+    "Táticas de Batalha": "Crie e revise estratégias de batalha, melhorando a experiência adquirida nas forças militares.",
+    "Memória Muscular": "Fortaleça seus neurônios através do hábito e da repetição, melhorando os ganhos de força em todo o corpo.",
 
     // Magic
     "Mana Control": "Strengthen your mana channels throughout your body, aiding you in becoming a more powerful magical user.",
