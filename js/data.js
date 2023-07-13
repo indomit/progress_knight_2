@@ -189,7 +189,7 @@ const skillBaseData = {
 
     "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Salário Militar" },
     "Táticas de Batalha": { name: "Táticas de Batalha", maxXp: 100, heroxp: 41, effect: 0.01, description: "XP Militar" },
-    "Memória Muscular": { name: "Memória Muscular", maxXp: 100, heroxp: 42, effect: 0.01, description: "XP Força" },
+    "Memória Muscular": { name: "Memória Muscular", maxXp: 100, heroxp: 42, effect: 0.01, description: "XP de Força" },
 
     "Mana Control": { name: "Mana Control", maxXp: 100, heroxp: 46, effect: 0.01, description: "T.A.A. XP" },
     "Life Essence": { name: "Life Essence", maxXp: 100, heroxp: 82, effect: 0.01, description: "Longer Lifespan" },
@@ -271,7 +271,7 @@ const itemBaseData = {
 
     // Diversos
     "Livro": { name: "Livro", expense: 10, effect: 1.5, description: "XP de Habilidade", heromult: 2, heroeffect: 10 },
-    "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "XP Força", heromult: 2, heroeffect: 10 },
+    "Halteres": { name: "Halteres", expense: 50, effect: 1.5, description: "XP de Força", heromult: 2, heroeffect: 10 },
     "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "XP de Herói", heromult: 3, heroeffect: 10 },
     "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "XP Militar", heromult: 3, heroeffect: 10 },
     "Butler": { name: "Butler", expense: 7500, effect: 1.5, description: "Felicidade", heromult: 4, heroeffect: 10 },
@@ -485,7 +485,7 @@ const requirementsBaseData = {
 
     // Diversos
     "Livro": new CoinRequirement([getQuerySelector("Livro")], [{ requirement: 0 }]),
-    "Dumbbells": new CoinRequirement([getQuerySelector("Dumbbells")], [{ requirement: itemBaseData["Dumbbells"].expense * 100 }]),
+    "Halteres": new CoinRequirement([getQuerySelector("Halteres")], [{ requirement: itemBaseData["Halteres"].expense * 100 }]),
     "Personal Squire": new CoinRequirement([getQuerySelector("Personal Squire")], [{ requirement: itemBaseData["Personal Squire"].expense * 100 }]),
     "Steel Longsword": new CoinRequirement([getQuerySelector("Steel Longsword")], [{ requirement: itemBaseData["Steel Longsword"].expense * 100 }]),
     "Butler": new CoinRequirement([getQuerySelector("Butler")], [{ requirement: itemBaseData["Butler"].expense * 100 }]),
@@ -574,7 +574,7 @@ const skillCategories = {
 
 const itemCategories = {
     "Propriedades": ["Sem-teto", "Barraca", "Cabana de Madeira", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
-    "Diversos": ["Livro", "Dumbbells", "Personal Squire", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
+    "Diversos": ["Livro", "Halteres", "Personal Squire", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
 }
 
 const headerRowColors = {
