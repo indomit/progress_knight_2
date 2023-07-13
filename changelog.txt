@@ -2,3 +2,4 @@ versão 2.3.2.1 / 12.07.2023
 * parte inicial do jogo e configurações traduzidas;
 * pequena mudança na barra lateral (a palavra "Saldo" está sobre o saldo monetário);
 * cabeçalho parcialmente remodelado (BR em verde e amarelo).
+* nome da guia "Herói" substituída pelo nome "Trabalhos"
