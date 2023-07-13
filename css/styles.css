@@ -512,19 +512,21 @@ button:focus {
     animation: currency-rainbow 40s infinite;
 }
 
-//Novo CSS
+/*Novo CSS*/
+:box-content{
+    [style*="--aspect-ratio"] {
+        width: 100px;
+    }
+    [style*="--aspect-ratio"]::before {
+        content: "";
+        height: 0;
+        float: left;
+        padding-bottom: calc( 100% / (var(--aspect-ratio)) );
+    }
+    [style*="--aspect-ratio"]::after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+}
 
-[style*="--aspect-ratio"] {
-    width: 100px;
-}
-[style*="--aspect-ratio"]::before {
-    content: "";
-    height: 0;
-    float: left;
-    padding-bottom: calc( 100% / (var(--aspect-ratio)) );
-}
-[style*="--aspect-ratio"]::after {
-    content: "";
-    display: block;
-    clear: both;
-}
