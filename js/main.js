@@ -85,7 +85,7 @@ function addMultipliers() {
     for (const itemName in gameData.itemData) {
         const item = gameData.itemData[itemName]
         item.expenseMultipliers = []
-        item.expenseMultipliers.push(getBindedTaskEffect("Bargaining"))
+        item.expenseMultipliers.push(getBindedTaskEffect("Barganha"))
         item.expenseMultipliers.push(getBindedTaskEffect("Intimidation"))
         item.expenseMultipliers.push(getBindedTaskEffect("Brainwashing"))
         item.expenseMultipliers.push(getBindedTaskEffect("Abyss Manipulation"))
@@ -144,7 +144,7 @@ function getHeroXpGainMultipliers(job)
 
 
 function setCustomEffects() {
-    const bargaining = gameData.taskData["Bargaining"]
+    const bargaining = gameData.taskData["Barganha"]
     bargaining.getEffect = function () {
         const multiplier = 1 - getBaseLog(bargaining.isHero? 3 : 7, bargaining.level + 1) / 10
         if (multiplier < 0.1) return 0.1
