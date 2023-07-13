@@ -189,7 +189,7 @@ const skillBaseData = {
 
     "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Salário Militar" },
     "Táticas de Batalha": { name: "Táticas de Batalha", maxXp: 100, heroxp: 41, effect: 0.01, description: "XP Militar" },
-    "Memória Muscular": { name: "Memória Muscular", maxXp: 100, heroxp: 42, effect: 0.01, description: "Força XP" },
+    "Memória Muscular": { name: "Memória Muscular", maxXp: 100, heroxp: 42, effect: 0.01, description: "XP Força" },
 
     "Mana Control": { name: "Mana Control", maxXp: 100, heroxp: 46, effect: 0.01, description: "T.A.A. XP" },
     "Life Essence": { name: "Life Essence", maxXp: 100, heroxp: 82, effect: 0.01, description: "Longer Lifespan" },
@@ -271,7 +271,7 @@ const itemBaseData = {
 
     // Diversos
     "Livro": { name: "Livro", expense: 10, effect: 1.5, description: "XP de Habilidade", heromult: 2, heroeffect: 10 },
-    "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "Força XP", heromult: 2, heroeffect: 10 },
+    "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "XP Força", heromult: 2, heroeffect: 10 },
     "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "XP de Herói", heromult: 3, heroeffect: 10 },
     "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "XP Militar", heromult: 3, heroeffect: 10 },
     "Butler": { name: "Butler", expense: 7500, effect: 1.5, description: "Felicidade", heromult: 4, heroeffect: 10 },
