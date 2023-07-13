@@ -4,6 +4,7 @@ versão 2.3.2.2 / 13.07.2023
 * correção de um bug.
 
 versão 2.3.2.1 / 12.07.2023
-* parte inicial do jogo e configurações traduzidas;
+* parte inicial do jogo parcialmente traduzida;
+* configurações traduzidas;
 * pequena mudança na barra lateral (a palavra "Saldo" agora está sobre o número do saldo);
 * cabeçalho parcialmente remodelado (BR em verde e amarelo).
