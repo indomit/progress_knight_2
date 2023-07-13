@@ -31,7 +31,7 @@
     },
 
 
-    paused: false,
+    paused: true,
     timeWarpingEnabled: true,
 
     rebirthOneCount: 0,
