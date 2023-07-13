@@ -184,7 +184,7 @@ const jobBaseData = {
 const skillBaseData = {
     "Concentração": { name: "Concentração", maxXp: 100, heroxp: 36, effect: 0.01, description: "XP de Habilidade" },
     "Produtividade": { name: "Produtividade", maxXp: 100, heroxp: 37, effect: 0.01, description: "XP de Herói" },
-    "Bargaining": { name: "Bargaining", maxXp: 100, heroxp: 38, effect: -0.01, description: "Reduced Expenses" },
+    "Barganha": { name: "Barganha", maxXp: 100, heroxp: 38, effect: -0.01, description: "Reduced Expenses" },
     "Meditação": { name: "Meditação", maxXp: 100, heroxp: 39, effect: 0.01, description: "Felicidade" },
 
     "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Salário Militar" },
@@ -346,7 +346,7 @@ const requirementsBaseData = {
     "Pescador": new TaskRequirement([getQuerySelector("Pescador")], [{ task: "Agricultor", requirement: 10 }]),
     "Minerador": new TaskRequirement([getQuerySelector("Minerador")], [{ task: "Força", requirement: 10 }, { task: "Pescador", requirement: 10 }]),
     "Ferreiro": new TaskRequirement([getQuerySelector("Ferreiro")], [{ task: "Força", requirement: 30 }, { task: "Minerador", requirement: 10 }]),
-    "Comerciante": new TaskRequirement([getQuerySelector("Comerciante")], [{ task: "Bargaining", requirement: 50 }, { task: "Ferreiro", requirement: 10 }]),
+    "Comerciante": new TaskRequirement([getQuerySelector("Comerciante")], [{ task: "Barganha", requirement: 50 }, { task: "Ferreiro", requirement: 10 }]),
 
     // Militar
     "Escudeiro": new TaskRequirement([getQuerySelector("Escudeiro")], [{ task: "Força", requirement: 5 }]),
@@ -394,7 +394,7 @@ const requirementsBaseData = {
     // Fundamentos
     "Concentração": new TaskRequirement([getQuerySelector("Concentração")], []),
     "Produtividade": new TaskRequirement([getQuerySelector("Produtividade")], [{ task: "Concentração", requirement: 5 }]),
-    "Bargaining": new TaskRequirement([getQuerySelector("Bargaining")], [{ task: "Concentração", requirement: 20 }]),
+    "Barganha": new TaskRequirement([getQuerySelector("Barganha")], [{ task: "Concentração", requirement: 20 }]),
     "Meditação": new TaskRequirement([getQuerySelector("Meditação")], [{ task: "Concentração", requirement: 30 }, { task: "Produtividade", requirement: 20 }]),
 
     // Combate
@@ -436,7 +436,7 @@ const requirementsBaseData = {
     "Cosmic Longevity": new TaskRequirement([getQuerySelector("Cosmic Longevity")], [{ task: "Eternal Wanderer", requirement: 1 }]),
     "Cosmic Recollection": new TaskRequirement([getQuerySelector("Cosmic Recollection")], [{ task: "Nova", requirement: 50 }, { task: "Meditação", requirement: 4200 }, { task: "Mind Release", requirement: 900 }]),
     "Essence Collector": new TaskRequirement([getQuerySelector("Essence Collector")], [{ task: "Sigma Proioxis", requirement: 500, herequirement: 360 }, { task: "Absolute Wish", requirement: 4900, herequirement: 2900 }, { task: "Dark Knowledge", requirement: 6300, herequirement: 3400 }]),
-    "Galactic Command": new TaskRequirement([getQuerySelector("Galactic Command")], [{ task: "Essence Collector", requirement: 5000, herequirement: 210 }, { task: "Bargaining", requirement: 5000 }]),
+    "Galactic Command": new TaskRequirement([getQuerySelector("Galactic Command")], [{ task: "Essence Collector", requirement: 5000, herequirement: 210 }, { task: "Barganha", requirement: 5000 }]),
 
     // Essence
     "Yin Yang": new EssenceRequirement([getQuerySelector("Yin Yang")], [{ requirement: 1 }]),
@@ -562,7 +562,7 @@ const jobCategories = {
 }
 
 const skillCategories = {
-    "Fundamentos": ["Concentração", "Produtividade", "Bargaining", "Meditação"],
+    "Fundamentos": ["Concentração", "Produtividade", "Barganha", "Meditação"],
     "Combate": ["Força", "Táticas de Batalha", "Muscle Memory"],
     "Magia": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
