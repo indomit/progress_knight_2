@@ -189,7 +189,7 @@ const skillBaseData = {
 
     "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Salário Militar" },
     "Táticas de Batalha": { name: "Táticas de Batalha", maxXp: 100, heroxp: 41, effect: 0.01, description: "Military XP" },
-    "Muscle Memory": { name: "Muscle Memory", maxXp: 100, heroxp: 42, effect: 0.01, description: "Força XP" },
+    "Memória Muscular": { name: "Memória Muscular", maxXp: 100, heroxp: 42, effect: 0.01, description: "Força XP" },
 
     "Mana Control": { name: "Mana Control", maxXp: 100, heroxp: 46, effect: 0.01, description: "T.A.A. XP" },
     "Life Essence": { name: "Life Essence", maxXp: 100, heroxp: 82, effect: 0.01, description: "Longer Lifespan" },
@@ -400,7 +400,7 @@ const requirementsBaseData = {
     // Combate
     "Força": new TaskRequirement([getQuerySelector("Força")], []),
     "Táticas de Batalha": new TaskRequirement([getQuerySelector("Táticas de Batalha")], [{ task: "Concentração", requirement: 20 }]),
-    "Muscle Memory": new TaskRequirement([getQuerySelector("Muscle Memory")], [{ task: "Concentração", requirement: 30 }, { task: "Força", requirement: 30 }]),
+    "Memória Muscular": new TaskRequirement([getQuerySelector("Memória Muscular")], [{ task: "Concentração", requirement: 30 }, { task: "Força", requirement: 30 }]),
 
     // Magia
     "Mana Control": new TaskRequirement([getQuerySelector("Mana Control")], [{ task: "Concentração", requirement: 200 }, { task: "Meditação", requirement: 200 }]),
@@ -563,7 +563,7 @@ const jobCategories = {
 
 const skillCategories = {
     "Fundamentos": ["Concentração", "Produtividade", "Barganha", "Meditação"],
-    "Combate": ["Força", "Táticas de Batalha", "Muscle Memory"],
+    "Combate": ["Força", "Táticas de Batalha", "Memória Muscular"],
     "Magia": ["Mana Control", "Life Essence", "Time Warping", "Astral Body", "Temporal Dimension", "All Seeing Eye", "Brainwashing"],
     "Dark Magic": ["Dark Influence", "Evil Control", "Intimidation", "Demon Training", "Blood Meditation", "Demon's Wealth", "Dark Knowledge", "Void Influence", "Time Loop", "Evil Incarnate"],
     "Void Manipulation": ["Absolute Wish", "Void Amplification", "Mind Release", "Ceaseless Abyss", "Void Symbiosis", "Void Embodiment", "Abyss Manipulation"],
