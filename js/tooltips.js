@@ -142,7 +142,7 @@ const tooltips = {
 
     // Diversos
     "Livro": "Um lugar para anotar todos os seus pensamentos e descobertas, permitindo que você aprenda muito mais rapidamente.",
-    "Dumbbells": "Heavy tools used in strenuous exercise to toughen up and accumulate strength even faster than before.",
+    "Halteres": "Ferramentas pesadas usadas em exercícios extenuantes para enrijecer e acumular força ainda mais rápido do que antes.",
     "Personal Squire": "Assists you in completing day to day activities, giving you more time to be productive at work.",
     "Steel Longsword": "A fine blade used to slay enemies even quicker in combat and therefore gain more experience.",
     "Butler": "Keeps your household clean at all times and also prepares three delicious meals per day, leaving you in a happier, stress-free mood.",
