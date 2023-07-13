@@ -50,7 +50,7 @@ function addMultipliers() {
             task.xpMultipliers.push(getBindedTaskEffect("Táticas de Batalha"))
             task.xpMultipliers.push(getBindedItemEffect("Steel Longsword"))
         } else if (task.name == "Força") {
-            task.xpMultipliers.push(getBindedTaskEffect("Muscle Memory"))
+            task.xpMultipliers.push(getBindedTaskEffect("Memória Muscular"))
             task.xpMultipliers.push(getBindedItemEffect("Dumbbells"))
         } else if (skillCategories["Magia"].includes(task.name)) {
             task.xpMultipliers.push(getBindedItemEffect("Sapphire Charm"))
