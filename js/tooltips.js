@@ -53,7 +53,7 @@ const tooltips = {
     // Fundamentals
     "Concentração": "Melhore sua velocidade de aprendizado praticando atividades intensas de concentração.",
     "Produtividade": "Aprenda a procrastinar menos no trabalho e receba mais experiência profissional por dia.",
-    "Barganha": "Study the tricks of the trade and persuasive skills to lower any type of expense.",
+    "Barganha": "Estude os truques da negociação e as habilidades persuasivas para diminuir qualquer tipo de gasto.",
     "Meditação": "Fill your mind with peace and tranquility to tap into greater happiness from within.",
 
     // Combate
