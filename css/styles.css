@@ -55,6 +55,7 @@
 
 body {
     background-color: rgb(243, 243, 243);
+    min-height: 100vh;
 }
 
 .text-caption {
