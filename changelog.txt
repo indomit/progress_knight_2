@@ -1,6 +1,6 @@
 versão 2.3.2.2 / 13.07.2023
 * mais algumas entradas do jogo foram traduzidas;
-* popup da confirmação do Hard Reset traduzida.
+* popup da confirmação do Hard Reset traduzida;
 * correção de um bug da modificação.
 
 versão 2.3.2.1 / 12.07.2023
