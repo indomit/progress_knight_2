@@ -272,7 +272,7 @@ const itemBaseData = {
     // Diversos
     "Livro": { name: "Livro", expense: 10, effect: 1.5, description: "XP de Habilidade", heromult: 2, heroeffect: 10 },
     "Halteres": { name: "Halteres", expense: 50, effect: 1.5, description: "XP de Força", heromult: 2, heroeffect: 10 },
-    "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "XP de Herói", heromult: 3, heroeffect: 10 },
+    "Escudeiro Pessoal": { name: "Escudeiro Pessoal", expense: 200, effect: 2, description: "XP de Herói", heromult: 3, heroeffect: 10 },
     "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "XP Militar", heromult: 3, heroeffect: 10 },
     "Butler": { name: "Butler", expense: 7500, effect: 1.5, description: "Felicidade", heromult: 4, heroeffect: 10 },
     "Sapphire Charm": { name: "Sapphire Charm", expense: 50000, effect: 3, description: "Magic XP", heromult: 4, heroeffect: 10 },
@@ -486,7 +486,7 @@ const requirementsBaseData = {
     // Diversos
     "Livro": new CoinRequirement([getQuerySelector("Livro")], [{ requirement: 0 }]),
     "Halteres": new CoinRequirement([getQuerySelector("Halteres")], [{ requirement: itemBaseData["Halteres"].expense * 100 }]),
-    "Personal Squire": new CoinRequirement([getQuerySelector("Personal Squire")], [{ requirement: itemBaseData["Personal Squire"].expense * 100 }]),
+    "Escudeiro Pessoal": new CoinRequirement([getQuerySelector("Escudeiro Pessoal")], [{ requirement: itemBaseData["Escudeiro Pessoal"].expense * 100 }]),
     "Steel Longsword": new CoinRequirement([getQuerySelector("Steel Longsword")], [{ requirement: itemBaseData["Steel Longsword"].expense * 100 }]),
     "Butler": new CoinRequirement([getQuerySelector("Butler")], [{ requirement: itemBaseData["Butler"].expense * 100 }]),
     "Sapphire Charm": new CoinRequirement([getQuerySelector("Sapphire Charm")], [{ requirement: itemBaseData["Sapphire Charm"].expense * 100 }]),
@@ -574,7 +574,7 @@ const skillCategories = {
 
 const itemCategories = {
     "Propriedades": ["Sem-teto", "Barraca", "Cabana de Madeira", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
-    "Diversos": ["Livro", "Halteres", "Personal Squire", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
+    "Diversos": ["Livro", "Halteres", "Escudeiro Pessoal", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
 }
 
 const headerRowColors = {
