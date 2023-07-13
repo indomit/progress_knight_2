@@ -143,7 +143,7 @@ const tooltips = {
     // Diversos
     "Livro": "Um lugar para anotar todos os seus pensamentos e descobertas, permitindo que você aprenda muito mais rapidamente.",
     "Halteres": "Ferramentas pesadas usadas em exercícios extenuantes para enrijecer e acumular força ainda mais rápido do que antes.",
-    "Personal Squire": "Ajuda-o a completar as atividades do dia-a-dia, dando-lhe mais tempo para ser produtivo no trabalho.",
+    "Escudeiro Pessoal": "Ajuda-o a completar as atividades do dia-a-dia, dando-lhe mais tempo para ser produtivo no trabalho.",
     "Steel Longsword": "A fine blade used to slay enemies even quicker in combat and therefore gain more experience.",
     "Butler": "Keeps your household clean at all times and also prepares three delicious meals per day, leaving you in a happier, stress-free mood.",
     "Sapphire Charm": "Embedded with a rare sapphire, this charm activates more mana channels within your body, providing a much easier time learning magic.",
