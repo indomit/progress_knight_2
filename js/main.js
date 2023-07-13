@@ -31,7 +31,7 @@ function addMultipliers() {
             task.incomeMultipliers.push(getLifeCoachIncomeGain)
             task.xpMultipliers.push(getBindedTaskEffect("Produtividade"))
             task.xpMultipliers.push(getBindedTaskEffect("Dark Knowledge"))
-            task.xpMultipliers.push(getBindedItemEffect("Personal Squire"))
+            task.xpMultipliers.push(getBindedItemEffect("Escudeiro Pessoal"))
         } else if (task instanceof Skill) {
             task.xpMultipliers.push(getBindedTaskEffect("Concentração"))
             task.xpMultipliers.push(getBindedItemEffect("Livro"))
