@@ -239,9 +239,9 @@ const skillBaseData = {
 const itemBaseData = {
      
     "Sem-teto": { name: "Sem-teto", expense: 0, effect: 1, heromult: 2, heroeffect: 2e6 },
-    "Tenda": { name: "Tenda", expense: 15, effect: 1.4, heromult: 2, heroeffect: 2e7 },
+    "Barraca": { name: "Barraca", expense: 15, effect: 1.4, heromult: 2, heroeffect: 2e7 },
 
-    "Wooden Hut": { name: "Wooden Hut", expense: 100, effect: 2, heromult: 3, heroeffect: 2e8 },
+    "Cabana de Madeira": { name: "Cabana de Madeira", expense: 100, effect: 2, heromult: 3, heroeffect: 2e8 },
     "Cottage": { name: "Cottage", expense: 750, effect: 3.5, heromult: 3, heroeffect: 2e9 },
     "House": { name: "House", expense: 3000, effect: 6, heromult: 4, heroeffect: 2e10 },
     "Large House": { name: "Large House", expense: 25000, effect: 12, heromult: 4, heroeffect: 2e11 },
@@ -454,8 +454,8 @@ const requirementsBaseData = {
 
     // Propriedades
     "Sem-teto": new CoinRequirement([getQuerySelector("Sem-teto")], [{ requirement: 0 }]),
-    "Tenda": new CoinRequirement([getQuerySelector("Tenda")], [{ requirement: 0 }]),
-    "Wooden Hut": new CoinRequirement([getQuerySelector("Wooden Hut")], [{ requirement: itemBaseData["Wooden Hut"].expense * 100 }]),
+    "Barraca": new CoinRequirement([getQuerySelector("Barraca")], [{ requirement: 0 }]),
+    "Cabana de Madeira": new CoinRequirement([getQuerySelector("Cabana de Madeira")], [{ requirement: itemBaseData["Cabana de Madeira"].expense * 100 }]),
     "Cottage": new CoinRequirement([getQuerySelector("Cottage")], [{ requirement: itemBaseData["Cottage"].expense * 100 }]),
     "House": new CoinRequirement([getQuerySelector("House")], [{ requirement: itemBaseData["House"].expense * 100 }]),
     "Large House": new CoinRequirement([getQuerySelector("Large House")], [{ requirement: itemBaseData["Large House"].expense * 100 }]),
@@ -573,7 +573,7 @@ const skillCategories = {
 }
 
 const itemCategories = {
-    "Propriedades": ["Sem-teto", "Tenda", "Wooden Hut", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
+    "Propriedades": ["Sem-teto", "Barraca", "Cabana de Madeira", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
     "Diversos": ["Livro", "Dumbbells", "Personal Squire", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
 }
 
