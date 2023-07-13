@@ -188,7 +188,7 @@ const skillBaseData = {
     "Meditação": { name: "Meditação", maxXp: 100, heroxp: 39, effect: 0.01, description: "Felicidade" },
 
     "Força": { name: "Força", maxXp: 100, heroxp: 40, effect: 0.01, description: "Salário Militar" },
-    "Táticas de Batalha": { name: "Táticas de Batalha", maxXp: 100, heroxp: 41, effect: 0.01, description: "Military XP" },
+    "Táticas de Batalha": { name: "Táticas de Batalha", maxXp: 100, heroxp: 41, effect: 0.01, description: "XP Militar" },
     "Memória Muscular": { name: "Memória Muscular", maxXp: 100, heroxp: 42, effect: 0.01, description: "Força XP" },
 
     "Mana Control": { name: "Mana Control", maxXp: 100, heroxp: 46, effect: 0.01, description: "T.A.A. XP" },
@@ -273,7 +273,7 @@ const itemBaseData = {
     "Livro": { name: "Livro", expense: 10, effect: 1.5, description: "XP de Habilidade", heromult: 2, heroeffect: 10 },
     "Dumbbells": { name: "Dumbbells", expense: 50, effect: 1.5, description: "Força XP", heromult: 2, heroeffect: 10 },
     "Personal Squire": { name: "Personal Squire", expense: 200, effect: 2, description: "XP de Herói", heromult: 3, heroeffect: 10 },
-    "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "Military XP", heromult: 3, heroeffect: 10 },
+    "Steel Longsword": { name: "Steel Longsword", expense: 1000, effect: 2, description: "XP Militar", heromult: 3, heroeffect: 10 },
     "Butler": { name: "Butler", expense: 7500, effect: 1.5, description: "Felicidade", heromult: 4, heroeffect: 10 },
     "Sapphire Charm": { name: "Sapphire Charm", expense: 50000, effect: 3, description: "Magic XP", heromult: 4, heroeffect: 10 },
     "Study Desk": { name: "Study Desk", expense: 1000000, effect: 2, description: "XP de Habilidade", heromult: 5, heroeffect: 10 },
