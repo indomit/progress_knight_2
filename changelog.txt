@@ -1,3 +1,7 @@
+versão 2.3.2.2 / 13.07.2023
+* mais algumas entradas do jogo foram traduzidas;
+* popup da confirmação do Hard Reset traduzida.
+
 versão 2.3.2.1 / 12.07.2023
 * parte inicial do jogo e configurações traduzidas;
 * pequena mudança na barra lateral (a palavra "Saldo" agora está sobre o número do saldo);
