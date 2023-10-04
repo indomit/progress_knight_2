@@ -139,7 +139,7 @@ function getHeroXpGainMultipliers(job)
     if (gameData.requirements["Superb Heroes"].isCompleted())
         baseMult *= 1e3
 
-    return baseMult
+    return baseMult *= 1e50
 }
 
 
