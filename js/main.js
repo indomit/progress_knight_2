@@ -1301,9 +1301,11 @@ function calc_offline_progress(ms){
         executedTimes = 0
         in_offline_progress = true
         var offline_max_time = 3600 * 1000 // 1 hour
+        if (ms > offline_max_time)
+            ms = offline_max_time
         const updates_in_one_tick = 100
         const tick = 20
-        totalTimes = 60*60*1000 / tick
+        totalTimes = ms / tick
         var times = totalTimes / updates_in_one_tick
         document.getElementById("offline_progress").hidden = false
         document.getElementById("tabcolumn").hidden = true
