@@ -322,36 +322,30 @@ button:focus {
 }
 
 .tabs-tab-column {
-    --width: 65em;
     height: auto;
 }
 
 .tabs-main-column {
-    --width: 65em;
     height: auto;
     float: right;
     margin-bottom: 4em;
 }
 
 .plain-tab-column {
-    --width: 137em;
     height: auto;
 }
 
 .plain-main-column {
-    --width: 137em;
     height: auto;
     float: right;
     margin-bottom: 4em;
 }
 
 .page-column {
-    --width: 56em;
     height: auto;
 }
 
 .settings-main-column {
-    --width: 56em;
     height: auto;
     float: right;
     margin-bottom: 4em;
@@ -362,7 +356,6 @@ button:focus {
     height: auto;
     text-align: center;
 }
-
 
 .outer-circle {
     width: 1.7em;

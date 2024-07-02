@@ -64,7 +64,7 @@
         currencyNotation: 0,
         numberNotation: 1,
         layout: 1,
-        fontSize: 3,
+        fontSize: 0,
         selectedTab: 'jobs',
         enableKeybinds: false,
     },

@@ -629,8 +629,6 @@ function renderPerks() {
         document.getElementById("mppInfo2").hidden = true
     }
 
-
-
     // PerkButtons
     const total_mpp = getTotalPerkPoints()
     let hide_next = false

@@ -1013,8 +1013,6 @@ function isAlive() {
     return condition && !tempData.hasError
 }
 
-
-
 function canSimulate() {
     return !gameData.paused && isAlive()
 }
