@@ -1,5 +1,7 @@
 version 2.4.1 / 02.07.2024
-* Better Look on Mobile
+* Improved display on mobile devices
+* Added offline progress (up to 1 hour)
+* Minor optimizations
 
 version 2.4.0 / 20.02.2024
 * Added Evil perks
