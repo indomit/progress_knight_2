@@ -1567,7 +1567,7 @@ var gameloop = setInterval(function() {
     ticking = true;
     update();
     var ms = Date.now() - lastUpdate
-    if (ms >= 10000)
+    if (lastUpdate != 0 && ms >= 10000 && !in_offline_progress)
         calc_offline_progress(ms)
     lastUpdate = Date.now()
 
