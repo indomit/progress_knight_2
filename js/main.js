@@ -1276,6 +1276,7 @@ function loadGameData() {
 var intervalID = 0;
 var totalTimes = 0;
 var executedTimes = 0;
+var in_offline_progress=false;
 
 function setIntervalX(callback, delay, repetitions) {
     var x = 0;
@@ -1288,18 +1289,17 @@ function setIntervalX(callback, delay, repetitions) {
            document.getElementById("offline_progress").hidden = true
            document.getElementById("tabcolumn").hidden = false
            document.getElementById("maincolumn").hidden = false
-           
+           in_offline_progress = false;
        }
     }, delay);
 }
-
-
 
 function calc_offline_progress(ms){
     if (ms > 10000){
         intervalID = 0
         totalTimes = 0
         executedTimes = 0
+        in_offline_progress = true
         var offline_max_time = 3600 * 1000 // 1 hour
         const updates_in_one_tick = 100
         totalTimes = 60*60*1000 / (1000 / updateSpeed) 
@@ -1327,6 +1327,8 @@ function skipOffline(){
 }
 
 function update(needUpdateUI = true) {
+    if (in_offline_progress && needUpdateUI)
+        return
     makeHeroes()
     increaseRealtime()
     increaseDays()
