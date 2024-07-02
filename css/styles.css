@@ -312,7 +312,7 @@ button:focus {
 .column {
     display: flex;
     flex-direction: column;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
     width: 100%;
 }
@@ -322,36 +322,36 @@ button:focus {
 }
 
 .tabs-tab-column {
-    width: 65em;
+    --width: 65em;
     height: auto;
 }
 
 .tabs-main-column {
-    width: 65em;
+    --width: 65em;
     height: auto;
     float: right;
     margin-bottom: 4em;
 }
 
 .plain-tab-column {
-    width: 137em;
+    --width: 137em;
     height: auto;
 }
 
 .plain-main-column {
-    width: 137em;
+    --width: 137em;
     height: auto;
     float: right;
     margin-bottom: 4em;
 }
 
 .page-column {
-    width: 56em;
+    --width: 56em;
     height: auto;
 }
 
 .settings-main-column {
-    width: 56em;
+    --width: 56em;
     height: auto;
     float: right;
     margin-bottom: 4em;
@@ -549,3 +549,4 @@ button:focus {
     border-radius: 0.5em;
     animation: currency-rainbow 40s infinite;
 }
+

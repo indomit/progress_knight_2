@@ -931,6 +931,7 @@ function rebirthReset(set_tab_to_jobs = true) {
             || gameData.settings.selectedTab == Tab.DARK_MATTER && gameData.dark_matter > 0
             || gameData.settings.selectedTab == Tab.REBIRTH
             || gameData.settings.selectedTab == Tab.EVILPERKS 
+            || gameData.settings.selectedTab == Tab.INFO 
         ) {
             // do not switch tab
         }
