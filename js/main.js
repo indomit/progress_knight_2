@@ -1002,13 +1002,17 @@ function getLifespan() {
 
 function isAlive() {
     const condition = gameData.days < getLifespan() || getLifespan() == Infinity
-    const deathText = document.getElementById("deathText")
+
     if (!condition) {
-        gameData.days = getLifespan()
-        deathText.classList.remove("hidden")
+        gameData.days = getLifespan()        
     }
-    else {
-        deathText.classList.add("hidden")
+
+    if (!in_offline_progress){
+        const deathText = document.getElementById("deathText")
+        if (!condition)  
+            deathText.classList.remove("hidden")        
+        else 
+            deathText.classList.add("hidden")        
     }
     return condition && !tempData.hasError
 }
@@ -1298,12 +1302,13 @@ function calc_offline_progress(ms){
         in_offline_progress = true
         var offline_max_time = 3600 * 1000 // 1 hour
         const updates_in_one_tick = 100
-        totalTimes = 60*60*1000 / (1000 / updateSpeed) 
+        const tick = 20
+        totalTimes = 60*60*1000 / tick
         var times = totalTimes / updates_in_one_tick
         document.getElementById("offline_progress").hidden = false
         document.getElementById("tabcolumn").hidden = true
         document.getElementById("maincolumn").hidden = true
-        setIntervalX(() => update_times(updates_in_one_tick), (1000 / updateSpeed),  times)        
+        setIntervalX(() => update_times(updates_in_one_tick), tick,  times)        
     }
 }
 
