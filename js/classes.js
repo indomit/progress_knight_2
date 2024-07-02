@@ -171,6 +171,23 @@ class Job extends Task {
         this.incomeMultipliers = []
     }
 
+    toJSON() {
+        return {
+            baseData: {
+                // This is the minimum information necessary for a task to load as a hero.
+                income: 1
+            },
+            name: this.name,
+            level: this.level,
+            maxLevel: this.maxLevel,
+            xp: this.xp,
+            xpBigInt: bigIntToExponential(this.xpBigInt),
+            isHero: this.isHero,
+            isFinished: this.isFinished,
+            unlocked: this.unlocked
+        }
+    }
+
     getLevelMultiplier() {
         return 1 + Math.log10(this.level + 1)
     }
@@ -190,6 +207,22 @@ class Skill extends Task {
         super(baseData)
     }
 
+    toJSON() {
+        return {
+            baseData: {
+                // Skills do not need any information in the saved baseData object, but it must still exist for loading to work.
+            },
+            name: this.name,
+            level: this.level,
+            maxLevel: this.maxLevel,
+            xp: this.xp,
+            xpBigInt: bigIntToExponential(this.xpBigInt),
+            isHero: this.isHero,
+            isFinished: this.isFinished,
+            unlocked: this.unlocked
+        }
+    }
+
     getEffect() {
         var effect = 1 + this.baseData.effect * (this.isHero ? 1000 * this.level + 8000 : this.level)
         return effect
@@ -207,6 +240,14 @@ class Item {
         this.expenseMultipliers = []
         this.isHero = false
         this.unlocked = false
+    }
+
+    toJSON() {
+        return {
+            name: this.name,
+            isHero: this.isHero,
+            unlocked: this.unlocked
+        }
     }
 
     getEffect() {
@@ -274,6 +315,13 @@ class Requirement {
         this.elements = []
         this.requirements = requirements
         this.completed = false
+    }
+
+    toJSON() {
+        return {
+            completed: this.completed,
+            type: this.type
+        }
     }
 
     queryElements() {
