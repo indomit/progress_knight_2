@@ -1305,13 +1305,12 @@ function calc_offline_progress(ms){
         if (ms > offline_max_time)
             ms = offline_max_time
         const updates_in_one_tick = 100
-        const tick = 20
-        totalTimes = ms / tick
+        totalTimes = ms / (1000 / updateSpeed)
         var times = totalTimes / updates_in_one_tick
         document.getElementById("offline_progress").hidden = false
         document.getElementById("tabcolumn").hidden = true
         document.getElementById("maincolumn").hidden = true
-        setIntervalX(() => update_times(updates_in_one_tick), tick,  times)        
+        setIntervalX(() => update_times(updates_in_one_tick), 20, times)        
     }
 }
 
