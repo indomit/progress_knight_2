@@ -1281,6 +1281,7 @@ var intervalID = 0;
 var totalTimes = 0;
 var executedTimes = 0;
 var in_offline_progress=false;
+var lastUpdate = 0;
 
 function setIntervalX(callback, delay, repetitions) {
     var x = 0;
@@ -1565,6 +1566,10 @@ var gameloop = setInterval(function() {
     if (ticking) return;
     ticking = true;
     update();
+    var ms = Date.now() - lastUpdate
+    if (ms >= 10000)
+        calc_offline_progress(ms)
+    lastUpdate = Date.now()
 
     // fps for debug only
     //var thisFrameTime = (thisLoop = new Date) - lastLoop;
