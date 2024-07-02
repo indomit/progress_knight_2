@@ -1167,6 +1167,7 @@ function replaceSaveDict(dict, saveDict) {
 }
 
 function saveGameData() {
+    gameData.save_date_time = Date.now()
     localStorage.setItem("gameDataSave", JSON.stringify(gameData))
 }
 
@@ -1261,6 +1262,7 @@ function loadGameData() {
 
             // Remove invalid active misc items
             gameData.currentMisc = gameData.currentMisc.filter((element) => element instanceof Item)
+            
         }
     } catch (error) {
         console.error(error)
@@ -1269,6 +1271,59 @@ function loadGameData() {
     }
 
     assignMethods()
+}
+
+var intervalID = 0;
+var totalTimes = 0;
+var executedTimes = 0;
+
+function setIntervalX(callback, delay, repetitions) {
+    var x = 0;
+    intervalID = window.setInterval(function () {
+
+       callback();
+
+       if (++x >= repetitions) {
+           window.clearInterval(intervalID);
+           document.getElementById("offline_progress").hidden = true
+           document.getElementById("tabcolumn").hidden = false
+           document.getElementById("maincolumn").hidden = false
+           
+       }
+    }, delay);
+}
+
+
+
+function calc_offline_progress(ms){
+    if (ms > 10000){
+        intervalID = 0
+        totalTimes = 0
+        executedTimes = 0
+        var offline_max_time = 3600 * 1000 // 1 hour
+        const updates_in_one_tick = 100
+        totalTimes = 60*60*1000 / (1000 / updateSpeed) 
+        var times = totalTimes / updates_in_one_tick
+        document.getElementById("offline_progress").hidden = false
+        document.getElementById("tabcolumn").hidden = true
+        document.getElementById("maincolumn").hidden = true
+        setIntervalX(() => update_times(updates_in_one_tick), (1000 / updateSpeed),  times)        
+    }
+}
+
+function update_times(times){
+    for (var i = 0; i < times; i++) {
+        update(false)
+        executedTimes++
+        document.getElementById("offline_time").textContent = Math.floor(executedTimes*100/totalTimes) + "%"
+    }   
+}
+
+function skipOffline(){
+    window.clearInterval(intervalID);
+    document.getElementById("offline_progress").hidden = true
+    document.getElementById("tabcolumn").hidden = false
+    document.getElementById("maincolumn").hidden = false
 }
 
 function update(needUpdateUI = true) {
@@ -1454,12 +1509,8 @@ function isNextDarkMagicSkillInReach() {
             }
         }
     }
-
     return false
 }
-
-
-
 
 // Loads the game save, does the initial render and starts the game update and render loop.
 
@@ -1488,6 +1539,10 @@ initializeUI()
 
 setCustomEffects()
 addMultipliers()
+
+if ("save_date_time" in gameData && gameData.save_date_time > 0) {
+   calc_offline_progress(Date.now() - gameData.save_date_time);            
+}
 
 update()
 

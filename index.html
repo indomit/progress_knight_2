@@ -17,9 +17,11 @@
 			<img src="img/logos.png" alt="logos" />
 			<h3>Progress Knight Quest</h3>
 		</div>
+		<div id="offline_progress" hidden="hidden" class="panel w3-margin-left">
+			<h2><div><div style="float: left;">Offline Progress: <span id="offline_time"></span></div><div style="float: right"><button id="skipButton" class="w3-button button" onClick="skipOffline()">Stop</button></div></div></h2>
+		</div>
 		<div id="row" class="row">
-
-			<div class="column">
+			<div class="column" >
 				<div id="tabcolumn" class="panel w3-margin-left tabs-tab-column">
 					<div class="w3-button w3-bar-item tabButton baritem" id="infoTabButton" onClick="setTab('info')">Info</div>
 					<div class="w3-button w3-bar-item tabButton baritem" id="jobsTabButton" onClick="setTab('jobs')">Hero</div>
@@ -363,14 +365,14 @@
 									</div>
 									<div id="anUnhappyLifeChallenge" style="padding-top:2em">
 										<div class="text-caption challenge-title">1. An unhappy life</div>
-										<div style="color:gray; padding-bottom:0.3em">Reduces happiness by ^0.5</div>
+										<div style="color: gray; padding-bottom: 0.3em">Reduces happiness by ^0.5</div>
 										<div style="color: gold; padding-bottom: 0.3em">Goal: Reach <span id="challengeGoal1">992.2M</span> <span class="color-happiness">Happiness</span></div>
 										<div id="challengeReward1" class="reward">Reward: Multiplies <span class="color-happiness">Happiness</span> by x<span id="challengeHappinessBuff">1</span></div>
 										<button id="challengeButton1" class="w3-button button" onclick="enterChallenge('an_unhappy_life')">Enter challenge</button>
 									</div>
 									<div id="theRichAndThePoorChallenge" style="padding-top:2em">
 										<div class="text-caption challenge-title">2. The rich and the poor</div>
-										<div style="color:gray; padding-bottom:0.3em">Reduces income by ^0.35</div>
+										<div style="color: gray; padding-bottom: 0.3em">Reduces income by ^0.35</div>
 										<div style="color: gold; padding-bottom: 0.3em">
 											Goal: Reach <div id="challengeGoal2" class="coins" style="display:inline">
 												<span></span>

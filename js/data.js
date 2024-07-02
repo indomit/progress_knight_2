@@ -128,6 +128,8 @@
     boost_cooldown: 0.0,
     boost_timer: 0.0,
     boost_active: false,
+
+    save_date_time: 0
 }
 
 var tempData = {}
