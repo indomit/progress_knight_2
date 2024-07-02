@@ -1285,11 +1285,7 @@ function setIntervalX(callback, delay, repetitions) {
        callback();
 
        if (++x >= repetitions) {
-           window.clearInterval(intervalID);
-           document.getElementById("offline_progress").hidden = true
-           document.getElementById("tabcolumn").hidden = false
-           document.getElementById("maincolumn").hidden = false
-           in_offline_progress = false;
+           stopOffline()
        }
     }, delay);
 }
@@ -1319,11 +1315,12 @@ function update_times(times){
     }   
 }
 
-function skipOffline(){
+function stopOffline(){
     window.clearInterval(intervalID);
     document.getElementById("offline_progress").hidden = true
     document.getElementById("tabcolumn").hidden = false
     document.getElementById("maincolumn").hidden = false
+    in_offline_progress = false;
 }
 
 function update(needUpdateUI = true) {
