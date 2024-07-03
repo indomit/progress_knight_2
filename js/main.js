@@ -1323,6 +1323,7 @@ function update_times(times){
         update(false)
         executedTimes++
         document.getElementById("offline_time").textContent = Math.floor(executedTimes*100/totalTimes) + "%"
+        document.getElementById("offlineProgressBar").style.width = Math.floor(executedTimes*100/totalTimes) + "%"
         if (!isAlive())
             stopOffline()
     }   
@@ -1557,7 +1558,6 @@ if ("save_date_time" in gameData && gameData.save_date_time > 0) {
 }
 
 onResize(window.outerWidth)
-console.log(window.outerWidth)
 update()
 
 setTab(gameData.settings.selectedTab)
