@@ -6,6 +6,11 @@ onerror = () => {
     }, 30 * 1000)
 }
 
+window.addEventListener('resize', function(event) {
+    onResize(event.target.outerWidth)
+}, true);
+
+
 function addMultipliers() {
     for (const taskName in gameData.taskData) {
         const task = gameData.taskData[taskName]
@@ -1545,6 +1550,7 @@ loadGameData()
 
 initializeUI()
 
+
 setCustomEffects()
 addMultipliers()
 
@@ -1552,6 +1558,8 @@ if ("save_date_time" in gameData && gameData.save_date_time > 0) {
    calc_offline_progress(Date.now() - gameData.save_date_time);            
 }
 
+onResize(window.outerWidth)
+console.log(window.outerWidth)
 update()
 
 setTab(gameData.settings.selectedTab)

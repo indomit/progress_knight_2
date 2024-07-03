@@ -1074,7 +1074,7 @@ function getHeroicRequiredTooltip(task) {
 function setStickySidebar(sticky) {
     gameData.settings.stickySidebar = sticky;
     settingsStickySidebar.checked = sticky;
-    info.style.position = sticky ? 'sticky' : 'initial';
+    infoQuickBar.style.position = sticky ? 'sticky' : 'initial';
 }
 
 function selectElementInGroup(group, index) {
@@ -1085,16 +1085,40 @@ function selectElementInGroup(group, index) {
     elements[index].classList.add("selected")
 }
 
+function onResize(width) {
+    var qb = document.getElementById("infoQuickBar")
+
+    if (width > 600) {
+        document.getElementById("infoTabButton").classList.add("hidden")
+        document.getElementById("info").classList.add("hidden")
+
+        qb.appendChild(document.getElementById("infoPage"))
+        qb.hidden = false
+    }
+    else {
+        document.getElementById("info").classList.remove("hidden")
+        document.getElementById("infoTabButton").classList.remove("hidden")
+        document.getElementById("info").appendChild(document.getElementById("infoPage"))
+        qb.hidden = true
+        const currentTab = gameData.settings.selectedTab
+        if (currentTab == Tab.INFO) {
+            setTab(Tab.HERO)
+        }   
+    }
+}
+
+
 function setLayout(id) {
     gameData.settings.layout = id
-    if (id == 0) {
+   
+    if (id == 0) { // WIDE
         document.getElementById("skillsTabButton").classList.add("hidden")
         document.getElementById("shopTabButton").classList.add("hidden")
-        document.getElementById("infoTabButton").classList.add("hidden")
+        
 
         document.getElementById("skills").classList.add("hidden")
         document.getElementById("shop").classList.add("hidden")
-        document.getElementById("info").classList.add("hidden")
+        
 
         document.getElementById("tabcolumn").classList.add("plain-tab-column")
         document.getElementById("tabcolumn").classList.remove("tabs-tab-column")
@@ -1102,37 +1126,37 @@ function setLayout(id) {
         document.getElementById("maincolumn").classList.add("plain-main-column")
         document.getElementById("maincolumn").classList.remove("tabs-main-column")
 
-        document.getElementById("hero").appendChild(document.getElementById("jobPage"))
-
-        document.getElementById("jobs").appendChild(document.getElementById("infoPage"))
+        //document.getElementById("hero").appendChild(document.getElementById("jobPage"))
+        
+       
+        
         document.getElementById("jobs").appendChild(document.getElementById("jobPage"))
         document.getElementById("jobs").appendChild(document.getElementById("skillPage"))
         document.getElementById("jobs").appendChild(document.getElementById("itemPage"))
 
-        document.getElementById("infoPage").style.flex = 0.4
         document.getElementById("jobPage").style.flex = 0.88
         document.getElementById("skillPage").style.flex = 1.13
         document.getElementById("itemPage").style.flex = 0.82
     } else {
         document.getElementById("skillsTabButton").classList.remove("hidden")
         document.getElementById("shopTabButton").classList.remove("hidden")
-        document.getElementById("infoTabButton").classList.remove("hidden")
+        
 
         document.getElementById("skills").classList.remove("hidden")
         document.getElementById("shop").classList.remove("hidden")
-        document.getElementById("info").classList.remove("hidden")
+        
 
         document.getElementById("tabcolumn").classList.add("tabs-tab-column")
         document.getElementById("tabcolumn").classList.remove("plain-tab-column")
 
         document.getElementById("maincolumn").classList.add("tabs-main-column")
         document.getElementById("maincolumn").classList.remove("plain-main-column")
+       
 
-        document.getElementById("info").appendChild(document.getElementById("infoPage"))
+        
         document.getElementById("skills").appendChild(document.getElementById("skillPage"))
         document.getElementById("shop").appendChild(document.getElementById("itemPage"))
         
-        document.getElementById("infoPage").style.flex = 1
         document.getElementById("jobPage").style.flex = 1
         document.getElementById("skillPage").style.flex = 1
         document.getElementById("itemPage").style.flex = 1
