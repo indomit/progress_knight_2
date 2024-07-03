@@ -1313,8 +1313,7 @@ function calc_offline_progress(ms){
         totalTimes = ms / (1000 / updateSpeed)
         var times = totalTimes / updates_in_one_tick
         document.getElementById("offline_progress").hidden = false
-        document.getElementById("tabcolumn").hidden = true
-        document.getElementById("maincolumn").hidden = true
+        document.getElementById("mainarea").hidden = true
         setIntervalX(() => update_times(updates_in_one_tick), 20, times)        
     }
 }
@@ -1332,8 +1331,7 @@ function update_times(times){
 function stopOffline(){
     window.clearInterval(intervalID);
     document.getElementById("offline_progress").hidden = true
-    document.getElementById("tabcolumn").hidden = false
-    document.getElementById("maincolumn").hidden = false
+    document.getElementById("mainarea").hidden = false
     in_offline_progress = false;
 }
 
