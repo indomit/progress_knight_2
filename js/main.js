@@ -1302,10 +1302,10 @@ function setIntervalX(callback, delay, repetitions) {
 
 function calc_offline_progress(ms){
     if (ms > 10000){
+        in_offline_progress = true
         intervalID = 0
         totalTimes = 0
-        executedTimes = 0
-        in_offline_progress = true
+        executedTimes = 0        
         var offline_max_time = 3600 * 1000 // 1 hour
         if (ms > offline_max_time)
             ms = offline_max_time
@@ -1555,6 +1555,9 @@ addMultipliers()
 if ("save_date_time" in gameData && gameData.save_date_time > 0) {
    calc_offline_progress(Date.now() - gameData.save_date_time);            
 }
+
+if (!in_offline_progress)
+    document.getElementById("mainarea").hidden = false
 
 onResize(window.outerWidth)
 update()
