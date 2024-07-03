@@ -1323,7 +1323,6 @@ function update_times(times){
         update(false)
         executedTimes++
         document.getElementById("offline_time").textContent = Math.floor(executedTimes*100/totalTimes) + "%"
-        document.getElementById("offlineProgressBar").style.width = Math.floor(executedTimes*100/totalTimes) + "%"
         if (!isAlive())
             stopOffline()
     }   
