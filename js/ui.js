@@ -1094,17 +1094,16 @@ function onResize(width) {
 
         qb.appendChild(document.getElementById("infoPage"))
         qb.hidden = false
-        const currentTab = gameData.settings.selectedTab
-        if (currentTab == Tab.INFO) {
-            setTab(Tab.HERO)
-        }   
     }
     else {
         document.getElementById("info").classList.remove("hidden")
         document.getElementById("infoTabButton").classList.remove("hidden")
         document.getElementById("info").appendChild(document.getElementById("infoPage"))
         qb.hidden = true
-        
+        const currentTab = gameData.settings.selectedTab
+        if (currentTab == Tab.INFO) {
+            setTab(Tab.HERO)
+        }   
     }
 }
 
@@ -1415,7 +1414,7 @@ function changeTab(direction){
              currentTab = i*1
     }
     let targetTab = currentTab + direction
-    if (targetTab <= 0) {
+    if (targetTab < 0) {
         setTab(Tab.SETTINGS)
         return
     }

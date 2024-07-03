@@ -332,6 +332,8 @@ function applySpeedOnBigInt(value) {
 }
 
 function getEvilGain() {
+
+
     const evilControl = gameData.taskData["Evil Control"]
     const bloodMeditation = gameData.taskData["Blood Meditation"]
     const absoluteWish = gameData.taskData ["Absolute Wish"]
@@ -342,11 +344,9 @@ function getEvilGain() {
     const stairWayToHell = getBindedItemEffect("Highway to hell")
     const evilBooster = (gameData.perks.evil_booster == 1) ? 1e50 : 1
 
-    const evilGain = evilControl.getEffect() * bloodMeditation.getEffect() * absoluteWish.getEffect()
+    return evilControl.getEffect() * bloodMeditation.getEffect() * absoluteWish.getEffect()
         * oblivionEmbodiment.getEffect() * yingYang.getEffect() * inferno * getChallengeBonus("legends_never_die")
         * getDarkMatterSkillEvil() * theDevilInsideYou * stairWayToHell() * evilBooster
-
-    return Math.min(evilGain, 1e308)
 }
 
 function getEssenceGain() {
@@ -360,12 +360,10 @@ function getEssenceGain() {
     const theNewGold = gameData.requirements["The new gold"].isCompleted() ? 1000 : 1
     const lifeIsValueable = gameData.requirements["Life is valueable"].isCompleted() ? gameData.dark_matter : 1
 
-    const essenceGain = essenceControl.getEffect() * essenceCollector.getEffect() * transcendentMaster.getEffect()
+    return essenceControl.getEffect() * essenceCollector.getEffect() * transcendentMaster.getEffect()
         * faintHope.getEffect() * rise.getEffect() * getChallengeBonus("dance_with_the_devil")
         * getAGiftFromGodEssenceGain() * darkMagician.getEffect() * getDarkMatterSkillEssence() 
         * theNewGold * lifeIsValueable *  essenceMultGain()
-
-    return Math.min(essenceGain, 1e308)
 }
 
 function getDarkMatterGain() {
@@ -1304,10 +1302,10 @@ function setIntervalX(callback, delay, repetitions) {
 
 function calc_offline_progress(ms){
     if (ms > 10000){
-        in_offline_progress = true
         intervalID = 0
         totalTimes = 0
-        executedTimes = 0        
+        executedTimes = 0
+        in_offline_progress = true
         var offline_max_time = 3600 * 1000 // 1 hour
         if (ms > offline_max_time)
             ms = offline_max_time
@@ -1315,7 +1313,8 @@ function calc_offline_progress(ms){
         totalTimes = ms / (1000 / updateSpeed)
         var times = totalTimes / updates_in_one_tick
         document.getElementById("offline_progress").hidden = false
-        document.getElementById("mainarea").hidden = true
+        document.getElementById("tabcolumn").hidden = true
+        document.getElementById("maincolumn").hidden = true
         setIntervalX(() => update_times(updates_in_one_tick), 20, times)        
     }
 }
@@ -1333,7 +1332,8 @@ function update_times(times){
 function stopOffline(){
     window.clearInterval(intervalID);
     document.getElementById("offline_progress").hidden = true
-    document.getElementById("mainarea").hidden = false
+    document.getElementById("tabcolumn").hidden = false
+    document.getElementById("maincolumn").hidden = false
     in_offline_progress = false;
 }
 
@@ -1424,7 +1424,7 @@ function updateRequirements() {
 
 function updateStats() {
     if (gameData.requirements["Rebirth stats evil"].isCompleted()) {
-        gameData.stats.EvilPerSecond = Math.min(getEvilGain() / gameData.rebirthTwoTime, Number.MAX_VALUE)
+        gameData.stats.EvilPerSecond = getEvilGain() / gameData.rebirthTwoTime
         if (gameData.stats.EvilPerSecond > gameData.stats.maxEvilPerSecond) {
             gameData.stats.maxEvilPerSecond = gameData.stats.EvilPerSecond
             gameData.stats.maxEvilPerSecondRt = gameData.rebirthTwoTime
@@ -1432,7 +1432,7 @@ function updateStats() {
     }
 
     if (gameData.requirements["Rebirth stats essence"].isCompleted()) {
-        gameData.stats.EssencePerSecond = Math.min(getEssenceGain() / gameData.rebirthThreeTime, Number.MAX_VALUE)
+        gameData.stats.EssencePerSecond = getEssenceGain() / gameData.rebirthThreeTime
         if (gameData.stats.EssencePerSecond > gameData.stats.maxEssencePerSecond) {
             gameData.stats.maxEssencePerSecond = gameData.stats.EssencePerSecond
             gameData.stats.maxEssencePerSecondRt = gameData.rebirthThreeTime
@@ -1558,10 +1558,8 @@ if ("save_date_time" in gameData && gameData.save_date_time > 0) {
    calc_offline_progress(Date.now() - gameData.save_date_time);            
 }
 
-if (!in_offline_progress)
-    document.getElementById("mainarea").hidden = false
-
 onResize(window.outerWidth)
+console.log(window.outerWidth)
 update()
 
 setTab(gameData.settings.selectedTab)
