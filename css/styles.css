@@ -446,7 +446,10 @@ button:focus {
 
 .perk-grid {
     display: grid;
-    grid-template-columns: 27em 27em
+}
+
+@media (min-width: 600px) {
+  .perk-grid { grid-template-columns: repeat(2, 27em); }
 }
 
 .active-perk {
