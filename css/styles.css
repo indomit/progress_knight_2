@@ -51,6 +51,7 @@
     padding: 0.4em 0.8em !important;
 }
 
+
 /*main*/
 
 body {
@@ -546,3 +547,6 @@ button:focus {
     animation: currency-rainbow 40s infinite;
 }
 
+.page {
+    max-width: 800px;
+}
