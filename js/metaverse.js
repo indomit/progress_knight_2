@@ -168,6 +168,7 @@ function getMetaversePerkPointsGain() {
         return (gameData.perks.more_perk_points == 1 ? 10 : 1)
             * (gameData.perks.double_perk_points_gain == 1 ? 2 : 1)
             * (Math.floor(Math.log10(gameData.essence)) - 89)
+            * (gameData.essence >= 1e200 ? 4 : 1)
 
     return 0
 }

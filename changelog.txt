@@ -1,3 +1,7 @@
+version 2.5.1 / 05.08.2024
+* Balance update
+* 4x MPP gain after 1e200 essence
+
 version 2.5.0 / 01.08.2024
 * Improved display on mobile devices
 * Added offline progress (up to 1 hour)
