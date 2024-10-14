@@ -1,11 +1,11 @@
 const tooltips = {
     // Common work
     "Ăn xin”: “Cạnh tranh ngày đêm để có được vài đồng tiền. Cảm giác như mỗi ngày bạn đang ở bên bờ vực của cái chết.",
-    "Farmer": "Plow the fields and grow the crops. It's not much but it's honest work.",
-    "Fisherman": "Reel in various fish and sell them for a handful of coins. A relaxing but still poor paying job.",
-    "Miner": "Delve into dangerous caverns and mine valuable ores. The pay is quite meager compared to the risk involved.",
-    "Blacksmith": "Smelt ores and carefully forge weapons for the military. A respectable and OK paying commoner job.",
-    "Merchant": "Travel from town to town, bartering fine goods. The job pays decently well and is a lot less manually-intensive.",
+    "Nông dân": "Cày ruộng và trồng trọt. Tuy không nhiều nhưng đó là việc làm lương thiện.",
+    "Ngư dân": "Hãy câu nhiều loại cá khác nhau và bán chúng với giá vài xu. Một công việc nhàn nhã nhưng vẫn được trả lương thấp.",
+    "Thợ mỏ": "Đi sâu vào các hang động nguy hiểm và khai thác những quặng có giá trị. Tiền lương khá ít so với rủi ro đi kèm.",
+    "Thợ rèn": "Nung chảy quặng và cẩn thận rèn vũ khí cho quân đội. Một công việc bình dân được trả lương ổn và đáng kính.",
+    "Thương gia": "Đi từ thị trấn này sang thị trấn khác, trao đổi hàng hóa tốt. Công việc được trả lương khá cao và ít tốn nhiều công sức thủ công hơn.",
 
     // Military
     "Squire": "Carry around your knight's shield and sword along the battlefield. Very meager pay but the work experience is quite valuable.",
