@@ -1,6 +1,6 @@
 const tooltips = {
     // Common work
-    "Beggar": "Struggle day and night for a couple of copper coins. It feels like you are at the brink of death each day.",
+    "Ăn xin”: “Cạnh tranh ngày đêm để có được vài đồng tiền. Cảm giác như mỗi ngày bạn đang ở bên bờ vực của cái chết.",
     "Farmer": "Plow the fields and grow the crops. It's not much but it's honest work.",
     "Fisherman": "Reel in various fish and sell them for a handful of coins. A relaxing but still poor paying job.",
     "Miner": "Delve into dangerous caverns and mine valuable ores. The pay is quite meager compared to the risk involved.",
