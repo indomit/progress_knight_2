@@ -1415,7 +1415,7 @@ function changeTab(direction){
              currentTab = i*1
     }
     let targetTab = currentTab + direction
-    if (targetTab < 0) {
+    if (targetTab <= 0) {
         setTab(Tab.SETTINGS)
         return
     }
