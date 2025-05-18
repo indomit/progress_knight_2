@@ -1,3 +1,6 @@
+version 2.5.1 / 18.05.2025
+* Fix changeTab infinite loop when the player pressed the left arrow from the first tab ('Hero') to the last tab directly. Now it must works fine.
+
 version 2.5.0 / 01.08.2024
 * Improved display on mobile devices
 * Added offline progress (up to 1 hour)
