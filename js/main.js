@@ -332,8 +332,6 @@ function applySpeedOnBigInt(value) {
 }
 
 function getEvilGain() {
-
-
     const evilControl = gameData.taskData["Evil Control"]
     const bloodMeditation = gameData.taskData["Blood Meditation"]
     const absoluteWish = gameData.taskData ["Absolute Wish"]
@@ -344,9 +342,11 @@ function getEvilGain() {
     const stairWayToHell = getBindedItemEffect("Highway to hell")
     const evilBooster = (gameData.perks.evil_booster == 1) ? 1e50 : 1
 
-    return evilControl.getEffect() * bloodMeditation.getEffect() * absoluteWish.getEffect()
+    const evilGain = evilControl.getEffect() * bloodMeditation.getEffect() * absoluteWish.getEffect()
         * oblivionEmbodiment.getEffect() * yingYang.getEffect() * inferno * getChallengeBonus("legends_never_die")
         * getDarkMatterSkillEvil() * theDevilInsideYou * stairWayToHell() * evilBooster
+
+    return Math.min(evilGain, 1e308)
 }
 
 function getEssenceGain() {
@@ -360,10 +360,12 @@ function getEssenceGain() {
     const theNewGold = gameData.requirements["The new gold"].isCompleted() ? 1000 : 1
     const lifeIsValueable = gameData.requirements["Life is valueable"].isCompleted() ? gameData.dark_matter : 1
 
-    return essenceControl.getEffect() * essenceCollector.getEffect() * transcendentMaster.getEffect()
+    const essenceGain = essenceControl.getEffect() * essenceCollector.getEffect() * transcendentMaster.getEffect()
         * faintHope.getEffect() * rise.getEffect() * getChallengeBonus("dance_with_the_devil")
         * getAGiftFromGodEssenceGain() * darkMagician.getEffect() * getDarkMatterSkillEssence() 
         * theNewGold * lifeIsValueable *  essenceMultGain()
+
+    return Math.min(essenceGain, 1e308)
 }
 
 function getDarkMatterGain() {
@@ -1422,7 +1424,7 @@ function updateRequirements() {
 
 function updateStats() {
     if (gameData.requirements["Rebirth stats evil"].isCompleted()) {
-        gameData.stats.EvilPerSecond = getEvilGain() / gameData.rebirthTwoTime
+        gameData.stats.EvilPerSecond = Math.min(getEvilGain() / gameData.rebirthTwoTime, Number.MAX_VALUE)
         if (gameData.stats.EvilPerSecond > gameData.stats.maxEvilPerSecond) {
             gameData.stats.maxEvilPerSecond = gameData.stats.EvilPerSecond
             gameData.stats.maxEvilPerSecondRt = gameData.rebirthTwoTime
@@ -1430,7 +1432,7 @@ function updateStats() {
     }
 
     if (gameData.requirements["Rebirth stats essence"].isCompleted()) {
-        gameData.stats.EssencePerSecond = getEssenceGain() / gameData.rebirthThreeTime
+        gameData.stats.EssencePerSecond = Math.min(getEssenceGain() / gameData.rebirthThreeTime, Number.MAX_VALUE)
         if (gameData.stats.EssencePerSecond > gameData.stats.maxEssencePerSecond) {
             gameData.stats.maxEssencePerSecond = gameData.stats.EssencePerSecond
             gameData.stats.maxEssencePerSecondRt = gameData.rebirthThreeTime
