@@ -550,3 +550,14 @@ button:focus {
 .page {
     max-width: 800px;
 }
+
+.event-info { 
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 1em 1em 1em 1em !important;
+    font-size: 120%;
+    color: #dd4262;
+    text-align: center;
+    border: 0.01em solid magenta;
+    border-radius: 0.2em;    
+}

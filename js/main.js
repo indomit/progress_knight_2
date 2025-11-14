@@ -268,6 +268,9 @@ function getHappiness() {
     if (gameData.active_challenge == "dance_with_the_devil") return Math.pow(happiness, 0.075)
     if (gameData.active_challenge == "an_unhappy_life") return Math.pow(happiness, 0.5)
 
+    const event_id = getCurrentEventId()
+    if (event_id == 3) happiness *= eventsData[event_id].mult
+
     return happiness
 }
 
@@ -332,8 +335,6 @@ function applySpeedOnBigInt(value) {
 }
 
 function getEvilGain() {
-
-
     const evilControl = gameData.taskData["Evil Control"]
     const bloodMeditation = gameData.taskData["Blood Meditation"]
     const absoluteWish = gameData.taskData ["Absolute Wish"]
@@ -344,9 +345,12 @@ function getEvilGain() {
     const stairWayToHell = getBindedItemEffect("Highway to hell")
     const evilBooster = (gameData.perks.evil_booster == 1) ? 1e50 : 1
 
+    const event_id = getCurrentEventId()
+    const eventEvil = (event_id == 4) ? eventsData[event_id].mult : 1
+
     return evilControl.getEffect() * bloodMeditation.getEffect() * absoluteWish.getEffect()
         * oblivionEmbodiment.getEffect() * yingYang.getEffect() * inferno * getChallengeBonus("legends_never_die")
-        * getDarkMatterSkillEvil() * theDevilInsideYou * stairWayToHell() * evilBooster
+        * getDarkMatterSkillEvil() * theDevilInsideYou * stairWayToHell() * evilBooster * eventEvil
 }
 
 function getEssenceGain() {
@@ -360,10 +364,13 @@ function getEssenceGain() {
     const theNewGold = gameData.requirements["The new gold"].isCompleted() ? 1000 : 1
     const lifeIsValueable = gameData.requirements["Life is valueable"].isCompleted() ? gameData.dark_matter : 1
 
+    const event_id = getCurrentEventId()
+    const eventEssence = (event_id == 2) ? eventsData[event_id].mult : 1
+
     return essenceControl.getEffect() * essenceCollector.getEffect() * transcendentMaster.getEffect()
         * faintHope.getEffect() * rise.getEffect() * getChallengeBonus("dance_with_the_devil")
         * getAGiftFromGodEssenceGain() * darkMagician.getEffect() * getDarkMatterSkillEssence() 
-        * theNewGold * lifeIsValueable *  essenceMultGain()
+        * theNewGold * lifeIsValueable *  essenceMultGain() * eventEssence
 }
 
 function getDarkMatterGain() {
@@ -374,9 +381,11 @@ function getDarkMatterGain() {
     const Desintegration = gameData.itemData['Desintegration'].getEffect()
     const TheEndIsNear = getUnspentPerksDarkmatterGainBuff() 
 
+    const event_id = getCurrentEventId()
+    const eventDarkMatter = (event_id == 6) ? eventsData[event_id].mult : 1
 
-    return 1 * darkRuler.getEffect() * darkMatterHarvester * darkMatterMining * darkMatterMillionaire * getChallengeBonus("the_darkest_time") * getDarkMatterSkillDarkMater() * darkMatterMultGain() *
-        (Desintegration == 0 ? 1 : Desintegration) * TheEndIsNear
+    return 1 + 1 * darkRuler.getEffect() * darkMatterHarvester * darkMatterMining * darkMatterMillionaire * getChallengeBonus("the_darkest_time") * getDarkMatterSkillDarkMater() * darkMatterMultGain() *
+        (Desintegration == 0 ? 1 : Desintegration) * TheEndIsNear * eventDarkMatter
 }
 
 function getDarkMatter() {
@@ -410,9 +419,12 @@ function getUnpausedGameSpeed() {
     const speedSpeedSpeed = gameData.requirements["Speed speed speed"].isCompleted() ? 1000 : 1
     const timeIsAFlatCircle = gameData.requirements["Time is a flat circle"].isCompleted() ? 1000 : 1
 
+    const event_id = getCurrentEventId()
+    const eventWarping = (event_id == 1) ? eventsData[event_id].mult : 1
+
     const timeWarpingSpeed = boostWarping * timeWarping.getEffect() * temporalDimension.getEffect() * timeLoop.getEffect() * warpDrive * speedSpeedSpeed * timeIsAFlatCircle
 
-    const gameSpeed = baseGameSpeed * timeWarpingSpeed * getChallengeBonus("time_does_not_fly") * getGottaBeFastGain() * getDarkMatterSkillTimeWarping() 
+    const gameSpeed = baseGameSpeed * timeWarpingSpeed * getChallengeBonus("time_does_not_fly") * getGottaBeFastGain() * getDarkMatterSkillTimeWarping() * eventWarping
 
     if (gameData.active_challenge == "time_does_not_fly" || gameData.active_challenge == "the_darkest_time")
         return Math.pow(gameSpeed, 0.7)
@@ -527,8 +539,11 @@ function getNet() {
 function getIncome() {
     if (gameData.active_challenge == "the_darkest_time")
         return 0
+
+    const event_id = getCurrentEventId()
+    const eventIncome = (event_id == 5) ? eventsData[event_id].mult : 1
     
-    return gameData.currentJob.getIncome() * getDarkMatterSkillIncome()
+    return gameData.currentJob.getIncome() * getDarkMatterSkillIncome() * eventIncome
 }
 
 function getExpense() {
@@ -1242,6 +1257,9 @@ function loadGameData() {
 
             if (gameData.dark_orbs == null || isNaN(gameData.dark_matter) || isNaN(gameData.dark_orbs))
                 gameData.dark_orbs = 0
+
+            if (gameData.dark_orbs > 0 && gameData.dark_matter == 0)
+                gameData.dark_matter = 1
 
             if (gameData.hypercubes == null || isNaN(gameData.hypercubes))
                 gameData.hypercubes = 0
