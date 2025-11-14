@@ -129,7 +129,7 @@
     boost_timer: 0.0,
     boost_active: false,
 
-    save_date_time: 0
+    save_date_time: 0    
 }
 
 var tempData = {}
@@ -144,6 +144,15 @@ const heroIncomeMult = 2.5e18
 const permanentUnlocks = ["Quick task display", "Evil perks", "Rebirth tab", "Dark Matter", "Dark Matter Skills", "Dark Matter Skills2", "Metaverse", "Metaverse Perks", "Metaverse Perks Button", "Congratulations"]
 const metaverseUnlocks = ["Reduce Boost Cooldown", "Increase Boost Duration", "Increase Hypercube Gain", "Gain evil at new transcension",
     "Essence gain multiplier", "Challenges are not reset", "Dark Matter gain multiplier"]
+
+const eventsData = {
+    1: {name: "Winter Wind", desc: "You're in a hurry, pal!", effect: "Time Warping x", mult: 10, style:"color-time-warping"},
+    2: {name: "Claustrophobic", desc: "No more of this thing!", effect: "Essence gain x", mult: 10, style:"color-essence"},
+    3: {name: "Theme park", desc: "Clowns are happy!", effect: "Happiness x", mult: 10, style:"color-happiness"},
+    4: {name: "Oblivion", desc: "Get the hell out of here!", effect: "Evil gain x", mult: 10, style:"color-evil"},
+    5: {name: "Treasure Goblin", desc: "Yipee!", effect: "Money gain x", mult: 10, style:"color-income"},
+    6: {name: "Dark Enegry", desc: "No kidding", effect: "Dark Matter gain x", mult: 10, style:"color-dark-matter"}
+}
 
 const jobBaseData = {
     "Beggar": { name: "Beggar", maxXp: 50, income: 5, heroxp: 36 },

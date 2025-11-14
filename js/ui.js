@@ -190,6 +190,26 @@ function renderSideBar() {
         renderCurrentChallengeRewardValue(true)
     }
 
+    // Events
+    const event_id = getCurrentEventId();
+    const elBuff = document.getElementById("enentBuff")
+    if (event_id == 0)
+    {
+        document.getElementById("eventInfo").hidden = true
+        elBuff.classList.remove(...elBuff.classList)
+    }
+    else
+    {
+        document.getElementById("eventInfo").hidden = false
+        document.getElementById("enentName").textContent = eventsData[event_id].name
+        document.getElementById("enentDescription").textContent = eventsData[event_id].desc
+        elBuff.classList.remove(...elBuff.classList)
+        elBuff.textContent = eventsData[event_id].effect + eventsData[event_id].mult
+        elBuff.classList.add(eventsData[event_id].style)        
+        const d = new Date()
+        document.getElementById("enentTime").textContent = formatTime(3600-(d.getUTCMinutes()*60+d.getUTCSeconds()))
+    }
+
     if (getDarkMatter() == 0)
         gameData.requirements["Dark Matter info"].completed = false
 }
