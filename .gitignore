@@ -1,1 +1,5 @@
 ﻿/.vs
+/jsconfig.json
+.vscode
+/debug.html
+/js/lib/debug.js

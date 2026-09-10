@@ -1,5 +1,9 @@
+function isInMetaverse() {
+    return gameData.requirements["Metaverse"].completed
+}
+
 function getHypercubeGeneration() {
-    if (gameData.rebirthFiveCount == 0) return 0   
+    if (gameData.rebirthFiveCount == 0) return 0
 
     let tesseractEffect = gameData.itemData["Tesseract"].getEffect()
     let hypersphereEffect = gameData.itemData["Hypersphere"].getEffect()
@@ -8,22 +12,31 @@ function getHypercubeGeneration() {
         * (gameData.perks.hyper_speed == 1 ? 1000 : 1)
 }
 
+function getHypercubeGenerationAvailable() {
+    if (!gameData.requirements["Rebirth button 5"].isCompleted())
+        return 0
+    return getHypercubeGeneration()
+}
+
 function getNextPowerOfNumber(number, add_power = 0) {
     return Math.pow(10, add_power + Math.ceil(Math.log10(number)))
 }
 
 function getTimeTillNextHypercubePower(add_power = 0) {
-    return (getNextPowerOfNumber(gameData.hypercubes, add_power) - gameData.hypercubes) / (applyUnpausedSpeed(getHypercubeGeneration()) * updateSpeed)
+    return (getNextPowerOfNumber(gameData.hypercubes, add_power) - gameData.hypercubes) / (getHypercubeGeneration() * getUnpausedGameSpeed())
 }
 
 function getBoostTimeSeconds() {
-    let defaultTime = 60.0 * gameData.metaverse.boost_timer_modifier
+    let defaultTime = 60.0 * (gameData.metaverse.boost_timer_modifier + (gameData.rebirthFiveCount - 1) * 0.5)
 
     return defaultTime
 }
 
 function getBoostCooldownSeconds() {
-    let defaultTime = 60.0 * 10.0 / gameData.metaverse.boost_cooldown_modifier
+    let minutes = 11.0 - gameData.rebirthFiveCount
+    if (minutes < 1)
+        minutes = 1
+    let defaultTime = 60.0 * minutes / gameData.metaverse.boost_cooldown_modifier
 
     return defaultTime
 }
@@ -51,7 +64,10 @@ function canBuyReduceBoostCooldown() {
 function buyReduceBoostCooldown() {
     if (canBuyReduceBoostCooldown()) {
         gameData.hypercubes -= reduceBoostCooldownCost()
-        gameData.metaverse.boost_cooldown_modifier += 1        
+        gameData.metaverse.boost_cooldown_modifier += 1
+
+        if (gameData.boost_cooldown > getBoostCooldownSeconds())
+            gameData.boost_cooldown = getBoostCooldownSeconds()
     }
 }
 
@@ -127,7 +143,7 @@ function buyEssenceMult() {
 
 
 function challengeAltarCost() {
-    return 1e14
+    return 1e13
 }
 
 function canBuyChallengeAltar() {
@@ -206,12 +222,32 @@ const perk_names = {
     positive_dark_mater_skills: "Only positive dark matter abilities",
     hyper_speed: "Hyper speed",
     both_dark_mater_skills: "Pick both dark matter abilities",
-    keep_dark_mater_skills: "keep dark matter abilities",
+    keep_dark_mater_skills: "Keep dark matter abilities",
     evil_booster: "Evil booster",
     more_perk_points: "10x perk points gain",
 }
 
-function getMetaversePerkName(perkName) {    
+const perk_descriptions = {
+    auto_dark_orb: "Automatically buys Dark Orb Generators when Dark Matter is at least 10x the cost. Also buys 'A Miracle' if Dark Matter is 100 or more.",
+    auto_dark_shop: "Automatically buys 'A Deal With The Chairman', 'A Gift From God', 'Gotta Be Fast', and 'Life Coach' once you have 1,000 or more Dark Orbs.",
+    auto_boost: "Automatically activates Boost as soon as it is off cooldown and not currently active.",
+    instant_evil: "Ensures your Evil resources never drop below 10x your current Evil gain.",
+    hypercube_boost: "Significantly boosts your Hypercube production rate.",
+    instant_essence: "Ensures your Essence resources never drop below 10x your current Essence gain (capped at 1e308).",
+    save_challenges: "Your progress in Challenges is permanently saved and never resets.",
+    instant_dark_matter: "Ensures your Dark Matter resources never drop below 10x your current Dark Matter gain.",
+    auto_sacrifice: "Automatically purchases all Sacrifice upgrades (Dark Matter Mult, Challenge Altar, Essence Mult, etc.) when Hypercubes exceed 1,000 and the upgrade cost is met by a 100x margin.",
+    double_perk_points_gain: "Permanently doubles (2x) all Metaverse Perk Points earned.",
+    positive_dark_mater_skills: "Dark Matter abilities no longer inflict any negative side effects.",
+    hyper_speed: "Increases your Hypercube generation speed by 1,000x.",
+    both_dark_mater_skills: "Allows you to select and purchase both Dark Matter abilities in every category.",
+    keep_dark_mater_skills: "Dark Matter abilities are kept permanently and no longer reset.",
+    evil_booster: "Massively multiplies your Evil gain by 1e50.",
+    more_perk_points: "Permanently multiplies all Metaverse Perk Points earned by 10x.",
+}
+
+
+function getMetaversePerkName(perkName) {
     return perk_names[perkName]
 }
 
@@ -229,13 +265,13 @@ function buyPerk(perkName) {
             gameData.perks_points -= getPerkCost(perkName)
             gameData.perks[perkName] = 1
 
-            if (perkName == "both_dark_mater_skills") {
+            /*if (perkName == "both_dark_mater_skills") {
                 buySpeedOfLife(3)
                 buyYourGreatestDebt(3)
                 buyEssenceCollector(3)
                 buyExplosionOfTheUniverse(3)
                 buyMultiverseExplorer(3)
-            }
+            }*/
         }
     }
     else {
@@ -246,13 +282,13 @@ function buyPerk(perkName) {
             if (gameData.dark_matter_shop.speed_is_life == 3)
                 gameData.dark_matter_shop.speed_is_life = 2
             if (gameData.dark_matter_shop.your_greatest_debt == 3)
-                gameData.dark_matter_shop.your_greatest_debt = 1    
+                gameData.dark_matter_shop.your_greatest_debt = 1
             if (gameData.dark_matter_shop.essence_collector == 3)
                 gameData.dark_matter_shop.essence_collector = 2
             if (gameData.dark_matter_shop.explosion_of_the_universe == 3)
                 gameData.dark_matter_shop.explosion_of_the_universe = 2
             if (gameData.dark_matter_shop.multiverse_explorer == 3)
-                gameData.dark_matter_shop.multiverse_explorer = 2    
+                gameData.dark_matter_shop.multiverse_explorer = 2
         }
     }
 }
@@ -270,7 +306,7 @@ function collectPerkPoints(value) {
     for (const key of Object.keys(gameData.perks)) {
         if (gameData.perks[key] == value) {
             buyPerk(key)
-        }        
+        }
     }
 }
 
@@ -290,7 +326,7 @@ function getTimeIsAFlatCircleXP() {
 function getUnspentPerksDarkmatterGainBuff() {
     const effect = softcap(gameData.perks_points * 0.0027 + 2, 75, 0.01)
 
-    return gameData.requirements["The End is near"].isCompleted() ? Math.pow(10, effect): 1
+    return gameData.requirements["The End is near"].isCompleted() ? Math.pow(10, effect) : 1
 }
 
 function getHypercubeCap(next = 0) {
@@ -299,3 +335,4 @@ function getHypercubeCap(next = 0) {
 
     return 1e7 * Math.pow(10, (gameData.rebirthFiveCount + next) * 3)
 }
+

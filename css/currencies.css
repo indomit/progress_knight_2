@@ -28,11 +28,11 @@
 
 .currency-shadow{
     font-weight: bold;
-    text-shadow: 0 0 5px currentColor;
+    text-shadow: 0 0 0.3125em currentColor;
 }
 
 .currency-shadow-rainbow{
     font-weight: bold;
-    text-shadow: 0 0 5px currentColor;
+    text-shadow: 0 0 0.3125em currentColor;
     animation: currency-rainbow 12s infinite;
 }
