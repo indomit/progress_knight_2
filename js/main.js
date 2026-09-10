@@ -1,14 +1,20 @@
 onerror = () => {
-    document.getElementById("errorInfo").hidden = false
+    getElementCachedById("errorInfo").hidden = false
     tempData.hasError = true
     setTimeout(() => {
-        document.getElementById("errorInfo").hidden = true
+        getElementCachedById("errorInfo").hidden = true
     }, 30 * 1000)
 }
+/*
+window.addEventListener('resize', function (event) {
+    onResize(window.innerWidth)
+}, true)
+*/
+const isSmallScreen = window.matchMedia("(max-width: 48em)").matches;
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
-window.addEventListener('resize', function(event) {
-    onResize(event.target.outerWidth)
-}, true);
+const sidebarMediaQuery = window.matchMedia("(min-width: 48em)");
+sidebarMediaQuery.addEventListener("change", handleSidebarLayout);
 
 
 function addMultipliers() {
@@ -98,60 +104,46 @@ function addMultipliers() {
     }
 }
 
-function getHeroXpGainMultipliers(job)
-{
+function getHeroXpGainMultipliers(job) {
     var baseMult = 1
 
     if (job instanceof Job)
         baseMult = 50000
 
     if (gameData.requirements["Rise of Great Heroes"].isCompleted())
-        baseMult *= 10000
+        baseMult *= milestoneBaseData["Rise of Great Heroes"].effect
 
     if (gameData.requirements["Lazy Heroes"].isCompleted())
-        baseMult *= 1e12
-
-    if (gameData.requirements["Dirty Heroes"].isCompleted())
-        baseMult *= 1e15
+        baseMult *= milestoneBaseData["Lazy Heroes"].effect
 
     if (gameData.requirements["Angry Heroes"].isCompleted())
-        baseMult *= 1e15
-
-    if (gameData.requirements["Tired Heroes"].isCompleted())
-        baseMult *= 1e15
-
-    if (gameData.requirements["Scared Heroes"].isCompleted())
-        baseMult *= 1e15
-
-    if (gameData.requirements["Good Heroes"].isCompleted())
-        baseMult *= 1e15
+        baseMult *= milestoneBaseData["Angry Heroes"].effect
 
     if (gameData.requirements["Funny Heroes"].isCompleted())
-        baseMult *= 1e25
+        baseMult *= milestoneBaseData["Funny Heroes"].effect
 
     if (gameData.requirements["Beautiful Heroes"].isCompleted())
-        baseMult *= 1e50
+        baseMult *= milestoneBaseData["Beautiful Heroes"].effect // -27
 
-    if (gameData.requirements["Awesome Heroes"].isCompleted())
-        baseMult *= 1e10
-
-    if (gameData.requirements["Furious Heroes"].isCompleted()) {
+    if (gameData.requirements["Superb Heroes"].isCompleted()) {
         if (job instanceof Job)
             baseMult *= 1000000
-        baseMult *= 1e12
+
+        baseMult *= milestoneBaseData["Superb Heroes"].effect
     }
 
-    if (gameData.requirements["Superb Heroes"].isCompleted())
-        baseMult *= 1e3
-
     return baseMult
+}
+
+function getFaintHopeTime() {
+    return gameData.perks_points > 0 ? gameData.rebirthFiveTime : gameData.rebirthThreeTime
 }
 
 
 function setCustomEffects() {
     const bargaining = gameData.taskData["Bargaining"]
     bargaining.getEffect = function () {
-        const multiplier = 1 - getBaseLog(bargaining.isHero? 3 : 7, bargaining.level + 1) / 10
+        const multiplier = 1 - getBaseLog(bargaining.isHero ? 3 : 7, bargaining.level + 1) / 10
         if (multiplier < 0.1) return 0.1
         return multiplier
     }
@@ -185,7 +177,7 @@ function setCustomEffects() {
     }
 
     const timeWarping = gameData.taskData["Time Warping"]
-    timeWarping.getEffect = function() {
+    timeWarping.getEffect = function () {
         return 1 + getBaseLog(timeWarping.isHero ? 1.005 : 10, timeWarping.level + 1)
     }
 
@@ -194,9 +186,9 @@ function setCustomEffects() {
         return 1 + getBaseLog(immortality.isHero ? 1.01 : 33, immortality.level + 1)
     }
 
-    const unholyRecall = gameData.taskData["Cosmic Recollection"];
-    unholyRecall.getEffect = function() {
-        return unholyRecall.level * (unholyRecall.isHero ? 0.065 : 0.00065);
+    const unholyRecall = gameData.taskData["Cosmic Recollection"]
+    unholyRecall.getEffect = function () {
+        return unholyRecall.level * (unholyRecall.isHero ? 0.065 : 0.00065)
     }
 
     const transcendentMaster = milestoneData["Transcendent Master"]
@@ -210,23 +202,42 @@ function setCustomEffects() {
     const faintHope = milestoneData["Faint Hope"]
     faintHope.getEffect = function () {
         var mult = 1
-        if (gameData.requirements["A New Hope"].isCompleted()) { 
+        if (gameData.requirements["A New Hope"].isCompleted()) {
             mult = softcap(1e308, 10000000, 0.01)
         }
         else if (gameData.requirements["Speed speed speed"].isCompleted()) {
-            mult = 7.5275 * Math.exp(0.0053 * (gameData.requirements["Strong Hope"].isCompleted() ? gameData.rebirthFiveTime
-                : gameData.rebirthThreeTime)) * (Math.log(getUnpausedGameSpeed()) / Math.log(2))            
+            let effectiveTime = getFaintHopeTime()
+
+            if (effectiveTime > 18000) effectiveTime = 18000;
+            let baseExp = 7.5275 * Math.exp(0.01 * effectiveTime)
+
+            mult = baseExp * (Math.log(getUnpausedGameSpeed()) / Math.log(2))
+
             if (mult == Infinity)
                 mult = 1e308
-            mult = softcap(mult, 10000000, 0.01)
+
+            mult = softcap(mult, 5000000, 0.01)
         }
         else if (gameData.requirements["Faint Hope"].isCompleted()) {
-            let kickin = 1.1754 - 0.082 * Math.log(gameData.rebirthThreeTime)
-            if (kickin < 0.15)
-                kickin = 0.15
 
-            mult = 1 + ((gameData.rebirthThreeTime * (gameData.requirements["Angry Heroes"].isCompleted() ? 10 : 1)) / (7750 * kickin)) * (Math.log(getUnpausedGameSpeed()) / Math.log(2))            
-            mult = softcap(mult, 200)
+            let delay = (gameData.dark_matter < 30) ? 30 - gameData.dark_matter : 0
+
+            if (gameData.boost_active)
+                delay = 0
+
+            let effectiveTime = getFaintHopeTime() - delay
+            if (effectiveTime < 0) return 1
+
+            if (effectiveTime > 18000) effectiveTime = 18000;
+
+            let expBase = 0.0032
+            if (gameData.dark_matter > 50)
+                expBase = 0.0042
+            let expBonus = Math.exp(expBase * effectiveTime) - 1;
+
+            mult = 1 + expBonus * (Math.log(getUnpausedGameSpeed()) / Math.log(2));
+            mult = softcap(mult, 200, 0.02);
+
         }
 
         return mult
@@ -269,9 +280,9 @@ function getHappiness() {
     if (gameData.active_challenge == "an_unhappy_life") return Math.pow(happiness, 0.5)
 
     const event_id = getCurrentEventId()
-    if (event_id == 3) happiness *= eventsData[event_id].mult
+    const eventHappiness = (event_id == 3) ? eventsData[event_id].mult : 1
 
-    return happiness
+    return happiness * eventHappiness
 }
 
 function getEvil() {
@@ -290,8 +301,9 @@ function getEvilXpGain() {
 }
 
 function getEssence() {
-    if (gameData.essence == Infinity || gameData.essence > 1e308)
+    if (gameData.essence == Infinity || gameData.essence > 1e308) {
         return 1e308
+    }
     return gameData.essence
 }
 
@@ -312,13 +324,6 @@ function applyMultipliers(value, multipliers) {
     return value * finalMultiplier
 }
 
-function applySpeed(value) {
-    if (value == 0)
-        return 0
-    if (value == Infinity)
-        return Infinity
-    return value * getGameSpeed() / updateSpeed
-}
 
 function applyUnpausedSpeed(value) {
     if (value == 0)
@@ -326,6 +331,15 @@ function applyUnpausedSpeed(value) {
     if (value == Infinity)
         return Infinity
     return value * getUnpausedGameSpeed() / updateSpeed
+}
+
+
+function applySpeed(value) {
+    if (value == 0)
+        return 0
+    if (value == Infinity)
+        return Infinity
+    return value * getGameSpeed() / updateSpeed
 }
 
 function applySpeedOnBigInt(value) {
@@ -337,10 +351,10 @@ function applySpeedOnBigInt(value) {
 function getEvilGain() {
     const evilControl = gameData.taskData["Evil Control"]
     const bloodMeditation = gameData.taskData["Blood Meditation"]
-    const absoluteWish = gameData.taskData ["Absolute Wish"]
-    const oblivionEmbodiment = gameData.taskData ["Void Embodiment"]
+    const absoluteWish = gameData.taskData["Absolute Wish"]
+    const oblivionEmbodiment = gameData.taskData["Void Embodiment"]
     const yingYang = gameData.taskData["Yin Yang"]
-    const inferno = gameData.requirements["Inferno"].isCompleted() ? 5 : 1    
+    const inferno = gameData.requirements["Inferno"].isCompleted() ? 5 : 1
     const theDevilInsideYou = gameData.requirements["The Devil inside you"].isCompleted() ? 1e15 : 1
     const stairWayToHell = getBindedItemEffect("Highway to hell")
     const evilBooster = (gameData.perks.evil_booster == 1) ? 1e50 : 1
@@ -353,6 +367,12 @@ function getEvilGain() {
         * getDarkMatterSkillEvil() * theDevilInsideYou * stairWayToHell() * evilBooster * eventEvil
 }
 
+function getEvilGainAvailable() {
+    if (!gameData.requirements["Rebirth button 2"].isCompleted())
+        return 0
+    return getEvilGain()
+}
+
 function getEssenceGain() {
     const essenceControl = gameData.taskData["Yin Yang"]
     const essenceCollector = gameData.taskData["Essence Collector"]
@@ -361,16 +381,23 @@ function getEssenceGain() {
     const rise = milestoneData["Rise of Great Heroes"]
     const darkMagician = gameData.taskData["Dark Magician"]
 
-    const theNewGold = gameData.requirements["The new gold"].isCompleted() ? 1000 : 1
     const lifeIsValueable = gameData.requirements["Life is valueable"].isCompleted() ? gameData.dark_matter : 1
+
+    const infernoFlatBonus = gameData.requirements["Inferno"].isCompleted() ? 5000 : 0
 
     const event_id = getCurrentEventId()
     const eventEssence = (event_id == 2) ? eventsData[event_id].mult : 1
 
     return essenceControl.getEffect() * essenceCollector.getEffect() * transcendentMaster.getEffect()
         * faintHope.getEffect() * rise.getEffect() * getChallengeBonus("dance_with_the_devil")
-        * getAGiftFromGodEssenceGain() * darkMagician.getEffect() * getDarkMatterSkillEssence() 
-        * theNewGold * lifeIsValueable *  essenceMultGain() * eventEssence
+        * getAGiftFromGodEssenceGain() * darkMagician.getEffect() * getDarkMatterSkillEssence()
+        * lifeIsValueable * essenceMultGain() * eventEssence + infernoFlatBonus
+}
+
+function getEssenceGainAvailable() {
+    if (!gameData.requirements["Rebirth button 3"].isCompleted())
+        return 0
+    return getEssenceGain()
 }
 
 function getDarkMatterGain() {
@@ -379,24 +406,32 @@ function getDarkMatterGain() {
     const darkMatterMining = gameData.requirements["Dark Matter Mining"].isCompleted() ? 3 : 1
     const darkMatterMillionaire = gameData.requirements["Dark Matter Millionaire"].isCompleted() ? 500 : 1
     const Desintegration = gameData.itemData['Desintegration'].getEffect()
-    const TheEndIsNear = getUnspentPerksDarkmatterGainBuff() 
+    const TheEndIsNear = getUnspentPerksDarkmatterGainBuff()
+
+    const metaverseBuff = gameData.rebirthFiveCount > 0 ? Math.pow(1.7, gameData.rebirthFiveCount) : 1
 
     const event_id = getCurrentEventId()
     const eventDarkMatter = (event_id == 6) ? eventsData[event_id].mult : 1
 
     return 1 + 1 * darkRuler.getEffect() * darkMatterHarvester * darkMatterMining * darkMatterMillionaire * getChallengeBonus("the_darkest_time") * getDarkMatterSkillDarkMater() * darkMatterMultGain() *
-        (Desintegration == 0 ? 1 : Desintegration) * TheEndIsNear * eventDarkMatter
+        (Desintegration == 0 ? 1 : Desintegration) * TheEndIsNear * eventDarkMatter * metaverseBuff
+}
+
+function getDarkMatterGainAvailable() {
+    if (!gameData.requirements["Rebirth button 4"].isCompleted())
+        return 0
+    return getDarkMatterGain()
 }
 
 function getDarkMatter() {
-    return gameData.dark_matter;
+    return gameData.dark_matter
 }
 
 function getDarkMatterXpGain() {
     if (getDarkMatter() < 1)
         return 1
 
-    return getDarkMatter() + 1;
+    return getDarkMatter() + 1
 }
 
 function getDarkOrbs() {
@@ -411,6 +446,7 @@ function getGameSpeed() {
 }
 
 function getUnpausedGameSpeed() {
+    const eppEffect = (gameData.evil_perks_points > 0 && gameData.active_challenge == "") ? Math.min(Math.max(1, getBaseLog(50, gameData.evil_perks_points + 50)), 3) : 1
     const boostWarping = gameData.boost_active ? gameData.metaverse.boost_warp_modifier : 1
     const timeWarping = gameData.taskData["Time Warping"]
     const temporalDimension = gameData.taskData["Temporal Dimension"]
@@ -422,7 +458,7 @@ function getUnpausedGameSpeed() {
     const event_id = getCurrentEventId()
     const eventWarping = (event_id == 1) ? eventsData[event_id].mult : 1
 
-    const timeWarpingSpeed = boostWarping * timeWarping.getEffect() * temporalDimension.getEffect() * timeLoop.getEffect() * warpDrive * speedSpeedSpeed * timeIsAFlatCircle
+    const timeWarpingSpeed = eppEffect * boostWarping * timeWarping.getEffect() * temporalDimension.getEffect() * timeLoop.getEffect() * warpDrive * speedSpeedSpeed * timeIsAFlatCircle
 
     const gameSpeed = baseGameSpeed * timeWarpingSpeed * getChallengeBonus("time_does_not_fly") * getGottaBeFastGain() * getDarkMatterSkillTimeWarping() * eventWarping
 
@@ -443,7 +479,7 @@ function applyExpenses() {
 
     if (gameData.coins < 0) {
         gameData.coins = 0
-        if (getIncome() < getExpense())
+        if (getNet() < 0)
             goBankrupt()
     }
 }
@@ -454,29 +490,6 @@ function goBankrupt() {
     gameData.currentMisc = []
     autoBuyEnabled = true
 }
-
-async function downloadFile() {
-    let response = await fetch("./changelog.txt");
-
-    if (response.status != 200) {
-        throw new Error("Server Error");
-    }
-
-    // read response stream as text
-    let text_data = await response.text();
-
-    return text_data;
-}
-
-document.querySelector("#changelogTabTabButton").addEventListener('click', async function () {
-    try {
-        let text_data = await downloadFile();
-        document.querySelector("#changelog").textContent = text_data;
-    }
-    catch (e) {
-        alert(e.message);
-    }
-});
 
 function togglePause() {
     gameData.paused = !gameData.paused
@@ -518,32 +531,37 @@ function createGameObject(data, entity) {
     if ("income" in entity) { data[entity.name] = new Job(entity) }
     else if ("maxXp" in entity) { data[entity.name] = new Skill(entity) }
     else if ("tier" in entity) { data[entity.name] = new Milestone(entity) }
-    else {data[entity.name] = new Item(entity)}
+    else { data[entity.name] = new Item(entity) }
     data[entity.name].id = "row " + entity.name
 }
 
-function setCurrency(index) {
-    gameData.settings.currencyNotation = index
-    selectElementInGroup("CurrencyNotation", index)
-}
 
-function setNotation(index) {
-    gameData.settings.numberNotation = index
-    selectElementInGroup("Notation", index)
-}
 
 function getNet() {
-    return Math.abs(getIncome() - getExpense())
+    return getIncome() - getExpense()
 }
+
+function getNetAbs() {
+    return Math.abs(getNet())
+}
+
 
 function getIncome() {
     if (gameData.active_challenge == "the_darkest_time")
         return 0
 
+    let totalBaseIncome = 0
+    for (const key in gameData.taskData) {
+        const task = gameData.taskData[key]
+        if (task instanceof Job && gameData.requirements[key].isCompleted()) {
+            totalBaseIncome += task.getIncome()
+        }
+    }
+
     const event_id = getCurrentEventId()
     const eventIncome = (event_id == 5) ? eventsData[event_id].mult : 1
-    
-    return gameData.currentJob.getIncome() * getDarkMatterSkillIncome() * eventIncome
+
+    return totalBaseIncome * getDarkMatterSkillIncome() * eventIncome
 }
 
 function getExpense() {
@@ -564,7 +582,7 @@ function autoPerks() {
     if (gameData.perks.auto_boost == 1 && !gameData.boost_active && gameData.boost_cooldown <= 0)
         applyBoost()
 
-    if (gameData.perks.auto_dark_orb == 1 && gameData.dark_matter >= getDarkOrbGeneratorCost() * 10 && gameData.dark_orbs != Infinity)
+    if (gameData.perks.auto_dark_orb == 1 && gameData.dark_matter >= getDarkOrbGeneratorCost() * 10 && gameData.dark_orbs !== Infinity)
         buyDarkOrbGenerator()
 
     if (gameData.perks.auto_dark_orb == 1 && gameData.dark_matter >= 100 && gameData.dark_matter_shop.a_miracle == false)
@@ -592,20 +610,6 @@ function autoPerks() {
     }
 }
 
-function autoPromote() {
-    let maxIncome = 0;
-    for (const key in gameData.taskData) {
-        const task = gameData.taskData[key]
-        if (task instanceof Job && gameData.requirements[key].isCompleted()) {
-            const income = task.getIncome();
-            if (income > maxIncome) {
-                maxIncome = income
-                gameData.currentJob = task
-            }
-        }
-    }
-}
-
 function autoBuy() {
     if (!autoBuyEnabled) return
 
@@ -617,7 +621,7 @@ function autoBuy() {
             const item = gameData.itemData[key]
             const expense = item.getExpense()
 
-            if (itemCategories['Properties'].indexOf(key) != -1) {
+            if (itemCategories['Properties'].indexOf(key) !== -1) {
                 if (expense < income && expense >= usedExpense) {
                     gameData.currentProperty = item
                     usedExpense = expense
@@ -634,7 +638,7 @@ function autoBuy() {
         if (gameData.requirements[key].isCompleted()) {
             const item = gameData.itemData[key]
             const expense = item.getExpense()
-            if (itemCategories['Misc'].indexOf(key) != -1) {
+            if (itemCategories['Misc'].indexOf(key) !== -1) {
                 if (expense < income - usedExpense) {
                     if (gameData.currentMisc.indexOf(item) == -1) {
                         gameData.currentMisc.push(item)
@@ -643,7 +647,7 @@ function autoBuy() {
                 }
             }
         }
-    }   
+    }
 }
 
 function increaseDays() {
@@ -653,7 +657,7 @@ function increaseDays() {
 
 function increaseRealtime() {
     if (!canSimulate())
-        return;
+        return
 
     const realDiff = 1.0 / updateSpeed
 
@@ -676,61 +680,94 @@ function increaseRealtime() {
     else {
         gameData.boost_cooldown -= realDiff
 
-        if (gameData.boost_cooldown < 0) 
+        if (gameData.boost_cooldown < 0)
             gameData.boost_cooldown = 0
     }
 }
 
-function setTheme(index, reload=false) {
-    const body = document.getElementById("body")
+// Функция, которая показывает окно и возвращает true (если ослепнуть) или false (если спастись)
+function showLightModeConfirm() {
+    return new Promise((resolve) => {
+        const modal = getElementCachedById('custom-confirm');
+        const titleEl = getElementCachedById('modal-title');
+        const textEl = getElementCachedById('modal-text');
+        const confirmBtn = getElementCachedById('modal-confirm-btn');
+        const cancelBtn = getElementCachedById('modal-cancel-btn');
 
-    body.classList.remove("dark")
-    body.classList.remove("colorblind")
+        // 1. Берем рандомную фразу
+        const warning = getRandomWarning();
+        titleEl.textContent = warning.title;
+        textEl.textContent = warning.text;
 
+        // 2. Показываем модалку
+        modal.classList.remove('hidden');
 
-    if (index == 0) {
-        // lignt
-    }
-    else if (index == 1) {
-        // dark
-        body.classList.add("dark")
-    }
-    else if (index == 2){
-        // colorblind Tritanopia
-        body.classList.add("colorblind")
-    }
+        // Внутренняя функция для закрытия и возврата результата
+        const closeWithResult = (result) => {
+            modal.classList.add('hidden');
+            // Обязательно чистим обработчики, чтобы они не копились при повторных вызовах
+            confirmBtn.removeEventListener('click', onConfirm);
+            cancelBtn.removeEventListener('click', onCancel);
+            resolve(result);
+        };
 
-    gameData.settings.theme = index
-    selectElementInGroup("Theme", index)
+        const onConfirm = () => closeWithResult(true);
+        const onCancel = () => closeWithResult(false);
 
-    if (reload) {
-        saveGameData()
-        location.reload()
-    }
+        // 3. Вешаем слушатели на кнопки
+        confirmBtn.addEventListener('click', onConfirm);
+        cancelBtn.addEventListener('click', onCancel);
+    });
 }
 
-function setEnableKeybinds(enableKeybinds) {
-    gameData.settings.enableKeybinds = enableKeybinds
-    selectElementInGroup("EnableKeybinds", enableKeybinds ? 0 : 1)
-}
 
-function resetEvilPerks(){
+
+
+function resetEvilPerks() {
     if (gameData.requirements["God's Blessings"].isCompleted())
-        return;
+        return
     gameData.evil_perks_points = 0
     gameData.evil_perks.receive_essence = 0
-    
-    if (!gameData.evil_perks_keep){
-        gameData.evil_perks.reduce_eye_requirement = 0
-        gameData.evil_perks.reduce_evil_requirement = 0
+
+    if (!gameData.evil_perks_keep) {
+        if (!gameData.requirements["Almighty Eye"].isCompleted())
+            gameData.evil_perks.reduce_eye_requirement = 0
+
+        if (gameData.requirements["Eternal Time"].isCompleted())
+            gameData.evil_perks.reduce_evil_requirement = Math.min(4, gameData.evil_perks.reduce_evil_requirement) // keep max 4 ranks
+        else
+            gameData.evil_perks.reduce_evil_requirement = 0
+
         gameData.evil_perks.reduce_the_void_requirement = 0
         gameData.evil_perks.reduce_celestial_requirement = 0
     }
 }
 
+function resetEvilPerksByHalf() {
+    if (gameData.requirements["God's Blessings"].isCompleted())
+        return
+    gameData.evil_perks_points = 0
+    gameData.evil_perks.receive_essence = 0
+
+    if (!gameData.evil_perks_keep) {
+        if (!gameData.requirements["Almighty Eye"].isCompleted())
+            gameData.evil_perks.reduce_eye_requirement = Math.floor(gameData.evil_perks.reduce_eye_requirement / 2)
+
+        let reduce_evil_requirement = Math.floor(gameData.evil_perks.reduce_evil_requirement / 2)
+
+        if (gameData.requirements["Eternal Time"].isCompleted())
+            gameData.evil_perks.reduce_evil_requirement = Math.min(gameData.evil_perks.reduce_evil_requirement, reduce_evil_requirement + 2)
+        else
+            gameData.evil_perks.reduce_evil_requirement = reduce_evil_requirement
+
+        gameData.evil_perks.reduce_the_void_requirement = Math.floor(gameData.evil_perks.reduce_the_void_requirement / 2)
+        gameData.evil_perks.reduce_celestial_requirement = Math.floor(gameData.evil_perks.reduce_celestial_requirement / 2)
+    }
+}
+
 function rebirthOne() {
     if (!gameData.requirements["Rebirth button 1"].isCompleted())
-        return;
+        return
 
     gameData.rebirthOneCount += 1
     if (gameData.stats.fastest1 == null || gameData.rebirthOneTime < gameData.stats.fastest1)
@@ -742,12 +779,12 @@ function rebirthOne() {
 
 function rebirthTwo() {
     if (!gameData.requirements["Rebirth button 2"].isCompleted())
-        return;
+        return
 
     gameData.rebirthTwoCount += 1
     gameData.evil += getEvilGain()
 
-    resetEvilPerks()
+    resetEvilPerksByHalf()
 
     if (gameData.stats.fastest2 == null || gameData.rebirthTwoTime < gameData.stats.fastest2)
         gameData.stats.fastest2 = gameData.rebirthTwoTime
@@ -765,7 +802,7 @@ function rebirthTwo() {
 
 function rebirthThree() {
     if (!gameData.requirements["Rebirth button 3"].isCompleted())
-        return;
+        return
 
     gameData.rebirthThreeCount += 1
     gameData.essence += getEssenceGain()
@@ -782,11 +819,11 @@ function rebirthThree() {
     gameData.rebirthTwoTime = 0
     gameData.rebirthThreeTime = 0
 
-    const recallEffect = gameData.taskData["Cosmic Recollection"].getEffect();
+    const recallEffect = gameData.taskData["Cosmic Recollection"].getEffect()
 
     for (const taskName in gameData.taskData) {
         const task = gameData.taskData[taskName]
-        task.maxLevel = Math.floor(recallEffect * task.level);
+        task.maxLevel = Math.floor(recallEffect * task.level)
     }
 
     rebirthReset()
@@ -795,7 +832,7 @@ function rebirthThree() {
 
 function rebirthFour() {
     if (!gameData.requirements["Rebirth button 4"].isCompleted())
-        return;
+        return
 
     gameData.rebirthFourCount += 1
     gameData.essence = 0
@@ -804,7 +841,7 @@ function rebirthFour() {
     gameData.evil_perks_points = 0
     gameData.evil_perks.receive_essence = 0
 
-    if (gameData.metaverse.challenge_altar == 0 && gameData.perks.save_challenges == 0)  {
+    if (gameData.metaverse.challenge_altar == 0 && gameData.perks.save_challenges == 0) {
         for (const challenge in gameData.challenges) {
             gameData.challenges[challenge] = 0
         }
@@ -828,9 +865,24 @@ function rebirthFour() {
     gameData.active_challenge = ""
 }
 
-function rebirthFive() {
+async function rebirthFive() {
     if (!gameData.requirements["Rebirth button 5"].isCompleted())
-        return;
+        return
+
+    if ((gameData.perks.save_challenges == 0) && (getTotalPerkPoints() >= getPerkCost('save_challenges'))) {
+        const isConfirmed = await customConfirm({
+            title: "SANITY CHECK",
+            text: "You haven't purchased the \"Save challenges\" metaverse perk, are you sure you want to enter the Metaverse?",
+            confirmText: "Do it anyway",
+            cancelText: "Oops, my bad!",
+            confirmColor: "red",
+            cancelColor: "blue"
+
+        });
+
+        if (!isConfirmed)
+            return
+    }
 
     gameData.rebirthFiveCount += 1
     gameData.perks_points += getMetaversePerkPointsGain()
@@ -838,16 +890,17 @@ function rebirthFive() {
     gameData.evil = 0
     gameData.evil_perks_points = 0
     gameData.evil_perks.receive_essence = 0
+
+
+
     gameData.dark_matter = 0
     gameData.dark_orbs = 0
     gameData.dark_matter_shop.dark_orb_generator = 0
     gameData.dark_matter_shop.a_miracle = false
-
     gameData.dark_matter_shop.a_deal_with_the_chairman = 0
     gameData.dark_matter_shop.a_gift_from_god = 0
     gameData.dark_matter_shop.gotta_be_fast = 0
     gameData.dark_matter_shop.life_coach = 0
-    
 
     if (gameData.perks.keep_dark_mater_skills == 0) {
         gameData.dark_matter_shop.speed_is_life = 0
@@ -867,7 +920,6 @@ function rebirthFive() {
     gameData.requirements["Dark Matter"].completed = false
     gameData.requirements["Dark Matter Skills"].completed = false
     gameData.requirements["Dark Matter Skills2"].completed = false
-
 
     if (gameData.stats.fastest5 == null || gameData.rebirthFiveTime < gameData.stats.fastest5)
         gameData.stats.fastest5 = gameData.rebirthFiveTime
@@ -889,7 +941,7 @@ function rebirthFive() {
     gameData.metaverse.evil_tran_gain = 0
     gameData.metaverse.essence_gain_modifier = 0
     gameData.metaverse.challenge_altar = 0
-    gameData.metaverse.dark_mater_gain_modifer = 0    
+    gameData.metaverse.dark_mater_gain_modifer = 0
 
     rebirthReset()
 
@@ -902,8 +954,11 @@ function rebirthFive() {
 }
 
 function applyMilestones() {
+    //
+
+
     if (((gameData.requirements["Magic Eye"].isCompleted()) && (gameData.requirements["Rebirth note 2"].isCompleted())) ||
-        (gameData.requirements["Almighty Eye"].isCompleted())){
+        (gameData.requirements["Almighty Eye"].isCompleted())) {
         for (taskName in gameData.taskData) {
             const task = gameData.taskData[taskName]
             const effect = gameData.taskData["Cosmic Recollection"].getEffect()
@@ -925,7 +980,7 @@ function applyMilestones() {
             if (gameData.evil == 0)
                 gameData.evil = 1
             if (gameData.evil < getEvilGain()) {
-                const exponent = gameData.requirements["Mind Control"].isCompleted() ? 1.07 : 1.01
+                const exponent = gameData.requirements["Mind Control"].isCompleted() ? 2 : (gameData.rebirthFiveCount > 0) ? 1.3 : 1.01
                 gameData.evil *= Math.pow(exponent, 1)
             }
         }
@@ -933,8 +988,10 @@ function applyMilestones() {
         if (gameData.requirements["Galactic Emperor"].isCompleted()) {
             if (gameData.essence == 0)
                 gameData.essence = 1
-            if (gameData.essence < getEssenceGain() * 10)
-                gameData.essence *= Math.pow(1.002, 1)
+            if (gameData.essence < getEssenceGain() * 10) {
+                const exponent = gameData.requirements["Speed speed speed"].isCompleted() ? 2 : 1.002
+                gameData.essence *= Math.pow(exponent, 1)
+            }
             if (gameData.essence == Infinity || gameData.essence > 1e308)
                 gameData.essence = 1e308
         }
@@ -943,15 +1000,13 @@ function applyMilestones() {
 
 function rebirthReset(set_tab_to_jobs = true) {
     if (set_tab_to_jobs) {
-        // if (gameData.settings.selectedTab == Tab.METAVERSE && gameData.perks.)
-
         if (gameData.settings.selectedTab == Tab.METAVERSE && gameData.hypercubes > 0
             || gameData.settings.selectedTab == Tab.CHALLENGES && gameData.evil > 10000
             || gameData.settings.selectedTab == Tab.MILESTONES && gameData.essence > 0
             || gameData.settings.selectedTab == Tab.DARK_MATTER && gameData.dark_matter > 0
             || gameData.settings.selectedTab == Tab.REBIRTH
-            || gameData.settings.selectedTab == Tab.EVILPERKS 
-            || gameData.settings.selectedTab == Tab.INFO 
+            || gameData.settings.selectedTab == Tab.EVILPERKS
+            || gameData.settings.selectedTab == Tab.INFO
         ) {
             // do not switch tab
         }
@@ -962,7 +1017,7 @@ function rebirthReset(set_tab_to_jobs = true) {
     gameData.coins = 0
     gameData.days = 365 * 14
     gameData.realtime = 0
-    gameData.currentJob = gameData.taskData["Beggar"]
+    gameData.currentJob = null
     gameData.currentProperty = gameData.itemData["Homeless"]
     gameData.currentMisc = []
     gameData.stats.EssencePerSecond = 0
@@ -977,10 +1032,11 @@ function rebirthReset(set_tab_to_jobs = true) {
         const task = gameData.taskData[taskName]
         if (task.level > task.maxLevel) task.maxLevel = task.level
         task.level = 0
-        task.xp = 0
+        task.xp = new Decimal(0)
+        // task.xp = 0
         task.xpBigInt = BigInt(0)
         task.isHero = false
-        task.isFinished =false
+        task.isFinished = false
     }
 
     for (const itemName in gameData.itemData) {
@@ -1000,6 +1056,18 @@ function rebirthReset(set_tab_to_jobs = true) {
         if (gameData.rebirthOneCount == 0)
             gameData.rebirthOneCount = 1
     }
+
+    // keep side bar items in metaverse
+
+    if (isInMetaverse()) {
+        gameData.requirements["Evil info"].completed = true
+        gameData.requirements["Essence info"].completed = true
+        gameData.requirements["Dark Matter info"].completed = true
+        gameData.requirements["Dark Orbs info"].completed = true
+        gameData.requirements["Evil perk essence"].completed = true
+        gameData.requirements["Evil perk essence SideBar"].completed = true
+    }
+
 }
 
 function getLifespan() {
@@ -1021,18 +1089,19 @@ function getLifespan() {
 }
 
 function isAlive() {
-    const condition = gameData.days < getLifespan() || getLifespan() == Infinity
+    const lifespan = getLifespan()
+    const condition = gameData.days < lifespan || lifespan == Infinity
 
     if (!condition) {
-        gameData.days = getLifespan()        
+        gameData.days = lifespan
     }
 
-    if (!in_offline_progress){
-        const deathText = document.getElementById("deathText")
-        if (!condition)  
-            deathText.classList.remove("hidden")        
-        else 
-            deathText.classList.add("hidden")        
+    if (!in_offline_progress) {
+        const deathText = getElementCachedById("deathText")
+        if (!condition)
+            deathText.classList.remove("hidden")
+        else
+            deathText.classList.add("hidden")
     }
     return condition && !tempData.hasError
 }
@@ -1049,7 +1118,7 @@ function makeHero(task) {
     if ((task instanceof Job || task instanceof Skill) && !task.isHero) {
         task.level = 0
         task.maxLevel = 0
-        task.xp = 0
+        task.xp = new Decimal(0)
         task.isHero = true
     }
 }
@@ -1065,8 +1134,8 @@ function makeHeroes() {
 
         const prev = getPreviousTaskInCategory(taskname)
 
-        if (prev != "" && (!gameData.taskData[prev].isHero || gameData.taskData[prev].level < 20))
-                continue
+        if (prev !== "" && (!gameData.taskData[prev].isHero || gameData.taskData[prev].level < 20))
+            continue
 
         const req = gameData.requirements[taskname]
         let isNewHero = true
@@ -1081,6 +1150,10 @@ function makeHeroes() {
                 }
         }
         else if (req instanceof EssenceRequirement) {
+            if (!req.isCompletedActual(true))
+                continue
+        }
+        else if (req instanceof DarkMatterRequirement) {
             if (!req.isCompletedActual(true))
                 continue
         }
@@ -1113,10 +1186,14 @@ function assignMethods() {
         }
 
         // There are two cases. The number is stored as a large number or in the scientific notation.
+        /*
         if (typeof task.xpBigInt === "string" && task.xpBigInt.includes("e"))
             task.xpBigInt = BigInt(exponentialToRawNumberString(task.xpBigInt))
         else
             task.xpBigInt = BigInt(task.xpBigInt)
+        */
+
+        task.xp = new Decimal(task.xp || 0)
 
         gameData.taskData[key] = task
     }
@@ -1127,7 +1204,7 @@ function assignMethods() {
         item = Object.assign(new Item(itemBaseData[item.name]), item)
         gameData.itemData[key] = item
     }
-
+    /*    
     for (const key in gameData.requirements) {
         let requirement = gameData.requirements[key]
         if (requirement.type == "task") {
@@ -1151,15 +1228,16 @@ function assignMethods() {
         } else if (requirement.type == "perkpoint") {
             requirement = Object.assign(new PerkPointRequirement(requirement.querySelectors, requirement.requirements), requirement)
         }
-        
+
 
         const tempRequirement = tempData["requirements"][key]
         requirement.elements = tempRequirement.elements
         requirement.requirements = tempRequirement.requirements
         gameData.requirements[key] = requirement
-    }
+        
+    }*/
 
-    gameData.currentJob = gameData.taskData[gameData.currentJob.name]
+    gameData.currentJob = null
     gameData.currentProperty = gameData.itemData[gameData.currentProperty.name]
     const newArray = []
     for (const misc of gameData.currentMisc) {
@@ -1173,12 +1251,13 @@ function replaceSaveDict(dict, saveDict) {
         if (!(key in saveDict)) {
             saveDict[key] = dict[key]
         } else if (dict == gameData.requirements) {
-            if (saveDict[key].type != tempData["requirements"][key].type) {
+            if (saveDict[key].type !== tempData["requirements"][key].type) {
                 saveDict[key] = tempData["requirements"][key]
             }
             else if (saveDict[key].querySelectors == undefined) {
                 saveDict[key].querySelectors = tempData["requirements"][key].querySelectors
             }
+            console.error("We shouldn't be there")
 
         }
     }
@@ -1190,32 +1269,50 @@ function replaceSaveDict(dict, saveDict) {
     }
 }
 
+function getDefaultLayoutMode() {
+    if (isSmallScreen || isTouchDevice) {
+        return 1;
+    }
+
+    return 0;
+}
+
 function saveGameData() {
+    if (gameData.is_game_over)
+        return
+
     gameData.save_date_time = Date.now()
-    localStorage.setItem("gameDataSave", JSON.stringify(gameData))
+    const completedNames = Object.keys(gameData.requirements).filter(key => gameData.requirements[key].completed);
+    // save only completed requirement names
+    const saveCopy = { ...gameData, requirements: completedNames };
+
+    localStorage.setItem("gameDataSave", JSON.stringify(saveCopy))
 }
 
 function peekSettingFromSave(setting) {
     try {
-        const save = localStorage.getItem("gameDataSave")
-        if (save == null)
-            return gameData.settings[setting]
-        const gameDataSave = JSON.parse(save)
-        if (gameDataSave.settings == undefined || gameDataSave.settings[setting] == undefined)
-            return gameData.settings[setting]
-        return gameDataSave.settings[setting]
+        const save = localStorage.getItem("gameDataSave");
+        if (!save) return gameData.settings[setting];
+
+        const gameDataSave = JSON.parse(save);
+        return gameDataSave?.settings?.[setting] ?? gameData.settings[setting];
     } catch (error) {
-        console.error(error)
-        console.log(localStorage.getItem("gameDataSave"))
-        alert("It looks like you tried to load a corrupted save... If this issue persists, feel free to contact the developers!")
+        console.error(error);
+        console.log(localStorage.getItem("gameDataSave"));
+        alert("It looks like you tried to load a corrupted save... If this issue persists, feel free to contact the developers!");
     }
 }
+
 
 function loadGameData() {
     try {
         const gameDataSave = JSON.parse(localStorage.getItem("gameDataSave"))
 
-        if (gameDataSave !== null) {
+        if (!gameDataSave) {
+            // default settings
+            setDefaultSettings()
+        }
+        else {
             // When the game contains completedTimes, add 1 Dark Matter and remove the instance.
             if ("completedTimes" in gameDataSave && gameDataSave["completedTimes"] > 0) {
                 delete gameDataSave["completedTimes"]
@@ -1225,11 +1322,27 @@ function loadGameData() {
 
             // remove milestoneData from gameData
             if ("milestoneData" in gameDataSave) {
-                delete gameDataSave["milestoneData"]                
+                delete gameDataSave["milestoneData"]
+            }
+
+            // migration from old save for completed requirements
+            let savedCompletedList = [];
+
+            if (gameDataSave.requirements) {
+                if (Array.isArray(gameDataSave.requirements)) {
+                    savedCompletedList = gameDataSave.requirements;
+                } else {
+                    for (const key in gameDataSave.requirements) {
+                        if (gameDataSave.requirements[key].completed) {
+                            savedCompletedList.push(key);
+                        }
+                    }
+                }
             }
 
             replaceSaveDict(gameData, gameDataSave)
-            replaceSaveDict(gameData.requirements, gameDataSave.requirements)
+            // not needed now
+            // replaceSaveDict(gameData.requirements, gameDataSave.requirements)
             replaceSaveDict(gameData.taskData, gameDataSave.taskData)
             replaceSaveDict(gameData.itemData, gameDataSave.itemData)
             replaceSaveDict(gameData.settings, gameDataSave.settings)
@@ -1238,7 +1351,33 @@ function loadGameData() {
             replaceSaveDict(gameData.dark_matter_shop, gameDataSave.dark_matter_shop)
             replaceSaveDict(gameData.metaverse, gameDataSave.metaverse)
             replaceSaveDict(gameData.perks, gameDataSave.perks)
+
             gameData = gameDataSave
+
+            // copy actual requirements
+            gameData.requirements = {};
+
+            // 2. Клонируем базу данных: создаем новые объекты, сохраняя их классы и методы
+            for (const key in requirementsBaseData) {
+                const baseRequirement = requirementsBaseData[key];
+
+                // Создаем новый независимый объект с прототипом (классом) оригинала и копируем свойства
+                gameData.requirements[key] = Object.assign(
+                    Object.create(Object.getPrototypeOf(baseRequirement)),
+                    baseRequirement
+                );
+            }
+
+            createMilestoneRequirements()
+
+            // set completed state
+            savedCompletedList.forEach(name => {
+                if (gameData.requirements[name]) {
+                    gameData.requirements[name].completed = true;
+                }
+            });
+
+
 
             if (gameData.coins == null)
                 gameData.coins = 0
@@ -1289,7 +1428,7 @@ function loadGameData() {
 
             // Remove invalid active misc items
             gameData.currentMisc = gameData.currentMisc.filter((element) => element instanceof Item)
-            
+
         }
     } catch (error) {
         console.error(error)
@@ -1300,69 +1439,68 @@ function loadGameData() {
     assignMethods()
 }
 
-var intervalID = 0;
-var totalTimes = 0;
-var executedTimes = 0;
-var in_offline_progress=false;
-var lastUpdate = 0;
+var intervalID = 0
+var totalTimes = 0
+var executedTimes = 0
+var in_offline_progress = false
+var lastUpdate = 0
 
 function setIntervalX(callback, delay, repetitions) {
-    var x = 0;
+    var x = 0
     intervalID = window.setInterval(function () {
 
-       callback();
+        callback()
 
-       if (++x >= repetitions) {
-           stopOffline()
-       }
-    }, delay);
+        if (++x >= repetitions) {
+            stopOffline()
+        }
+    }, delay)
 }
 
-function calc_offline_progress(ms){
-    if (ms > 10000){
+function calc_offline_progress(ms) {
+    if (ms > 10000) {
         in_offline_progress = true
         intervalID = 0
         totalTimes = 0
-        executedTimes = 0        
+        executedTimes = 0
         var offline_max_time = 3600 * 1000 // 1 hour
         if (ms > offline_max_time)
             ms = offline_max_time
-        const updates_in_one_tick = 100
+        const updates_in_one_tick = 200
         totalTimes = ms / (1000 / updateSpeed)
         var times = totalTimes / updates_in_one_tick
-        document.getElementById("offline_progress").hidden = false
-        document.getElementById("mainarea").hidden = true
-        setIntervalX(() => update_times(updates_in_one_tick), 20, times)        
+        getElementCachedById("offline_progress").hidden = false
+        getElementCachedById("mainarea").hidden = true
+        setIntervalX(() => update_times(updates_in_one_tick), 20, times)
     }
 }
 
-function update_times(times){
+function update_times(times) {
     for (var i = 0; i < times; i++) {
-        update(false)
+        update()
         executedTimes++
-        document.getElementById("offline_time").textContent = Math.floor(executedTimes*100/totalTimes) + "%"
+        if (executedTimes % 720 == 0)
+            getElementCachedById("offline_time").textContent = Math.floor(executedTimes * 100 / totalTimes) + "%"
         if (!isAlive())
             stopOffline()
-    }   
+    }
 }
 
-function stopOffline(){
-    window.clearInterval(intervalID);
-    document.getElementById("offline_progress").hidden = true
-    document.getElementById("mainarea").hidden = false
-    in_offline_progress = false;
+function stopOffline() {
+    window.clearInterval(intervalID)
+    getElementCachedById("offline_progress").hidden = true
+    getElementCachedById("mainarea").hidden = false
+    in_offline_progress = false
 }
 
-function update(needUpdateUI = true) {
-    if (in_offline_progress && needUpdateUI)
-        return
+function update() {
     makeHeroes()
     increaseRealtime()
     increaseDays()
     autoPerks()
-    autoPromote()
     autoBuy()
     applyExpenses()
+
     for (const key in gameData.taskData) {
         const task = gameData.taskData[key]
         if ((task instanceof Skill || task instanceof Job) && gameData.requirements[key].isCompleted()) {
@@ -1381,10 +1519,7 @@ function update(needUpdateUI = true) {
     applyEvilPerks()
     applyPerks()
     updateStats()
-    if (needUpdateUI && !document.hidden)
-        updateUI()
-    else
-        updateRequirements()
+    updateRequirements()
 }
 
 function applyPerks() {
@@ -1419,7 +1554,7 @@ function applyEvilPerks() {
 
     gameData.requirements["Rebirth note 3"].requirements[0].requirement = getEvilRequirement()
     gameData.requirements["Rebirth button 2"].requirements[0].requirement = getEvilRequirement()
-    gameData.requirements["Rebirth stats evil"].requirements[0].requirement = getEvilRequirement()    
+    gameData.requirements["Rebirth stats evil"].requirements[0].requirement = getEvilRequirement()
     gameData.requirements["key2"].requirements[0].requirement = getEvilRequirement()
 
     gameData.requirements["Rebirth note 4"].requirements[0].requirement = getVoidRequirement()
@@ -1448,10 +1583,11 @@ function updateStats() {
     }
 
     if (gameData.requirements["Rebirth stats essence"].isCompleted()) {
-        gameData.stats.EssencePerSecond = getEssenceGain() / gameData.rebirthThreeTime
+        const faintHopeTime = getFaintHopeTime()
+        gameData.stats.EssencePerSecond = getEssenceGain() / faintHopeTime
         if (gameData.stats.EssencePerSecond > gameData.stats.maxEssencePerSecond) {
             gameData.stats.maxEssencePerSecond = gameData.stats.EssencePerSecond
-            gameData.stats.maxEssencePerSecondRt = gameData.rebirthThreeTime
+            gameData.stats.maxEssencePerSecondRt = faintHopeTime
         }
     }
 
@@ -1459,26 +1595,88 @@ function updateStats() {
         gameData.stats.maxEssenceReached = gameData.essence
 }
 
-function resetGameData() {
-    clearInterval(saveloop)
-    clearInterval(gameloop)
-    if (!confirm('Are you sure you want to reset the game?')) {
-        gameloop = setInterval(update, 1000 / updateSpeed)
-        saveloop = setInterval(saveGameData, 3000)
-        return
+async function resetGameData() {
+
+    function restoreLoops() {
+        gameloop = setInterval(update, 1000 / updateSpeed);
+        saveloop = setInterval(saveGameData, 3000);
     }
-    localStorage.clear()
-    location.reload()
+
+    clearInterval(saveloop);
+    clearInterval(gameloop);
+
+    let isConfirmed = await customConfirm({
+        title: "HARD RESET",
+        text: "Are you absolutely sure you want to reset the game? You will lose ALL your progress forever!",
+        confirmText: "Yes, wipe everything",
+        cancelText: "No, save my save!",
+        confirmColor: "red",
+        cancelColor: "green",
+        delay: 3000
+    });
+
+    if (!isConfirmed) {
+        restoreLoops();
+        return;
+    }
+
+    isConfirmed = await customConfirm({
+        title: "FINAL WARNING",
+        text: "This action is irreversible. To confirm deletion, please type RESET in the field below:",
+        requiredText: "RESET",
+        confirmText: "DELETE PERMANENTLY",
+        confirmColor: "red",
+        cancelText: "I changed my mind",
+        cancelColor: "green"
+    });
+
+    if (!isConfirmed) {
+        restoreLoops();
+        return;
+    }
+
+    localStorage.clear();
+    location.reload();
 }
+
+
+function isValidSaveData(data) {
+    if (!data || typeof data !== 'object') return false;
+
+    const requiredKeys = [
+        'taskData',
+        'itemData',
+        'coins',
+        'days',
+        'evil',
+        'settings',
+        'challenges'
+    ];
+
+    for (const key of requiredKeys) {
+        if (!(key in data)) return false;
+    }
+
+    if (typeof data.settings !== 'object' || typeof data.challenges !== 'object') {
+        return false;
+    }
+
+    return true;
+}
+
 
 function importGameData() {
     try {
-        const importExportBox = document.getElementById("importExportBox")
+        const importExportBox = getElementCachedById("importExportBox")
         if (importExportBox.value == "") {
             alert("It looks like you tried to load an empty save... Paste save data into the box, then click \"Import Save\" again.")
             return
         }
         const data = JSON.parse(window.atob(importExportBox.value))
+        if (!isValidSaveData(data)) {
+            throw new Error("Invalid save structure");
+        }
+
         clearInterval(gameloop)
         gameData = data
         saveGameData()
@@ -1488,8 +1686,44 @@ function importGameData() {
     }
 }
 
+function importGameDataFromFile() {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = ".txt";
+
+    fileInput.onchange = (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            try {
+                const saveContent = e.target.result.trim();
+
+                const data = JSON.parse(window.atob(saveContent));
+
+                if (!isValidSaveData(data)) {
+                    throw new Error("Invalid save structure");
+                }
+
+                clearInterval(gameloop);
+                gameData = data;
+                saveGameData();
+                location.reload();
+            } catch (error) {
+                alert("It looks like you tried to load a corrupted save... If this issue persists, feel free to contact the developers!");
+            }
+        };
+
+        reader.readAsText(file);
+    };
+
+    fileInput.click();
+}
+
 function exportGameData() {
-    const importExportBox = document.getElementById("importExportBox")
+    const importExportBox = getElementCachedById("importExportBox")
     const saveString = window.btoa(JSON.stringify(gameData))
     importExportBox.value = saveString
     copyTextToClipboard(saveString)
@@ -1500,46 +1734,55 @@ function exportGameData() {
     }, 15 * 1000)
 }
 
+function exportGameDataToFile() {
+    const saveString = window.btoa(JSON.stringify(gameData))
+    exportToFile(saveString)
+}
+
+function exportToFile(saveString) {
+    try {
+        const blob = new Blob([saveString], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+
+        const downloadLink = document.createElement("a");
+        downloadLink.href = url;
+
+        const now = new Date();
+        const dateString = now.toISOString().slice(0, 10);
+        const timeString = now.toISOString().slice(11, 16).replace(":", "-");
+
+        downloadLink.download = `progress_knight_quest_${dateString}_${timeString}.txt`;
+
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+
+        URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error("Failed to download the save file:", error);
+    }
+}
+
+
 function copyTextToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
-        const tooltip = document.getElementById("exportTooltip");
-        tooltip.innerHTML = "&nbsp;&nbsp;Save copied to clipboard!" ;
+        const tooltip = getElementCachedById("exportTooltip")
+        tooltip.innerHTML = "&nbsp;&nbsp;Save copied to clipboard!"
     }, err => {
-        //console.error('Async: Could not copy text: ', err);
+        //console.error('Async: Could not copy text: ', err)
     })
 }
 
 function outExportButton() {
-    const tooltip = document.getElementById("exportTooltip");
-    tooltip.textContent = "";
+    const tooltip = getElementCachedById("exportTooltip")
+    tooltip.textContent = ""
 }
 
-function onFontButtonHover() {
-    const tooltip = document.getElementById("fontSizeTooltip");
-    tooltip.classList.remove("hidden")
+function setDefaultSettings() {
+    gameData.settings.layout = getDefaultLayoutMode()
 }
 
-function onFontButtonStopHover() {
-    const tooltip = document.getElementById("fontSizeTooltip");
-    tooltip.classList.add("hidden")
-}
-
-function isNextDarkMagicSkillInReach() {
-    const totalEvil = gameData.evil + getEvilGain()
-
-    for (const key in gameData.taskData) {
-        const skill = gameData.taskData[key]
-        if (skillCategories["Dark Magic"].includes(key)) {
-            const requirement = gameData.requirements[key]
-            if (!requirement.isCompleted()) {
-                if (totalEvil >= requirement.requirements[0].requirement) {
-                    return true
-                }
-            }
-        }
-    }
-    return false
-}
 
 // Loads the game save, does the initial render and starts the game update and render loop.
 
@@ -1548,69 +1791,102 @@ createGameObjects(gameData.taskData, skillBaseData)
 createGameObjects(gameData.itemData, itemBaseData)
 createGameObjects(milestoneData, milestoneBaseData)
 
-gameData.currentJob = gameData.taskData["Beggar"]
+gameData.currentJob = null
 gameData.currentProperty = gameData.itemData["Homeless"]
 gameData.currentMisc = []
 
-gameData.requirements = requirementsBaseData
 
-createMilestoneRequirements()
-
-tempData["requirements"] = {}
+/*tempData["requirements"] = {}
 for (const key in gameData.requirements) {
     const requirement = gameData.requirements[key]
     tempData["requirements"][key] = requirement
-}
+}*/
 
 loadGameData()
 
 initializeUI()
 
-
 setCustomEffects()
 addMultipliers()
 
 if ("save_date_time" in gameData && gameData.save_date_time > 0) {
-   calc_offline_progress(Date.now() - gameData.save_date_time);            
+    calc_offline_progress(Date.now() - gameData.save_date_time)
 }
 
 if (!in_offline_progress)
-    document.getElementById("mainarea").hidden = false
+    getElementCachedById("mainarea").hidden = false
 
-onResize(window.outerWidth)
+// onResize(window.innerWidth)
+handleSidebarLayout(sidebarMediaQuery);
 update()
 
 setTab(gameData.settings.selectedTab)
-setTabSettings("settingsTab")
+setTabSettings(gameData.settings.settingsTab ?? "settingsTab");
 setTabDarkMatter("shopTab")
 setTabMetaverse("metaverseTab1")
 
-let ticking = false;
+let ticking = false
 
-var gameloop = setInterval(function() {
-    if (ticking) return;
-    ticking = true;
-    update();
+var gameloop = setInterval(function () {
+    if (ticking)
+        return
+    ticking = true
+    update()
     var ms = Date.now() - lastUpdate
-    if (lastUpdate != 0 && ms >= 10000 && !in_offline_progress)
+    if (lastUpdate !== 0 && ms >= 10000 && !in_offline_progress)
         calc_offline_progress(ms)
     lastUpdate = Date.now()
 
     // fps for debug only
-    //var thisFrameTime = (thisLoop = new Date) - lastLoop;
-    //frameTime += (thisFrameTime - frameTime) / filterStrength;
-    //lastLoop = thisLoop;
+    // var thisFrameTime = (thisLoop = new Date) - lastLoop
+    // frameTime += (thisFrameTime - frameTime) / filterStrength
+    // lastLoop = thisLoop
 
-    ticking = false;
+    ticking = false
 }, 1000 / updateSpeed)
 var saveloop = setInterval(saveGameData, 3000)
 
-/* FPS */
+
 /*
-var filterStrength = 20;
-var frameTime = 0, lastLoop = new Date, thisLoop;
-var fpsOut = document.getElementById('fps');
-setInterval(function () {
-    fpsOut.innerHTML = (1000 / frameTime).toFixed(1) + " fps";
-}, 1000);
+
+function renderLoop() {
+    updateUI();
+    
+    requestAnimationFrame(renderLoop); 
+}
+
+
+
 */
+
+let lastFpsUpdateTime = performance.now();
+let frameCount = 0;
+
+function renderLoop() {
+    updateUI(); // Ваша оптимизированная функция отрисовки интерфейса
+
+    // --- БЛОК ПОДСЧЕТА FPS ---
+    frameCount++;
+    const now = performance.now();
+    const elapsed = now - lastFpsUpdateTime;
+
+    // Обновляем счетчик на экране раз в секунду (каждые 1000 мс), 
+    // чтобы цифры не мелькали слишком быстро
+    if (elapsed >= 1000) {
+        const currentFps = Math.round((frameCount * 1000) / elapsed);
+
+        // Выводим FPS на экран с помощью вашей же безопасной функции кэширования текста!
+        safeUpdateText("fpsCounter", `FPS: ${currentFps}`);
+        safeUpdateText("fps", `FPS: ${currentFps}`);
+
+        // Сбрасываем счетчики для следующей секунды
+        frameCount = 0;
+        lastFpsUpdateTime = now;
+    }
+    // -------------------------
+
+    // Запрашиваем следующий кадр у браузера
+    requestAnimationFrame(renderLoop);
+}
+
+requestAnimationFrame(renderLoop);
