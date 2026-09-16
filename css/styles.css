@@ -21,17 +21,17 @@ body {
 
 .single-line-text-pb {
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
 .single-line-text {
     white-space: nowrap;
-    overflow: calc();
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.hidden,
-.hiddenTask {
+.hidden {
     display: none !important;
 }
 
@@ -39,38 +39,39 @@ body {
     overflow-y: auto;
 }
 
-
-/* ==========================================================================
-   2. СЕТКА, ТАБЛИЦЫ И СТРУКТУРА ПАНЕЛЕЙ
-   ========================================================================== */
-table {
-    white-space: normal;
-    line-height: normal;
-    font-weight: normal;
-    font-style: normal;
-    text-align: start;
-    font-variant: normal;
-    border-collapse: collapse;
+#offline_progress {
+    /* На маленьких экранах по умолчанию */
+    width: 100%;
+    padding: 1.5em;
+    box-sizing: border-box;
 }
 
-td {
-    vertical-align: middle !important;
+@media (min-width: 37.5em) {
+    #offline_progress {
+        max-width: 30em;
+        /* Ограничиваем максимальную ширину */
+        margin-left: auto !important;
+        /* Центрируем по горизонтали */
+        margin-right: auto !important;
+        /* !important нужен, чтобы перебить w3-margin-left */
+    }
 }
 
-/* Отступы в таблицах */
-.headerRow:not(:first-child) td,
-.headerRow:not(:first-child) th {
-    border-top: 1em solid transparent;
-    padding: 0.05em;
+@media (max-width: 600px) {
+    .w3-bar-item.w3-button {
+        /* Скрываем оригинальный текст за счет обнуления размера шрифта */
+        font-size: 0 !important;
+        padding: 0.4em 8px;
+    }
+
+    /* Выводим короткое название из атрибута data-short */
+    .w3-bar-item.w3-button::before {
+        content: attr(data-short);
+        font-size: 1rem;
+        /* Возвращаем читаемый размер для двух букв */
+    }
 }
 
-tr:not(.headerRow) td {
-    padding: 0 0.5em;
-}
-
-.headerRow+tr td {
-    border-top: 0.6em solid transparent;
-}
 
 /* Лейаут (Строки и Колонки) */
 .row {
@@ -93,6 +94,13 @@ tr:not(.headerRow) td {
 
 .page:not(:first-child) {
     margin-left: 0.5em;
+}
+
+
+@media (max-width: 37.5em) {
+    .page {
+        width: 100%;
+    }
 }
 
 .tabs-tab-column,
@@ -121,7 +129,6 @@ tr:not(.headerRow) td {
     width: 100%;
 }
 
-
 /* ==========================================================================
    3. ШАПКА И ТИТУЛЬНЫЕ ЭЛЕМЕНТЫ
    ========================================================================== */
@@ -140,10 +147,6 @@ tr:not(.headerRow) td {
     position: static;
     top: 2px;
     left: 10px;
-}
-
-.rowtitle {
-    padding: 0em 0.3em 0em 0.5em !important;
 }
 
 .small-margin {
@@ -266,8 +269,6 @@ button:focus {
     border: 0.0625em solid #4a0e4e;
     box-shadow: 0 0 0.625em rgba(138, 43, 226, 0.3);
     border-radius: 0.25em;
-    padding: 0.625em;
-    margin-top: 1em !important;
 }
 
 #challengeTitle {
@@ -293,11 +294,12 @@ button:focus {
    ========================================================================== */
 .perk-grid {
     display: grid;
+    column-gap: 1em;
 }
 
 @media (min-width: 37.5em) {
     .perk-grid {
-        grid-template-columns: repeat(2, 24.5em);
+        grid-template-columns: repeat(2, 22.68em);
     }
 }
 
@@ -321,7 +323,7 @@ button:focus {
     position: relative;
     transition: color 100ms;
     touch-action: manipulation;
-    margin: 0.6em 0.7em;
+    margin: 0.6em 0 0.5em 0;
 }
 
 .perk-sidebar {
@@ -415,10 +417,6 @@ button:focus {
 
 #pauseButton {
     width: 5.5em;
-}
-
-.effect {
-    margin-bottom: 0.3em;
 }
 
 .perk-boost {
@@ -557,6 +555,7 @@ button:focus {
     color: #ffeb3b;
     font-weight: normal;
     white-space: nowrap;
+    padding-left: 1em;
 }
 
 .job-tooltip-heroic-req,
@@ -627,14 +626,36 @@ button:focus {
 }
 
 .event-info {
-    margin-top: 1em;
-    margin-bottom: 1em;
-    padding: 1em !important;
-    font-size: 120%;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding: 0.3em !important;
+    font-size: 85%;
     color: #dd4262;
     text-align: center;
-    border: 0.01em solid magenta;
+    border: 0.01em solid var(--resource-color, magenta);
     border-radius: 0.2em;
+}
+
+ul {
+    padding-inline-start: 1em;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 80%;
+}
+
+.events-list {
+    max-width: 30em;
+    padding-left: 0.4em;
+    padding-right: 0.7em;
+}
+
+.events-list li {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #444;
 }
 
 /* Боковые светящиеся блоки (Sidebar Glow Boxes) */
@@ -668,51 +689,63 @@ button:focus {
    10. ЦВЕТОВАЯ СИСТЕМА ДЛЯ ИГРОВЫХ РЕСУРСОВ
    ========================================================================== */
 .reward {
-    color: rgb(64, 237, 23);
+    --resource-color: rgb(64, 237, 23);
+    color: var(--resource-color);
 }
 
 .legendary {
-    color: rgb(245, 119, 13);
+    --resource-color: rgb(245, 119, 13);
+    color: var(--resource-color);
 }
 
 .epp-color {
-    color: yellow;
+    --resource-color: yellow;
+    color: var(--resource-color);
 }
 
 .color-happiness {
-    color: rgb(15, 105, 207);
+    --resource-color: rgb(15, 105, 207);
+    color: var(--resource-color);
 }
 
 .color-evil {
-    color: rgb(240, 0, 0);
+    --resource-color: rgb(240, 0, 0);
+    color: var(--resource-color);
 }
 
 .color-essence {
-    color: rgb(24, 210, 217);
+    --resource-color: rgb(24, 210, 217);
+    color: var(--resource-color);
 }
 
 .color-dark-matter {
-    color: rgb(132, 99, 206);
+    --resource-color: rgb(132, 99, 206);
+    color: var(--resource-color);
 }
 
 .color-dark-orbs {
-    color: rgb(143, 114, 207);
+    --resource-color: rgb(143, 114, 207);
+    color: var(--resource-color);
 }
 
 .color-time-warping {
-    color: rgb(204, 34, 219);
+    --resource-color: rgb(204, 34, 219);
+    color: var(--resource-color);
 }
 
 .color-hypercubes {
-    color: rgb(9, 160, 230);
+    --resource-color: rgb(9, 160, 230);
+    color: var(--resource-color);
 }
 
 .color-perk-points {
-    color: rgb(217, 24, 119);
+    --resource-color: rgb(217, 24, 119);
+    color: var(--resource-color);
 }
 
 .color-income {
-    color: lightgreen;
+    --resource-color: lightgreen;
+    color: var(--resource-color);
 }
 
 

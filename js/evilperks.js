@@ -1,3 +1,44 @@
+// Глобальный объект для хранения предрассчитанных цен
+const evilPerkCostsCache = {
+	1: [],
+	2: [],
+	3: [],
+	4: [],
+	5: []
+};
+
+function initEvilPerkCostsCache() {
+	const config = {
+		1: { max: 10, calc: (lvl) => pow(2, lvl + 1) + 4.6 },
+		2: { max: 14, calc: (lvl) => pow(3, lvl + 1) + 66.6 - 3 },
+		3: { max: 9, calc: (lvl) => pow(5, lvl + 1) + 666.6 - 5 },
+		4: {
+			max: 18,
+			calc: (lvl) => lvl < 9
+				? pow(5, lvl + 1) + 6666 - 5
+				: pow(6.66, lvl + 1) - 666 * 33 - 5e6
+		},
+		5: { max: 309, calc: (lvl) => pow(10, lvl) * 6.66e10 } // Для 5 кейса предел ~308-309 по условию 1e308
+	};
+
+	for (const num in config) {
+		const { max, calc } = config[num];
+		const cache = [];
+
+		// Заполняем кэш для каждого возможного уровня перка
+		for (let lvl = 0; lvl < max; lvl++) {
+			cache.push(calc(lvl));
+		}
+		// Всё, что выше или равно лимиту, возвращает Infinity
+		cache.push(Infinity);
+
+		evilPerkCostsCache[num] = cache;
+	}
+}
+
+initEvilPerkCostsCache()
+
+
 function getEvilPerksGeneration() {
 	if (gameData.evil == 0) return 0
 	let essence_perk_buff_mult = 1e9
@@ -7,7 +48,7 @@ function getEvilPerksGeneration() {
 		essence_perk_buff_mult *= gameData.essence
 	else
 		essence_perk_buff_mult = 1e308
-	return Math.log10(gameData.evil + 1) * Math.log10(essence_perk_buff_mult) / 365
+	return log10(gameData.evil + 1) * log10(essence_perk_buff_mult) / 365
 }
 
 function getEvilPerkAgeRequirement(i) {
@@ -64,9 +105,9 @@ function getCelestialReduceYearsBy() {
 
 function getCelestialRequirement() {
 	let newreq = 10000
-	newreq -= Math.min(9, gameData.evil_perks.reduce_celestial_requirement) * 1000
+	newreq -= min(9, gameData.evil_perks.reduce_celestial_requirement) * 1000
 	if (gameData.evil_perks.reduce_celestial_requirement > 9)
-		newreq -= Math.min(9, gameData.evil_perks.reduce_celestial_requirement - 9) * 100
+		newreq -= min(9, gameData.evil_perks.reduce_celestial_requirement - 9) * 100
 	return newreq < 100 ? 100 : newreq
 }
 
@@ -78,33 +119,23 @@ function getEssenceRewardPercent() {
 	return (gameData.evil_perks.receive_essence + 1) * 10
 }
 
+
 function getEvilPerkCost(evilperknum) {
-	switch (evilperknum) {
-		case 1:
-			if (gameData.evil_perks.reduce_eye_requirement >= 10)
-				return Infinity
-			return Math.pow(2, gameData.evil_perks.reduce_eye_requirement + 1) + 4.6
-		case 2:
-			if (gameData.evil_perks.reduce_evil_requirement >= 14)
-				return Infinity
-			return Math.pow(3, gameData.evil_perks.reduce_evil_requirement + 1) + 66.6 - 3
-		case 3:
-			if (gameData.evil_perks.reduce_the_void_requirement >= 9)
-				return Infinity
-			return Math.pow(5, gameData.evil_perks.reduce_the_void_requirement + 1) + 666.6 - 5
-		case 4:
-			if (gameData.evil_perks.reduce_celestial_requirement >= 18)
-				return Infinity
-			if (gameData.evil_perks.reduce_celestial_requirement < 9)
-				return Math.pow(5, gameData.evil_perks.reduce_celestial_requirement + 1) + 6666 - 5
-			else
-				return Math.pow(6.66, gameData.evil_perks.reduce_celestial_requirement + 1) - 666 * 33 - 5e6
-		case 5:
-			if (gameData.essence >= 1e308)
-				return Infinity
-			return Math.pow(10, gameData.evil_perks.receive_essence) * 6.66e10
-	}
+	const currentLevels = [
+		0,
+		gameData.evil_perks.reduce_eye_requirement,
+		gameData.evil_perks.reduce_evil_requirement,
+		gameData.evil_perks.reduce_the_void_requirement,
+		gameData.evil_perks.reduce_celestial_requirement,
+		gameData.evil_perks.receive_essence
+	];
+
+	const lvl = currentLevels[evilperknum];
+	const perkCache = evilPerkCostsCache[evilperknum];
+
+	return perkCache[lvl]
 }
+
 
 function getEvilPerkRank(i) {
 	switch (i) {

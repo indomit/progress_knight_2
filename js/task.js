@@ -1,21 +1,66 @@
 const BASE_POW_BASE = 1.01;
 const HERO_POW_BASE = 1.08;
-let global_maximum = 0
 
+const LN_BASE_POW_BASE = log(BASE_POW_BASE);
+const LN_HERO_POW_BASE = log(HERO_POW_BASE);
+
+const BASE_POW_CACHE = new Float64Array(400000);
+const HERO_POW_CACHE = new Float64Array(400000);
+
+function getGrowthMultiplier(base, lvl, isHero) {
+    const cache = isHero ? HERO_POW_CACHE : BASE_POW_CACHE;
+
+    if (lvl >= 400000) {
+        return pow(base, lvl);
+    }
+
+    let val = cache[lvl];
+    if (val === 0) {
+        val = pow(base, lvl);
+        cache[lvl] = val;
+    }
+    return val;
+}
+
+const DECIMAL_1E305 = new Decimal("1e305");
+const TEMP_DECIMAL = new Decimal(0);
+const CONVERGENCE_FACTOR = 0.35;
+
+/**
+ * @typedef {object} TaskBaseData
+ * @property {string} name
+ * @property {number} maxXp
+ * @property {number} [heroxp] 
+ * @property {number} effect
+ * @property {string} [description]
+ */
 class Task {
+    /**
+     * @param {TaskBaseData} baseData
+     */
     constructor(baseData) {
         this.baseData = baseData;
         this.name = baseData.name;
+        this.maxXpBase = baseData.maxXp;
         this.level = 0;
         this.maxLevel = 0;
+        /** @type {Decimal} */
         this.xp = new Decimal(0);
         this.isHero = false;
         this.unlocked = false;
+        /** @type {(() => number)[]} */
         this.xpMultipliers = [];
+        /** @type {Map<string, HTMLElement | null>} */
         this.elementsCache = new Map();
+        this.heroxp = baseData.heroxp ?? 0
+        this.pow10heroxp = pow(10, this.heroxp);
+        this.heroShift = this.heroxp ? floor(this.heroxp / 9) : 0;
 
-        this.pow10heroxp = Math.pow(10, this.baseData.heroxp);
-        this.heroShift = this.baseData.heroxp ? Math.floor(this.baseData.heroxp / 9) : 0;
+        /** @type {Decimal} */
+        this.xpGain = new Decimal(1)
+        /** @type {Decimal} */
+        this.maxXP = new Decimal(1)
+        this.row = getQuerySelector(this.name)
     }
 
     toJSON() {
@@ -30,66 +75,22 @@ class Task {
         }
     }
 
-    /*getMaxXp(level = this.level) {
-        // До 1e305 считаем по старой формуле (переводим в Decimal в конце)
+    getMaxXpForLevel2(level) {
         const heroMultiplier = this.isHero ? this.pow10heroxp : 1;
-        const growthMultiplier = Math.pow(this.isHero ? HERO_POW_BASE : BASE_POW_BASE, level);
-        const maxXpNormal = heroMultiplier * this.baseData.maxXp * (level + 1) * growthMultiplier;
+        const base = this.isHero ? HERO_POW_BASE : BASE_POW_BASE;
+        const growthMultiplier = getGrowthMultiplier(base, level, this.isHero);
+        const maxXpBase = this.maxXpBase
+        const levelMult = level + 1
+        const maxXpNormal = heroMultiplier * maxXpBase * levelMult * growthMultiplier;
 
-        // Если число вылетает за пределы JS Number (1e308), переключаемся на аналог вашей формулы сдвига
         if (maxXpNormal > 1e305 || maxXpNormal === Infinity || isNaN(maxXpNormal)) {
-            // Имитируем ваш битовый сдвиг: MAX_SAFE_XP * (2 ^ (level/120 + shift))
-            const power = Math.floor(level / 120) + this.heroShift.toNumber();
-            return new Decimal("1e305").times(Decimal.pow(2, power));
-        }
+            const levelPower = floor(level / 120);
+            const totalTwoPower = levelPower + this.heroShift;
 
-        return new Decimal(maxXpNormal);
-    }*/
-
-    /*
-        getMaxXp() {
-    const maxXp = (this.isHero ? Math.pow(10, this.baseData.heroxp) : 1) * this.baseData.maxXp * (this.level + 1) * Math.pow(this.isHero ? 1.08 : 1.01, this.level)
-
-    if (isNaN(maxXp) || maxXp == Infinity || maxXp > 1e305) {
-        this.isFinished = true
-    }
-
-    return maxXp
-}
-
-getMaxBigIntXp() {
-    const maxXp = this.getMaxXp() == Infinity ? BigInt(1e305) : BigInt(Math.floor(this.getMaxXp()));
-
-    if (maxXp < 1e305)
-        return maxXp
-
-    return maxXp * 2n ** (BigInt(this.level) / 120n) * (2n ** (BigInt(this.baseData.heroxp) / 9n))
-}*/
-
-    getMaxXp(level = this.level) {
-        // 1. Считаем опыт строго по вашей оригинальной формуле в обычных числах (Number)
-        const heroMultiplier = this.isHero ? this.pow10heroxp : 1;
-        const growthMultiplier = Math.pow(this.isHero ? HERO_POW_BASE : BASE_POW_BASE, level);
-        const maxXpNormal = heroMultiplier * this.baseData.maxXp * (level + 1) * growthMultiplier;
-
-        // 2. Проверяем условие перехода, ОДИН В ОДИН как в вашем проде
-        if (maxXpNormal > 1e305 || maxXpNormal === Infinity || isNaN(maxXpNormal)) {
-            // Мы перешагнули порог! Включаем лейтгейм-формулу.
-            // Заменяем битовый сдвиг (<<) на эквивалентное умножение Decimal.pow(2, ...)
-            const levelPower = Math.floor(level / 120);
-            const totalTwoPower = levelPower + this.heroShift; // heroShift посчитан в конструкторе
-
-            // Переводим базовые 1e305 в Decimal и умножаем на двойки в нужной степени
             return new Decimal("1e305").times(Decimal.pow(2, totalTwoPower));
         }
 
-        // 3. Если число маленькое и безопасное, просто переводим обычный Number в Decimal
         return new Decimal(maxXpNormal);
-    }
-
-
-    getXpLeft() {
-        return this.getMaxXp().minus(this.xp);
     }
 
     getMaxLevelMultiplier() {
@@ -99,40 +100,45 @@ getMaxBigIntXp() {
         else {
             let effect = gameData.taskData['Cosmic Recollection'].getEffect()
             effect = effect == 0 ? 1 : effect
-            return (this.baseData.heroxp < 1000) ? 1 + this.maxLevel / 10 : 1 + this.maxLevel / effect
+            return (this.heroxp < 1000) ? 1 + this.maxLevel / 10 : 1 + this.maxLevel / effect
         }
     }
 
-    getXpGain() {
-        // 1. Базовое значение из вашей старой логики
+    updateXpGain() {
         let xpGain = new Decimal(this.isHero ? getHeroXpGainMultipliers(this) : 10);
 
-        // 2. То самое условие баланса: если опыт еще НЕ ушел в лейтгейм (меньше 1e305)
-        // Метод .lt() работает молниеносно
-        // if (this.xp.lt("1e305")) {
-        //    xpGain = xpGain.times(10);
-        // }
+        xpGain = xpGain.times(this.getMaxLevelMultiplier());
 
-        // 3. Чистое перемножение всех остальных мультипликаторов
-        this.xpMultipliers.forEach(multiplier => {
-            const mult = multiplier()
-            if (mult == Infinity) {
-                console.log(this.toJSON())
-            }
-            xpGain = xpGain.times(mult);
-        });
+        const funcs = this.xpFuncs;
+        const fLen = funcs.length;
+        for (let i = 0; i < fLen; i++) {
+            xpGain = xpGain.times(funcs[i]());
+        }
 
-        return xpGain;
+        const tasks = this.xpTasks;
+        const tLen = tasks.length;
+        for (let i = 0; i < tLen; i++) {
+            xpGain = xpGain.times(tasks[i].getEffect());
+        }
+
+        const items = this.xpItems;
+        const iLen = items.length;
+        for (let i = 0; i < iLen; i++) {
+            xpGain = xpGain.times(items[i].getEffect());
+        }
+
+        this.xpGain = xpGain;
     }
 
+
     getTaskXpProgressFraction() {
-        const maxXp = this.getMaxXp();
+        const maxXp = this.maxXP;
         if (this.xp.gte(maxXp)) return 1;
-        return this.xp.div(maxXp).toNumber(); // Переводим отношение в обычный float [0, 1]
+        return this.xp.div(maxXp).toNumber();
     }
 
     getXpGainFormatted() {
-        return this.getXpGain().toExponential(2); // Автоматически отформатирует (например: 1.23e350)
+        return this.xpGain.toExponential(2);
     }
 
     getCurrentXpFormatted() {
@@ -140,24 +146,29 @@ getMaxBigIntXp() {
     }
 
     getMaxXpFormatted() {
-        return this.getMaxXp().toExponential(2);
+        return this.maxXP.toExponential(2);
     }
 
     getGameDaysLeft() {
-        if (!gameData.requirements[this.name].isCompleted()) return Infinity;
+        if (!gameData.requirements[this.name].completed) return Infinity;
 
-        const xpLeft = this.getXpLeft();
-        const xpGain = this.getXpGain();
+        const xpLeft = this.maxXP.minus(this.xp);
+        const xpGain = this.xpGain;
 
         if (xpGain.eq(0)) return Infinity;
         return xpLeft.div(xpGain).toNumber();
     }
 
+    /**
+     * 
+     * @param {number} level 
+     * @returns {number}
+     */
     getGameDaysTotalForLevel(level) {
-        if (!gameData.requirements[this.name].isCompleted()) return Infinity;
+        if (!gameData.requirements[this.name].completed) return Infinity;
 
-        const maxXP = this.getMaxXp(level);
-        const xpGain = this.getXpGain();
+        const maxXP = this.getMaxXpForLevel2(level);
+        const xpGain = this.xpGain
 
         if (xpGain.eq(0)) return Infinity;
 
@@ -166,9 +177,24 @@ getMaxBigIntXp() {
 
 
     getGameDaysTotalForCurrentLevel() {
-        return this.getGameDaysTotalForLevel(this.level)
+        if (!gameData.requirements[this.name].completed) {
+            return Infinity;
+
+        }
+
+        const maxXP = this.maxXP;
+        const xpGain = this.xpGain;
+
+        if (xpGain.eq(0)) return Infinity;
+
+        return maxXP.div(xpGain).toNumber();
     }
 
+    /**
+     * 
+     * @param {number} level 
+     * @returns {number}
+     */
     getGameDaysTotalTillLevel(level) {
         if (level < this.level)
             return 0
@@ -183,12 +209,10 @@ getMaxBigIntXp() {
         }
     }
 
-    // Возвращает отформатированную строку оставшихся игровых дней
     getGameDaysLeftFormatted() {
         return formatGameDays(this.getGameDaysLeft())
     }
 
-    // Возвращает отформатированную строку реального времени до левелапа (hh:mm:ss)
     getRealTimeLeftFormatted() {
         const gameDaysLeft = this.getGameDaysLeft()
         const gameSpeed = getGameSpeed()
@@ -205,22 +229,24 @@ getMaxBigIntXp() {
         return formatTime(realSecondsLeft)
     }
 
-    // Возвращает ETA до целевого уровня в игровых днях
+    /**
+    * 
+    * @param {number} targetLevel 
+    * @returns {number}
+    */
     getTargetLevelGameDaysLeft(targetLevel) {
         if (this.level >= targetLevel) return 0;
-
-        // Сколько уровней осталось набрать
         const levelsLeft = targetLevel - this.level;
-
-        // Время текущего уровня в днях
         const currentLevelDays = this.getGameDaysLeft();
-
         if (currentLevelDays === Infinity) return Infinity;
-
         return currentLevelDays * levelsLeft;
     }
 
-    // Возвращает отформатированную строку реального времени (hh:mm:ss) до целевого уровня
+    /**
+     * 
+     * @param {number} targetLevel 
+     * @returns {string}
+     */
     getTargetLevelRealTimeLeftFormatted(targetLevel) {
         if (this.level >= targetLevel) return "00:00:00";
 
@@ -235,58 +261,119 @@ getMaxBigIntXp() {
         return formatTime(realSecondsLeft);
     }
 
+
+
+    updateMaxXP(level, isHero, maxXpBase, pow10heroxp, heroShift) {
+        const heroMultiplier = isHero ? pow10heroxp : 1;
+        const base = isHero ? HERO_POW_BASE : BASE_POW_BASE;
+        const growthMultiplier = getGrowthMultiplier(base, level, isHero);
+
+        const levelMult = level + 1;
+        const maxXpNormal = heroMultiplier * maxXpBase * levelMult * growthMultiplier;
+
+        let calculatedResult;
+
+        if (maxXpNormal > 1e305 || maxXpNormal === Infinity || isNaN(maxXpNormal)) {
+            const levelPower = floor(level / 120);
+            const totalTwoPower = levelPower + heroShift;
+
+            calculatedResult = DECIMAL_1E305.times(Decimal.pow(2, totalTwoPower));
+        } else {
+            calculatedResult = TEMP_DECIMAL.add(maxXpNormal);
+        }
+
+        this.maxXP = calculatedResult;
+    }
+
     increaseXp() {
         const gameSpeed = getGameSpeed();
         if (gameSpeed <= 0 || isNaN(gameSpeed)) return;
 
+        const isHero = this.isHero
+        const maxXpBase = this.maxXpBase
+        const pow10heroxp = this.pow10heroxp
+        const heroShift = this.heroShift
         const speedMultiplier = gameSpeed / updateSpeed;
-        const gain = this.getXpGain().times(speedMultiplier);
 
+        this.updateXpGain()
+        const gain = this.xpGain.times(speedMultiplier);
         this.xp = this.xp.plus(gain);
 
-        let currentMax = this.getMaxXp();
+        this.updateMaxXP(this.level, isHero, maxXpBase, pow10heroxp, heroShift)
+        let currentMax = this.maxXP;
 
         if (this.xp.gte(currentMax)) {
             this.unlocked = true;
 
-            // ЕСЛИ МЫ В РАННЕЙ ИГРЕ (до 1e305): стоимости маленькие, уровней мало
             if (currentMax.lt("1e305")) {
                 let iterations = 0;
+
                 while (this.xp.gte(currentMax)) {
                     iterations++;
-                    this.level += 1;
-                    this.xp = this.xp.minus(currentMax);
-                    currentMax = this.getMaxXp();
-                    if (iterations > 2500) break; // Жесткий кап для ранней игры
-                }
-            }
-            // ЕСЛИ МЫ В ЛЕЙТГЕЙМЕ (после 1e305): стоимость стабильна на отрезке в 120 уровней
-            else {
-                // Считаем прыжок уровней за одну операцию деления без циклов!
-                const levelsToGainD = this.xp.div(currentMax).floor();
-                let levels = levelsToGainD.toNumber();
 
-                if (levels > 0) {
-                    // Защита: не перепрыгиваем через границу изменения формулы (120 уровней)
-                    // Чтобы формула стоимости обновилась вовремя
-                    const nextBoundary = 120 - (this.level % 120);
-                    if (levels > nextBoundary) {
-                        levels = nextBoundary;
+                    if (currentMax.gte("1e305"))
+                        break;
+
+                    let target = (this.xp.gt(DECIMAL_1E305)) ? DECIMAL_1E305 : this.xp
+
+                    if (currentMax.lt(target)) {
+                        const logRatio = target.div(currentMax).log10() * LOG_10;
+                        const lnbase = isHero ? LN_HERO_POW_BASE : LN_BASE_POW_BASE;
+                        const denominator = lnbase + (1.0 / (this.level + 1));
+                        const deltaLevel = Math.floor((CONVERGENCE_FACTOR * logRatio) / denominator);
+                        if (deltaLevel > 1) {
+
+                            // if (this.name === "Beggar") console.log(deltaLevel)
+
+                            this.level += deltaLevel;
+                            this.updateMaxXP(this.level, isHero, maxXpBase, pow10heroxp, heroShift);
+                            currentMax = this.maxXP;
+                            continue;
+                        }
                     }
 
-                    this.level += levels;
-                    // Вычитаем весь потраченный опыт ОДНОЙ операцией вместо цикла while!
-                    this.xp = this.xp.minus(currentMax.times(levels));
+                    this.level += 1;
+                    this.xp = this.xp.minus(currentMax);
+                    this.updateMaxXP(this.level, isHero, maxXpBase, pow10heroxp, heroShift)
+                    currentMax = this.maxXP;
+
+                    if (iterations > 50)
+                        break;
+                }
+            }
+            else {
+                for (let index = 0; index < 3; index++) {
+                    const levelsToGainD = this.xp.div(currentMax).floor();
+                    let levels = levelsToGainD.toNumber();
+                    if (levels > 0) {
+                        const nextBoundary = 120 - (this.level % 120);
+                        if (levels > nextBoundary) {
+                            levels = nextBoundary;
+                        }
+
+                        this.level += levels;
+                        this.xp = this.xp.minus(currentMax.times(levels));
+                        this.updateMaxXP(this.level, isHero, maxXpBase, pow10heroxp, heroShift)
+                        currentMax = this.maxXP;
+                    }
+                    else
+                        break;
                 }
             }
         }
     }
 
+    /**
+     * 
+     * @param {string} selector 
+     * @param {HTMLElement} row 
+     * @returns {HTMLElement | null}
+     */
     querySelector(selector, row) {
         const cachedElement = this.elementsCache.get(selector);
         if (cachedElement)
             return cachedElement;
-        const element = row.querySelector(selector);
+        const element = /** @type {HTMLElement | null} */ (row.querySelector(selector));
         this.elementsCache.set(selector, element);
         return element;
     }
