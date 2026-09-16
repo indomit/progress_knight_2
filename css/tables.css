@@ -1,0 +1,169 @@
+.w3-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-collapse: unset !important;
+}
+
+
+.td:first-child,
+.th:first-child {
+    padding-left: 0.3em;
+}
+
+
+/* tables common */
+
+
+
+.th {
+    font-weight: bold;
+    display: flex;
+    text-align: left;
+    align-items: center;
+    height: 2em;
+    padding: 0;
+}
+
+.th span {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.td {
+    display: flex;
+    text-align: left;
+    align-items: center;
+    height: 1.8em;
+    padding: 0;
+}
+
+.td span {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.td:not(:first-child) {
+    padding-left: 0.5em;
+}
+
+.th:not(:first-child) {
+    padding-left: 0.5em;
+}
+
+@media (max-width: 600px) {
+    .th {
+        padding: 0 0.2em 0 0.2em;
+    }
+
+    .td:not(:first-child) {
+        padding-left: 0.2em;
+    }
+}
+
+/* custom tables */
+
+.tr {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+    overflow: hidden;
+    /* border-bottom: 0 solid #ddd */
+}
+
+/* job skill */
+#skillTable.no-max1 .tr,
+#jobTable.no-max1 .tr {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 0.8fr) minmax(0, 2fr);
+}
+
+#skillTable.no-max1 .max-level,
+#jobTable.no-max1 .max-level {
+    display: none !important;
+}
+
+#itemTable .tr {
+    grid-template-columns: minmax(0, 2fr) 2.7em minmax(0, 2fr) minmax(0, 1fr);
+}
+
+#itemTable .tr .button {
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* shop row height */
+
+#itemTable .td,
+#itemTable .tr,
+#itemTable .td {
+    height: 2.1em;
+}
+
+/* last column */
+
+#itemTable .th:last-child {
+    text-align: right;
+    justify-self: end;
+    padding-right: 0.3em;
+}
+
+#itemTable .td:last-child,
+.maxLevel {
+    text-align: right;
+    justify-self: end;
+    padding-right: 0.3em;
+    width: 100%;
+}
+
+#itemTable .td:last-child span {
+    display: inline;
+}
+
+
+#itemTable .td:last-child {
+    padding-top: 0.2em;
+}
+
+/* spaces between (th) header and content (td) rows*/
+
+.tr:has(.th) {
+    /*border: 1px red solid;*/
+    margin-bottom: 0.1em;
+}
+
+#itemTable .tr:has(.th) {
+    /*border: 1px red solid;*/
+    margin-bottom: 0.25em;
+}
+
+.tr~.tr:has(.th) {
+    /*border: 1px yellow solid;*/
+    margin-top: 0.4em;
+}
+
+/* milestone table */
+
+#milestoneTable .tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 3fr) minmax(0, 4fr);
+}
+
+#milestoneTable .tr,
+#milestoneTable .td {
+    min-height: 2em;
+    height: auto;
+}
+
+.expense {
+    display: block;
+}
+
+.td {
+    /* border: 1px red solid;*/
+}

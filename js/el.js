@@ -1,49 +1,81 @@
+/** @type {Map<string, HTMLElement | null>} */
 const domCache = new Map();
+
+/** @type {Map<string, HTMLElement[]>} */
 const domCollectionsCache = new Map();
 
 /**
- * Ищет ОДИН элемент по CSS-селектору (с кэшированием)
+ * 
+ * @param {string} selector 
+ * @returns {HTMLElement | null}
  */
+
 function el(selector) {
-    if (domCache.has(selector)) {
-        return domCache.get(selector);
+    const cachedElement = domCache.get(selector);
+
+    if (cachedElement !== undefined) {
+        return cachedElement;
     }
-    const element = document.querySelector(selector);
+    const element = /** @type {HTMLElement | null} */ (document.querySelector(selector));
+
     domCache.set(selector, element);
     return element;
 }
 
+// function el(selector) {
+//     // ЗАЩИТА И ОТЛАДКА ДЛЯ ТРЕНДЕРОВ
+//     if (selector === undefined || selector === "undefined" || selector === null || selector === "#undefined") {
+//         console.error("КРИТИЧЕСКИЙ БАГ: Вызов el() с undefined селектором!");
+//         console.trace(); // Выведет в консоль полную цепочку вызовов (стек-трейс)
+//         return null; 
+//     }
+
+//     const cachedElement = domCache.get(selector);
+
+//     if (cachedElement !== undefined) {
+//         return cachedElement; // вернет элемент ИЛИ null, если его нет на странице
+//     }
+
+//     // ОТЛАДКА ДЛЯ ПОВТОРНЫХ СЕЛЕКТОРОВ
+//     if (gameData.paused) {
+//         console.warn("ОБНОВЛЕНИЕ КЭША НА ПАУЗЕ. Либо этого элемента еще не было, либо кэш трут! Селектор:", selector);
+//     }
+
+//     const element = /** @type {HTMLElement | null} */ (document.querySelector(selector));
+//     domCache.set(selector, element);
+//     return element;
+// }
+
 /**
- * Ищет КОЛЛЕКЦИЮ элементов по CSS-селектору (сохраняет как массив)
+ * 
+ * @param {string} selector 
+ * @returns {HTMLElement[]}
  */
 function all(selector) {
-    if (domCollectionsCache.has(selector)) {
-        return domCollectionsCache.get(selector);
+    const cachedArr = domCollectionsCache.get(selector)
+    if (cachedArr !== undefined) {
+        return cachedArr;
     }
-    const arr = Array.from(document.querySelectorAll(selector));
+    const arr = /** @type {HTMLElement[]} */ (Array.from(document.querySelectorAll(selector)));
     domCollectionsCache.set(selector, arr);
     return arr;
 }
 
+/** @param {string} id */
 const elById = (id) => el(`#${id}`);
+
+/** @param {string} className */
 const elByClass = (className) => el(`.${className}`);
+
+/** @param {string} className */
 const allByClass = (className) => all(`.${className}`);
-const getElementCachedById = (id) => el(`#${id}`);
 
-
-/**
- * СБРОС КЭША. 
- * Ключевая функция для инкременталок. Вызывайте её, когда в игре 
- * происходят глобальные изменения (например: Престиж/Мягкий сброс, 
- * переключение глобального экрана, или удаление/добавление динамических зданий).
- */
+/** @param {string|null} selector */
 function clearDomCache(selector = null) {
     if (selector) {
-        // Удаляем конкретный элемент или коллекцию, если они обновились
         domCache.delete(selector);
         domCollectionsCache.delete(selector);
     } else {
-        // Полная очистка при Престиже / перезапуске
         domCache.clear();
         domCollectionsCache.clear();
     }

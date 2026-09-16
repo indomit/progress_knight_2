@@ -9,24 +9,41 @@ class Milestone {
     }
 }
 
-class Job extends Task {
+class Job extends  Task {
     constructor(baseData) {
         super(baseData)
         this.incomeMultipliers = []
     }
 
-    getLevelMultiplier() {
-        return 1 + Math.log10(this.level + 1)
-    }
-
     getIncome() {
-        const income = (this.isHero ? heroIncomeMult
+        let income = this.baseData.income
+
+        income *= (this.isHero ? heroIncomeMult
             * (this.baseData.heroxp > 78 ? 1e6 : 1)
             * (this.baseData.heroxp > 130 ? 1e5 : 1)
-            : 1) * applyMultipliers(this.baseData.income, this.incomeMultipliers) * getChallengeBonus("rich_and_the_poor")
+            : 1)
 
-        return gameData.active_challenge == "rich_and_the_poor" || gameData.active_challenge == "the_darkest_time" ? Math.pow(income, 0.35) : income
+        income *= getChallengeBonus("rich_and_the_poor")
+
+        income *= 1 + log10(this.level + 1);
+
+        const funcs = this.incomeFuncs;
+        const fLen = funcs.length;
+        for (let i = 0; i < fLen; i++) {
+            income *= funcs[i]();
+        }
+
+        const tasks = this.incomeTasks;
+        const tLen = tasks.length;
+        for (let i = 0; i < tLen; i++) {
+            income *= tasks[i].getEffect();
+        }
+
+        return gameData.active_challenge == "rich_and_the_poor" || gameData.active_challenge == "the_darkest_time"
+            ? pow(income, 0.35)
+            : income
     }
+
 }
 
 class Skill extends Task {
@@ -48,70 +65,84 @@ class Item {
     constructor(baseData) {
         this.baseData = baseData
         this.name = baseData.name
+        this.effect = baseData.effect
+        this.heroeffect = baseData.heroeffect
+        this.description = baseData.description
+        this.expense = baseData.expense
+        this.heromult = baseData.heromult
         this.expenseMultipliers = []
         this.isHero = false
         this.unlocked = false
+        this.isMisc = itemCategories["Misc"]?.includes(this.name) || false;
+        this.isProperty = itemCategories["Properties"]?.includes(this.name) || false;
+        this.heroExpenseMult = 4 * pow(10, this.heromult) * heroIncomeMult
+        this.row = getQuerySelector(this.name)
     }
 
     getEffect() {
-        let effect = this.baseData.effect
+        const currentMisc = gameData.currentMisc;
+        const currentProp = gameData.currentProperty;
 
         if (this.isHero) {
-            if (itemCategories["Misc"].includes(this.name))
-            {
-                if (gameData.currentMisc.includes(this)) {
-                    effect *= this.baseData.heroeffect                    
-                    this.unlocked = true
-                }
+            if (this.isMisc && currentMisc.includes(this)) {
+                this.unlocked = true;
+                return this.effect * this.heroeffect;
             }
 
-            if (itemCategories["Properties"].includes(this.name)) {
-                if (gameData.currentProperty == this) {
-                    effect = this.baseData.heroeffect
-                    this.unlocked = true
+            if (this.isProperty) {
+                if (currentProp === this) {
+                    this.unlocked = true;
+                    return this.heroeffect;
                 }
-                else
-                    effect = 1
+                return 1;
             }
+
+            return this.effect;
         } else {
-            // TODO: Переписать на !== или typeof, когда определится точная структура требований (может быть undefined)
+            if (currentProp !== this && !currentMisc.includes(this)) {
+                return 1;
+            }
 
-            if (gameData.currentProperty != this && !gameData.currentMisc.includes(this))
-                return 1
-            else
-                this.unlocked = true
+            this.unlocked = true;
+            return this.effect;
         }
-
-        return effect
     }
 
     getEffectDescription() {
-        let description = this.baseData.description
-        let effect = this.baseData.effect
+        let description = this.description
+        let effect = this.effect
 
         if (this.isHero) {
-            if (itemCategories["Misc"].includes(this.name)) {
-                effect *= this.baseData.heroeffect
+            if (this.isMisc) {
+                effect *= this.heroeffect
             }
 
-            if (itemCategories["Properties"].includes(this.name)) {
+            if (this.isProperty) {
                 description = "Happiness"
-                effect = this.baseData.heroeffect
+                effect = this.heroeffect
             }
         }
         else {
-            if (itemCategories["Properties"].includes(this.name)) description = "Happiness"
+            if (this.isProperty) description = "Happiness"
         }
 
         return "x" + format(effect) + " " + description
     }
 
-    getExpense(heroic) {
-        if (heroic === undefined)
-            heroic = this.isHero
-        return (heroic ? 4 * Math.pow(10, this.baseData.heromult) * heroIncomeMult : 1)
-            * applyMultipliers(this.baseData.expense, this.expenseMultipliers)
+    getExpense() {
+        let expense = this.expense
+
+        expense *= (this.isHero ? this.heroExpenseMult : 1)
+
+        const tasks = this.expenseTasks;
+        const tLen = tasks.length;
+        for (let i = 0; i < tLen; i++) {
+            expense *= tasks[i].getEffect();
+        }
+
+        return expense;
     }
+
 }
 
 class Requirement {
@@ -206,7 +237,7 @@ class EssenceRequirement extends Requirement {
         this.type = "essence"
     }
 
-    getCondition(isHero, requirement) {        
+    getCondition(isHero, requirement) {
         // TODO: Переписать на !== или typeof, когда определится точная структура требований (может быть undefined)
 
         if (isHero && requirement.herequirement != null)

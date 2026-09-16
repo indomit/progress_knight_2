@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="css/w3.css">
 	<link rel="stylesheet" type="text/css" href="css/w3-overrides.css">
+	<link rel="stylesheet" type="text/css" href="css/tables.css">
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 	<link rel="stylesheet" type="text/css" href="css/dark.css">
 	<link rel="stylesheet" type="text/css" href="css/colorblind.css">
@@ -34,21 +35,21 @@
 					</div>
 					<div>
 						<button id="skipButton" class="w3-button baritem button rebirth"
-							onClick="stopOffline()">Skip</button>
+							onClick="stopOfflineProgress()">Skip</button>
 					</div>
 				</div>
 			</h2>
 		</div>
 		<div id="mainarea" hidden="hidden">
 			<div id="row" class="row">
-				<div id="infoQuickBar" class="panel w3-padding sidebar-box" style="width:22em" hidden="hidden">
+				<div id="infoQuickBar" class="panel w3-padding sidebar-box" style="width:23em" hidden="hidden">
 
 					<div id="infoPage" class="page">
 						<div id="eventInfo" class="event-info" hidden="hidden">
-							<div><span id="enentName" class="currency-shadow-rainbow"></span></div>
-							<div><span id="enentDescription" class="color-perk-points"></span></div>
-							<div><span id="enentBuff" class=""></span></div>
-							<div><span id="enentTime" class="color-hypercubes"></span></div>
+							<div><span id="eventName" class="currency-shadow-rainbow"></span></div>
+							<div><span id="eventDescription" class="color-perk-points"></span></div>
+							<div><span id="eventBuff" class=""></span></div>
+							<div><span id="eventTime" class="color-hypercubes"></span></div>
 						</div>
 						<div id="challengeTitle" class="challenge-title active-challenge" style="position: relative;"
 							hidden="hidden">
@@ -57,7 +58,7 @@
 								onmouseout="this.style.color='#ff4d4d'">×</button>
 							<span id="challengeName"></span>
 							<div style="padding-top:0.3em;">
-								<div id="sidebarChallengeReward1" class="hidden" style="font-size: 0.9em"><span
+								<div id="sidebarChallengeReward1" class="hidden"><span
 										class="color-happiness">Happiness</span> x<span
 										id="sidebarCurrentChallengeBuff1"></span> / x<span
 										id="sidebarChallengeBuff1"></span></div>
@@ -90,17 +91,29 @@
 							<div class="sidebar-element" style="color: gray">Your age has met your lifespan; use the
 								amulet to rebirth before you pass away</div>
 						</div>
-						<div class="text-caption"><span id="ageDisplay">Age 14 Day 0</span></div>
-						<div class="sidebar-element" style="color: gray">
-							Lifespan: <span id="lifespanDisplay">70</span> years
-							<br>Real Time: <span id="realtimeDisplay">00:00:00</span>
-							<div id="fps"></div>
+
+						<div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+							<div style="min-width: 14em;">
+								<div class="text-caption"><span id="ageDisplay">Age 14 Day 0</span></div>
+								<div class="sidebar-element" style="color: gray">
+									Lifespan: <span id="lifespanDisplay">70</span> years
+									<br>Real Time: <span id="realtimeDisplay">00:00:00</span>
+									<!--div id="fps"></div-->
+								</div>
+							</div>
+							<div style="padding-top: 0.2em;">
+								<button id="pauseButton" class="w3-button button" onClick="togglePause()">Pause</button>
+								<div id="boostPanel" class="sidebar-element" style="color: gray">
+									<button id="boostButton" class="perk perk-boost" onClick="applyBoost()"><span
+											id="boostCooldownDisplay">00:00</span></button>
+
+								</div>
+							</div>
 						</div>
-						<button id="pauseButton" class="w3-button button" onClick="togglePause()">Pause</button>
-						<div id="boostPanel" class="sidebar-element" style="color: gray">
-							<button id="boostButton" class="perk perk-boost" onClick="applyBoost()">Boost</button>
-							<span style="padding-left:0.4em" id="boostCooldownDisplay">00:00</span>
+
+						<div id="infoQuickButtons">
 						</div>
+
 						<div class="text-caption" style="padding-top: 1em">Balance:
 							<span id="coinDisplay">
 								<span></span>
@@ -181,214 +194,224 @@
 									id="hypercubesDisplay"></span></div>
 							<div style="color: gray" class="sidebar-element">for Metaverse sacrifices</div>
 						</div>
-						<div id="sidebarEP" class="hidden">
-							<div style="margin-top: 0.5em; margin-bottom: 0.5em; padding-top: 0.5em">
-								<div class="color-evil text-caption">Evil Perk Points: <span class="color-evil"
-										id="evilperksDisplaySideBar"></span></div>
-								<div id="evilperksLayoutSideBar" style="padding-top:0em">
-									<div class="evilperkItem">
-										<button id="evilperkSideBar1" data-type="evil_perk" data-name="1"
-											class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
-											onclick="buyEvilPerk(1)">
-											<span>Eye Req: <span id="eyeReqSideBar" style="font-width: bold"
-													class="currency-bold epp-color"></span>y</span>
-											<span id="evilperkCostDivSideBar1"> <span id="evilperkCostSideBar1"
-													class="epp-color">1</span></span>
-										</button>
+						<div id="sidebarQuickButtons">
+							<div id="quickButtons">
+								<div style="width: 35%;">
+									<button class="w3-button button rebirth"
+										onClick="calc_offline_progress(600*1000)">(cheat)</button>
+								</div>
+								<div id="sidebarEP" class="hidden">
+									<div>
+										<div class="color-evil text-caption">Evil Perk Points: <span class="color-evil"
+												id="evilperksDisplaySideBar"></span></div>
+										<div id="evilperksLayoutSideBar" style="padding-top:0em">
+											<div class="evilperkItem">
+												<button id="evilperkSideBar1" data-type="evil_perk" data-name="1"
+													class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
+													onclick="buyEvilPerk(1)">
+													<span>Eye Req: <span id="reqSideBar1" style="font-width: bold"
+															class="currency-bold epp-color"></span>y</span>
+													<span id="evilperkCostDivSideBar1"> <span id="evilperkCostSideBar1"
+															class="epp-color">1</span></span>
+												</button>
+											</div>
+											<div class="evilperkItem">
+												<button id="evilperkSideBar2" data-type="evil_perk" data-name="2"
+													class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
+													onclick="buyEvilPerk(2)">
+													<span>Evil Req: <span id="reqSideBar2"
+															class="currency-bold epp-color"></span>y</span>
+													<span id="evilperkCostDivSideBar2"> <span id="evilperkCostSideBar2"
+															class="epp-color">1</span></span>
+												</button>
+											</div>
+											<div class="evilperkItem">
+												<button id="evilperkSideBar3" data-type="evil_perk" data-name="3"
+													class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
+													onclick="buyEvilPerk(3)">
+													<span>Void Req: <span id="reqSideBar3"
+															class="currency-bold epp-color"></span>y</span>
+													<span id="evilperkCostDivSideBar3"> <span id="evilperkCostSideBar3"
+															class="epp-color">1</span></span>
+												</button>
+											</div>
+											<div class="evilperkItem">
+												<button id="evilperkSideBar4" data-type="evil_perk" data-name="4"
+													class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
+													onclick="buyEvilPerk(4)">
+													<span>Cel Req:<span id="reqSideBar4"
+															class="currency-bold epp-color"></span>y</span>
+													<span id="evilperkCostDivSideBar4"> <span id="evilperkCostSideBar4"
+															class="epp-color">1</span></span>
+												</button>
+											</div>
+											<div class="evilperkItem">
+												<button id="evilperkSideBar5" data-type="evil_perk" data-name="5"
+													class="perk perk-sidebar evilperk evilperk-sidebar tooltip hidden"
+													onclick="buyEvilPerk(5)">
+													<span>Receive <span id="reqSideBar5"
+															class="currency-bold color-essence"></span></span>
+													<span id="evilperkCostDivSideBar5"> <span id="evilperkCostSideBar5"
+															class="epp-color">1</span></span>
+												</button>
+											</div>
+										</div>
 									</div>
-									<div class="evilperkItem">
-										<button id="evilperkSideBar2" data-type="evil_perk" data-name="2"
-											class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
-											onclick="buyEvilPerk(2)">
-											<span>Evil Req: <span id="evilReqSideBar"
-													class="currency-bold epp-color"></span>y</span>
-											<span id="evilperkCostDivSideBar2"> <span id="evilperkCostSideBar2"
-													class="epp-color">1</span></span>
-										</button>
-									</div>
-									<div class="evilperkItem">
-										<button id="evilperkSideBar3" data-type="evil_perk" data-name="3"
-											class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
-											onclick="buyEvilPerk(3)">
-											<span>Void Req: <span id="voidManipulationReqSideBar"
-													class="currency-bold epp-color"></span>y</span>
-											<span id="evilperkCostDivSideBar3"> <span id="evilperkCostSideBar3"
-													class="epp-color">1</span></span>
-										</button>
-									</div>
-									<div class="evilperkItem">
-										<button id="evilperkSideBar4" data-type="evil_perk" data-name="4"
-											class="perk perk-sidebar evilperk evilperk-sidebar tooltip"
-											onclick="buyEvilPerk(4)">
-											<span>Cel Req:<span id="celestialReqSideBar"
-													class="currency-bold epp-color"></span>y</span>
-											<span id="evilperkCostDivSideBar4"> <span id="evilperkCostSideBar4"
-													class="epp-color">1</span></span>
-										</button>
-									</div>
-									<div class="evilperkItem">
-										<button id="evilperkSideBar5" data-type="evil_perk" data-name="5"
-											class="perk perk-sidebar evilperk evilperk-sidebar tooltip hidden"
-											onclick="buyEvilPerk(5)">
-											<span>Receive <span id="essenceRewardSideBar"
-													class="currency-bold color-essence"></span></span>
-											<span id="evilperkCostDivSideBar5"> <span id="evilperkCostSideBar5"
-													class="epp-color">1</span></span>
-										</button>
-									</div>
+								</div>
+
+								<div id="rebirthButton1" class="hidden">
+									<button class="w3-button button rebirth" onClick="rebirthOne()">Touch the
+										eye</button>
+								</div>
+								<div id="rebirthButton2" class="hidden">
+									<button class="w3-button button rebirth" onClick="rebirthTwo()">Embrace evil: <span
+											class="color-evil" id="evilGainButtonDisplay"></span>
+										<div class="req-progress-container">
+											<div class="req-pending-bar"></div>
+											<div class="req-progress-bar"></div>
+										</div>
+									</button>
+								</div>
+								<div id="rebirthButton3" class="hidden">
+									<button class="w3-button button rebirth" onClick="rebirthThree()">Transcend: <span
+											class="color-essence" id="essenceGainButtonDisplay"></span>
+										<div class="req-progress-container">
+											<div class="req-pending-bar"></div>
+											<div class="req-progress-bar"></div>
+										</div>
+									</button>
+								</div>
+								<div id="rebirthButton4" class="hidden">
+									<button class="w3-button button rebirth" onClick="rebirthFour()">Collapse: <span
+											class="color-dark-matter" id="darkMatterGainButtonDisplay"></span>
+										<div class="req-progress-container">
+											<div class="req-pending-bar"></div>
+											<div class="req-progress-bar"></div>
+										</div>
+									</button>
+								</div>
+								<div id="rebirthButton5" class="hidden">
+									<button class="w3-button button rebirth" onClick="rebirthFive()">Metaverse: <span
+											id="metaversePerkPointsGainButtonDisplay"></span></button>
 								</div>
 							</div>
-						</div>
-						<div id="rebirthButton1" class="hidden">
-							<button class="w3-button button rebirth" onClick="rebirthOne()">Touch the eye</button>
-						</div>
-						<div id="rebirthButton2" class="hidden">
-							<button class="w3-button button rebirth" onClick="rebirthTwo()">Embrace evil: <span
-									class="color-evil" id="evilGainButtonDisplay"></span>
-								<div class="req-progress-container">
-									<div class="req-pending-bar"></div>
-									<div class="req-progress-bar"></div>
-								</div>
-							</button>
-						</div>
-						<div id="rebirthButton3" class="hidden">
-							<button class="w3-button button rebirth" onClick="rebirthThree()">Transcend: <span
-									class="color-essence" id="essenceGainButtonDisplay"></span>
-								<div class="req-progress-container">
-									<div class="req-pending-bar"></div>
-									<div class="req-progress-bar"></div>
-								</div>
-							</button>
-						</div>
-						<div id="rebirthButton4" class="hidden">
-							<button class="w3-button button rebirth" onClick="rebirthFour()">Collapse: <span
-									class="color-dark-matter" id="darkMatterGainButtonDisplay"></span>
-								<div class="req-progress-container">
-									<div class="req-pending-bar"></div>
-									<div class="req-progress-bar"></div>
-								</div>
-							</button>
-						</div>
-						<div id="rebirthButton5" class="hidden">
-							<button class="w3-button button rebirth" onClick="rebirthFive()">Metaverse: <span
-									id="metaversePerkPointsGainButtonDisplay"></span></button>
 						</div>
 					</div>
 
 				</div>
 				<div class="column">
 					<div id="tabcolumn" class="panel w3-margin-left tabs-tab-column">
-						<div class="w3-button w3-bar-item tabButton baritem" id="infoTabButton"
-							onClick="setTab('info')">Info</div>
-						<div class="w3-button w3-bar-item tabButton baritem" id="jobsTabButton"
-							onClick="setTab('jobs')">Hero</div>
+						<div class="w3-button w3-bar-item tabButton baritem" id="infoTabButton" onClick="setTab('info')"
+							data-short="In">Info</div>
+						<div class="w3-button w3-bar-item tabButton baritem" id="jobsTabButton" onClick="setTab('jobs')"
+							data-short="He">Hero</div>
 						<div class="w3-button w3-bar-item tabButton baritem hidden" id="skillsTabButton"
-							onClick="setTab('skills')">Skills</div>
+							onClick="setTab('skills')" data-short="Sk">Skills</div>
 						<div class="w3-button w3-bar-item tabButton baritem hidden" id="shopTabButton"
-							onClick="setTab('shop')">Shop</div>
+							onClick="setTab('shop')" data-short="Sh">Shop</div>
 						<div class="w3-button w3-bar-item tabButton baritem" id="evilperksTabButton"
-							onClick="setTab('evilperks')">Evil perks</div>
+							onClick="setTab('evilperks')" data-short="EP">Evil perks</div>
 						<div class="w3-button w3-bar-item tabButton baritem" id="challengesTabButton"
-							onClick="setTab('challenges')">Challenges</div>
+							onClick="setTab('challenges')" data-short="Ch">Challenges</div>
 						<div class="w3-button w3-bar-item tabButton baritem" id="milestonesTabButton"
-							onClick="setTab('milestones')">Milestones</div>
+							onClick="setTab('milestones')" data-short="Mi">Milestones</div>
 						<div class="w3-button w3-bar-item tabButton baritem" id="rebirthTabButton"
-							onClick="setTab('rebirth')">Amulet</div>
+							onClick="setTab('rebirth')" data-short="Am">Amulet</div>
 						<div class="w3-button w3-bar-item tabButton baritem" id="darkMatterTabButton"
-							onClick="setTab('darkMatter')">Dark Matter</div>
+							onClick="setTab('darkMatter')" data-short="DM">Dark Matter</div>
 						<div class="w3-button w3-bar-item tabButton baritem" id="metaverseTabButton"
-							onClick="setTab('metaverse')">Metaverse</div>
+							onClick="setTab('metaverse')" data-short="Me">Metaverse</div>
 						<div class="w3-button w3-bar-item tabButton baritem" id="settingsTabButton"
-							onClick="setTab('settings')">Settings</div>
+							onClick="setTab('settings')" data-short="Set">Settings</div>
 					</div>
 					<div id="maincolumn" class="panel w3-margin-left w3-margin-top w3-padding tabs-main-column">
 						<div id="hero">
 							<template class="headerRowTaskTemplate">
-								<tr style="box-sizing: inherit;">
-									<th class="rowtitle category single-line-text-pb">Job</th>
-									<th class="rowtitle">Level</th>
-									<th class="rowtitle valueType">Value type</th>
-									<th class="rowtitle maxLevel">Max</th>
-								</tr>
+								<div class="tr">
+									<div class="th rowtitle single-line-text-pb"><span class="category"></span></div>
+									<div class="th rowtitle"><span>Level</span></div>
+									<div class="th rowtitle"><span class="valueType">Value type</span></div>
+									<div class="th rowtitle maxLevel"><span>Max</span></div>
+								</div>
 							</template>
 							<template class="rowTaskTemplate">
-								<tr>
-									<td class="single-line-text">
+								<div class="tr">
+									<div class="td single-line-text">
 										<div class="progress-bar progressBar tooltip">
 											<div class="progress-fill progressFill"></div>
-											<div class="progress-text name">Task</div>
+											<span class="progress-text name">Task</span>
 										</div>
-									</td>
-									<td class="level">Level</td>
-									<td class="value">
-										<div class="effect single-line-text"></div>
+									</div>
+									<div class="td"><span class="level">Level</span></div>
+									<div class="td value">
+										<span class="effect single-line-text"></span>
 										<div class="income">
-											<span></span>
-											<span></span>
-											<span></span>
-											<span></span>
+											<span style="display: inline;"></span>
+											<span style="display: inline;"></span>
+											<span style="display: inline;"></span>
+											<span style="display: inline;"></span>
 										</div>
-									</td>
-									<td class="maxLevel">Max</td>
-								</tr>
+									</div>
+									<div class="td max-level"><span class="maxLevel"></span></div>
+								</div>
 							</template>
 							<template class="headerRowItemTemplate">
-								<tr class="item-header-row tooltip" style="box-sizing: inherit;" data-type="simple"
+								<div class="tr item-header-row tooltip" style="box-sizing: inherit;" data-type="simple"
 									data-name="Click to activate auto-buy" onclick="forceAutobuy()">
-									<th class="category single-line-text">
+									<div class="th rowtitle category single-line-text">
 										<button class="button-no-button" style="background-color:transparent;"
 											onclick="forceAutobuy()">
 											<span class="name">Item</span>
 										</button>
-									</th>
-									<th>On</th>
-									<th class="single-line-text">Effect</th>
-									<th>Expense</th>
-								</tr>
+									</div>
+									<div class="th rowtitle">On</div>
+									<div class="th rowtitle single-line-text">Effect</div>
+									<div class="th rowtitle">Expense</div>
+								</div>
 							</template>
 							<template class="rowItemTemplate">
-								<tr>
-									<td style="width:20em" class="single-line-text">
+								<div class="tr">
+									<div class="td single-line-text">
 										<button class="button item-button tooltip">
 											<span class="name"></span>
 										</button>
-									</td>
-									<td>
+									</div>
+									<div class="td">
 										<div class="outer-circle center-g-inside">
 											<div class="active inner-circle"></div>
 										</div>
-									</td>
-									<td class="effect single-line-text"></td>
-									<td class="expense">
+									</div>
+									<div class="td"><span class="effect"><span></div>
+									<div class="td expense" style="white-space: nowrap">
 										<span></span>
 										<span></span>
 										<span></span>
 										<span></span>
-									</td>
-								</tr>
+									</div>
+								</div>
 							</template>
 							<template class="headerRowMilestoneTemplate">
-								<tr style="box-sizing: inherit; height: 1em;">
-									<th>Goal</th>
-									<th class="category" style="width: 30%;">Milestone Tier</th>
-									<th>Effect</th>
-								</tr>
+								<div class="tr">
+									<div class="th rowtitle"><span>Goal</span></div>
+									<div class="th rowtitle"><span class="category"></span></div>
+									<div class="th rowtitle"><span>Effect</span></div>
+								</div>
 							</template>
 							<template class="rowMilestoneTemplate">
-								<tr style="height: 1em;">
-									<td class="essence color-essence"></td>
-									<td style="padding: 0 0 0 0.4em; width: 30%;">
+								<div class="tr">
+									<div class="td essence color-essence"></div>
+									<div class="td">
 										<div class="progress-bar progressBar tooltip" style="width: 100%;">
 											<div class="progress-fill progressFill"
 												style="background-color: green;  padding: 0.4em 0em 0 0em;"></div>
-											<div class="progress-text name">Milestone</div>
+											<span class="progress-text name">Milestone</span>
 										</div>
-									</td>
-									<td class="description" style="font-size: smaller;"></td>
-								</tr>
+									</div>
+									<div class="td description" style="font-size: smaller; line-height: 1em;"></div>
+								</div>
 							</template>
 							<template class="requiredRowTemplate">
-								<td style="padding-left: 0.8em;padding-top: 0.2rem;" colspan=5>
+								<div style="padding-left: 0.8em;padding-top: 0.2rem;" colspan=5>
 									<div class="effect">
 										<span class="w3-text-gray">Next:</span> <span class="effectValue"></span>
 									</div>
@@ -414,7 +437,7 @@
 											<div class="req-progress-bar"></div>
 										</div>
 									</div>
-								</td>
+								</div>
 							</template>
 
 							<div class="tab hidden" id="info">
@@ -422,16 +445,16 @@
 
 							<div class="tab" id="jobs">
 								<div id="jobPage" class="page">
-									<table id="jobTable" class="w3-table w3-bordered">
-									</table>
+									<div id="jobTable" class="w3-table">
+									</div>
 								</div>
 								<div id="skillPage" class="page">
-									<table id="skillTable" class="w3-table w3-bordered">
-									</table>
+									<div id="skillTable" class="w3-table">
+									</div>
 								</div>
 								<div id="itemPage" class="page">
-									<table id="itemTable" class="w3-table w3-bordered">
-									</table>
+									<div id="itemTable" class="w3-table">
+									</div>
 								</div>
 							</div>
 							<div class="tab hidden" id="skills">
@@ -504,7 +527,7 @@
 														class="perk evilperk tooltip hidden" onclick="buyEvilPerk(5)">
 														<div id="evilperkBuyDiv5">Buy to receive <span
 																id="essenceRewardPercent"></span>% of your current
-															Essence instantly</div>
+															Essence</div>
 														<div>You will receive: <span id="essenceReward"
 																class="currency-bold color-essence"></span> essence
 														</div>
@@ -711,8 +734,8 @@
 							<div id="maincolumnMilestones" class="panel">
 								<div id="milestonesTab1" class="tabMilestones">
 									<div id="milestonePage" class="page panel page-column">
-										<table id="milestoneTable" class="w3-table w3-bordered">
-										</table>
+										<div id="milestoneTable" class="w3-table">
+										</div>
 									</div>
 								</div>
 							</div>
@@ -906,9 +929,11 @@
 						<div class="tab column" style="display:none" id="darkMatter">
 							<div id="tabcolumnDarkMater" class="panel w3-margin-left" style="display: flex">
 								<div class="w3-button w3-bar-item tabButtonDarkMatter baritem w3-blue-gray"
-									id="shopTabTabButton" onClick="setTabDarkMatter('shopTab')">Shop</div>
+									id="shopTabTabButton" onClick="setTabDarkMatter('shopTab')" data-short="Shop">Shop
+								</div>
 								<div class="w3-button w3-bar-item tabButtonDarkMatter baritem"
-									id="skillTreeTabTabButton" onClick="setTabDarkMatter('skillTreeTab')">Abilities
+									id="skillTreeTabTabButton" onClick="setTabDarkMatter('skillTreeTab')"
+									data-short="Abilities">Abilities
 								</div>
 							</div>
 							<div id="maincolumnDarkMatter" class="panel w3-margin-left w3-margin-top">
@@ -1153,9 +1178,11 @@
 						<div class="tab column" style="display:none" id="metaverse">
 							<div id="tabcolumnMetaverse" class="panel w3-margin-left" style="display: flex">
 								<div class="w3-button w3-bar-item tabButtonMetaverse baritem w3-blue-gray"
-									id="metaverseTab1TabButton" onClick="setTabMetaverse('metaverseTab1')">Altar</div>
+									id="metaverseTab1TabButton" onClick="setTabMetaverse('metaverseTab1')"
+									data-short="Altar">Altar</div>
 								<div class="w3-button w3-bar-item tabButtonMetaverse baritem"
-									id="metaverseTab2TabButton" onClick="setTabMetaverse('metaverseTab2')">Perks</div>
+									id="metaverseTab2TabButton" onClick="setTabMetaverse('metaverseTab2')"
+									data-short="Perks">Perks</div>
 							</div>
 							<div id="maincolumnMetaverse" class="panel w3-margin-left w3-margin-top">
 								<div id="metaverseTab1" class="tabMetaverse">
@@ -1316,11 +1343,12 @@
 						<div class="tab column" style="display:none" id="settings">
 							<div id="tabcolumnSettings" class="panel w3-padding page-column">
 								<div class="w3-button w3-bar-item tabButtonSettings baritem w3-blue-gray"
-									id="settingsTabTabButton" onClick="setTabSettings('settingsTab')">Settings</div>
+									id="settingsTabTabButton" onClick="setTabSettings('settingsTab')"
+									data-short="Settings">Settings</div>
 								<div class="w3-button w3-bar-item tabButtonSettings baritem" id="statsTabTabButton"
-									onClick="setTabSettings('statsTab')">Stats</div>
+									onClick="setTabSettings('statsTab')" data-short="Stats">Stats</div>
 								<div class="w3-button w3-bar-item tabButtonSettings baritem" id="changelogTabTabButton"
-									onClick="setTabSettings('changelogTab')">Changelog</div>
+									onClick="setTabSettings('changelogTab')" data-short="Changelog">Changelog</div>
 							</div>
 							<div id="maincolumnSettings" class="panel w3-margin-left w3-margin-top">
 
@@ -1368,10 +1396,19 @@
 
 											<div
 												style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4em;">
-												<span style="color: #aaa;">Require Shift for Tooltip</span>
+												<span id="RequireShiftforTooltip" style="color: #aaa;">Require Shift for
+													Tooltip</span>
 												<input id="settingsRequireShiftForTooltip" type="checkbox"
 													style="width:1.5em; height:1.5em; cursor: pointer;"
 													onclick="setRequireShiftForTooltip(this.checked)" />
+											</div>
+
+											<div
+												style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.4em;">
+												<span style="color: #aaa;">Turbo Animations</span>
+												<input id="settingsTaskAnimations" type="checkbox"
+													style="width:1.5em; height:1.5em; cursor: pointer;"
+													onclick="setTaskAnimations(this.checked)" />
 											</div>
 
 											<div
@@ -1432,11 +1469,11 @@
 												<span style="color: #aaa;">Color Scheme</span>
 												<div class="btn-group" style="display: flex; gap: 2px;">
 													<button class="w3-button button Theme"
-														onClick="setTheme(0, true)">Light</button>
+														onClick="setTheme(0)">Light</button>
 													<button class="w3-button button Theme"
-														onClick="setTheme(1, true)">Dark</button>
-													<button class="w3-button button Theme"
-														onClick="setTheme(2, true)">Color Blind</button>
+														onClick="setTheme(1)">Dark</button>
+													<button class="w3-button button Theme" onClick="setTheme(2)">Color
+														Blind</button>
 												</div>
 											</div>
 
@@ -1497,7 +1534,7 @@
 											</div>
 										</div>
 										<div class="panel w3-padding challenge-header">
-											<div id="fpsCounter" style="font-size: smaller; color: #555; ">FPS: --</div>
+											<!--div id="fpsCounter" style="font-size: smaller; color: #555; ">FPS: --</div-->
 											<span id="version" style="font-size: smaller; color: #555; ">Version:
 												2.7.0</span>
 										</div>
@@ -1592,7 +1629,8 @@
 											</ul>
 										</div>
 										<div id="NextEvents">
-											<ul>
+											<div>Next Events:</div>
+											<ul class="events-list">
 												<li id="NextEvent0" hidden="hidden"></li>
 												<li id="NextEvent1"></li>
 												<li id="NextEvent2"></li>
@@ -1648,6 +1686,7 @@
 	<script type="text/javascript" src="js/el.js"></script>
 	<script type="text/javascript" src="js/changelog.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/ui_cache.js"></script>
 	<script type="text/javascript" src="js/ui_requirements.js"></script>
 	<script type="text/javascript" src="js/ui_tooltip.js"></script>
 	<script type="text/javascript" src="js/ui.js"></script>
@@ -1660,7 +1699,11 @@
 	<script type="text/javascript" src="js/metaverse.js"></script>
 	<script type="text/javascript" src="js/tooltips.js"></script>
 	<script type="text/javascript" src="js/milestones.js"></script>
+	<script type="text/javascript" src="js/saveexport.js"></script>
+	<script type="text/javascript" src="js/saveman.js"></script>
 	<script type="text/javascript" src="js/data.js"></script>
+	<script type="text/javascript" src="js/offline.js"></script>
+	<script type="text/javascript" src="js/game.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 </body>
 

@@ -13,17 +13,17 @@ function getHypercubeGeneration() {
 }
 
 function getHypercubeGenerationAvailable() {
-    if (!gameData.requirements["Rebirth button 5"].isCompleted())
+    if (!allowRebirth(5))
         return 0
     return getHypercubeGeneration()
 }
 
 function getNextPowerOfNumber(number, add_power = 0) {
-    return Math.pow(10, add_power + Math.ceil(Math.log10(number)))
+    return pow(10, add_power + ceil(log10(number)))
 }
 
 function getTimeTillNextHypercubePower(add_power = 0) {
-    return (getNextPowerOfNumber(gameData.hypercubes, add_power) - gameData.hypercubes) / (getHypercubeGeneration() * getUnpausedGameSpeed())
+    return (getNextPowerOfNumber(gameData.hypercubes, add_power) - gameData.hypercubes) / (getHypercubeGeneration() * gameData.game_speed)
 }
 
 function getBoostTimeSeconds() {
@@ -54,7 +54,7 @@ function applyBoost() {
 
 // shop
 function reduceBoostCooldownCost() {
-    return 1000 * Math.pow(3, gameData.metaverse.boost_cooldown_modifier - 1)
+    return 1000 * pow(3, gameData.metaverse.boost_cooldown_modifier - 1)
 }
 
 function canBuyReduceBoostCooldown() {
@@ -73,7 +73,7 @@ function buyReduceBoostCooldown() {
 
 
 function boostDurationCost() {
-    return 5000 * Math.pow(5, gameData.metaverse.boost_timer_modifier - 1)
+    return 5000 * pow(5, gameData.metaverse.boost_timer_modifier - 1)
 }
 
 function canBuyBoostDuration() {
@@ -89,7 +89,7 @@ function buyBoostDuration() {
 
 
 function hypercubeGainCost() {
-    return 800 * Math.pow(1.5, gameData.metaverse.hypercube_gain_modifier - 1)
+    return 800 * pow(1.5, gameData.metaverse.hypercube_gain_modifier - 1)
 }
 
 function canBuyHypercubeGain() {
@@ -104,11 +104,11 @@ function buyHypercubeGain() {
 }
 
 function evilTranGain() {
-    return (gameData.metaverse.evil_tran_gain == 0) ? 0 : 250000 * Math.pow(10, gameData.metaverse.evil_tran_gain)
+    return (gameData.metaverse.evil_tran_gain == 0) ? 0 : 250000 * pow(10, gameData.metaverse.evil_tran_gain)
 }
 
 function evilTranCost() {
-    return 100000000 * Math.pow(10, gameData.metaverse.evil_tran_gain)
+    return 100000000 * pow(10, gameData.metaverse.evil_tran_gain)
 }
 
 function canBuyEvilTran() {
@@ -123,11 +123,11 @@ function buyEvilTran() {
 }
 
 function essenceMultGain() {
-    return (gameData.metaverse.essence_gain_modifier == 0) ? 1 : Math.pow(10, gameData.metaverse.essence_gain_modifier)
+    return (gameData.metaverse.essence_gain_modifier == 0) ? 1 : pow(10, gameData.metaverse.essence_gain_modifier)
 }
 
 function essenceMultCost() {
-    return 1e9 * Math.pow(10, gameData.metaverse.essence_gain_modifier)
+    return 1e9 * pow(10, gameData.metaverse.essence_gain_modifier)
 }
 
 function canBuyEssenceMult() {
@@ -159,11 +159,11 @@ function buyChallengeAltar() {
 
 
 function darkMatterMultGain() {
-    return (gameData.metaverse.dark_mater_gain_modifer == 0) ? 1 : Math.pow(10, gameData.metaverse.dark_mater_gain_modifer)
+    return (gameData.metaverse.dark_mater_gain_modifer == 0) ? 1 : pow(10, gameData.metaverse.dark_mater_gain_modifer)
 }
 
 function darkMatterMultCost() {
-    return 1e19 * Math.pow(10, gameData.metaverse.dark_mater_gain_modifer)
+    return 1e19 * pow(10, gameData.metaverse.dark_mater_gain_modifer)
 }
 
 function canBuyDarkMatterMult() {
@@ -183,7 +183,7 @@ function getMetaversePerkPointsGain() {
     if (gameData.essence >= 1e90)
         return (gameData.perks.more_perk_points == 1 ? 10 : 1)
             * (gameData.perks.double_perk_points_gain == 1 ? 2 : 1)
-            * (Math.floor(Math.log10(gameData.essence)) - 89)
+            * (floor(log10(gameData.essence)) - 89)
             * (gameData.essence >= 1e200 ? 4 : 1)
 
     return 0
@@ -264,14 +264,6 @@ function buyPerk(perkName) {
         if (canBuyPerk(perkName)) {
             gameData.perks_points -= getPerkCost(perkName)
             gameData.perks[perkName] = 1
-
-            /*if (perkName == "both_dark_mater_skills") {
-                buySpeedOfLife(3)
-                buyYourGreatestDebt(3)
-                buyEssenceCollector(3)
-                buyExplosionOfTheUniverse(3)
-                buyMultiverseExplorer(3)
-            }*/
         }
     }
     else {
@@ -316,23 +308,29 @@ function getBoostCooldownString() {
         : (gameData.boost_cooldown <= 0 ? "Ready!" : "Cooldown: " + formatTime(gameData.boost_cooldown))
 }
 
+function getBoostCooldownButtonString() {
+    return gameData.boost_active
+        ? formatTime(gameData.boost_timer)
+        : (gameData.boost_cooldown <= 0 ? "Ready!" : formatTime(gameData.boost_cooldown))
+}
+
 function getTimeIsAFlatCircleXP() {
     if (gameData.active_challenge == "the_darkest_time")
         return 1
 
-    return gameData.requirements["Time is a flat circle"].isCompleted() ? 1e50 : 1
+    return gameData.requirements["Time is a flat circle"].completed ? 1e50 : 1
 }
 
 function getUnspentPerksDarkmatterGainBuff() {
     const effect = softcap(gameData.perks_points * 0.0027 + 2, 75, 0.01)
 
-    return gameData.requirements["The End is near"].isCompleted() ? Math.pow(10, effect) : 1
+    return gameData.requirements["The End is near"].completed ? pow(10, effect) : 1
 }
 
 function getHypercubeCap(next = 0) {
     if (getTotalPerkPoints() >= 1 || (next > 0 && getMetaversePerkPointsGain() > 0))
         return Infinity
 
-    return 1e7 * Math.pow(10, (gameData.rebirthFiveCount + next) * 3)
+    return 1e7 * pow(10, (gameData.rebirthFiveCount + next) * 3)
 }
 

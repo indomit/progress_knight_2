@@ -25,11 +25,6 @@
     cursor: pointer;
 }
 
-.dark .w3-bordered tr,
-.w3-table-all tr {
-    border-bottom: 0 solid rgb(73, 73, 73);
-}
-
 .dark .w3-button:hover {
     background-color: rgb(82, 82, 82) !important;
 }
@@ -62,4 +57,12 @@
 
 .dark .button-collapse:hover {
     background-color: rgb(85, 62, 136) !important;
+}
+
+
+.dark .btn:disabled,
+.dark .button:disabled:not(.w3-button) {
+    background: #2a2a2a !important;
+    color: #666666 !important;
+    border: 0.0625em solid #444444 !important;
 }

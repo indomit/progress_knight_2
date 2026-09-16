@@ -1,46 +1,74 @@
-Date.prototype.addHours = function (h) {
-    this.setHours(this.getHours() + h);
-    return this;
-}
+const log = Math.log;
+const log10 = Math.log10;
+const log2 = Math.log2;
+const pow = Math.pow;
+const exp = Math.exp;
+const max = Math.max;
+const min = Math.min;
+const floor = Math.floor;
+const ceil = Math.ceil;
+const round = Math.round;
+const random = Math.random;
+const abs = Math.abs;
+const imul = Math.imul;
 
 function softcap(value, cap, power = 0.5) {
     if (value <= cap) return value
 
-    return Math.pow(value, power) * Math.pow(cap, 1 - power)
+    return pow(value, power) * pow(cap, 1 - power)
 }
 
 const POWERS_OF_10 = [1, 10, 100, 1000];
 
+/*
 function fastFloorToString(number, decimals) {
     const factor = POWERS_OF_10[decimals];
 
-    return (Math.floor(number * factor) / factor).toFixed(decimals);
-    //return `${Math.floor(number * factor) / factor}`;
+    return (floor(number * factor) / factor).toFixed(decimals);
+}*/
+
+
+function fastFloorToString(number, decimals) {
+    if (decimals === 0) return String(Math.floor(number));
+
+    const factor = POWERS_OF_10[decimals];
+    const floored = Math.floor(number * factor);
+
+    const str = String(floored);
+
+    const splitIndex = str.length - decimals;
+    const whole = str.slice(0, splitIndex);
+    const frac = str.slice(splitIndex);
+
+    return `${whole || "0"}.${frac.padEnd(decimals, "0")}`;
 }
 
+
 function format(number, decimals = 1) {
+    if (number === Infinity)
+        return "Infinity"
     const units = ["", "k", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "O", "N", "D", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Od", "Nd", "V", "Uv", "Dv", "Tv",
         "Qav", "Qiv", "Sxv", "Spv", "Ov", "Nv", "Tr", "Ut", "Dt", "Tt"]
 
     // what tier? (determines SI symbol)
-    const tier = Math.log10(number) / 3 | 0;
+    const tier = log10(number) / 3 | 0;
     if (tier <= 0) return fastFloorToString(number, decimals)
 
     if ((gameData.settings.numberNotation == 0 || tier < 3) && (tier < units.length)) {
         const suffix = units[tier];
-        const scale = Math.pow(10, tier * 3);
+        const scale = pow(10, tier * 3);
         const scaled = number / scale;
         return fastFloorToString(scaled, decimals) + suffix;
     } else {
         if (gameData.settings.numberNotation == 1) {
-            const exp = Math.log10(number) | 0;
-            const scale = Math.pow(10, exp);
+            const exp = log10(number) | 0;
+            const scale = pow(10, exp);
             const scaled = number / scale;
             return fastFloorToString(scaled, decimals) + "e" + exp;
         }
         else {
-            const exp = Math.log10(number) / 3 | 0;
-            const scale = Math.pow(10, exp * 3);
+            const exp = log10(number) / 3 | 0;
+            const scale = pow(10, exp * 3);
             const scaled = number / scale;
             return fastFloorToString(scaled, decimals) + "e" + exp * 3;
         }
@@ -55,8 +83,8 @@ const COINS_DATA = [
         { "name": "c", "color": "#a15c2f", "value": 1 },
     ],
     [
-        { "name": " 𒀱", "color": "#ffffff", "value": 1e62, "class": "currency-shadow-rainbow" },
-        { "name": " 𒀱", "color": "#ffffff", "value": 1e47, "class": "currency-shadow" },
+        { "name": " 𒅒", "color": "#ffffff", "value": 1e62, "class": "currency-shadow-rainbow" },
+        { "name": " 𒅒", "color": "#ffffff", "value": 1e47, "class": "currency-shadow" },
         { "name": " 𒇫", "color": "#66ccff", "value": 1e41, "class": "currency-shadow" },
         { "name": "🜊", "color": "#00ff00", "value": 1e35, "class": "currency-bold" },
         { "name": "✹", "color": "#ffffcc", "value": 1e30 },
@@ -87,7 +115,7 @@ function formatWhole(number, decimals = 1) {
     return format(number, 0);
 }
 
-function formatCoins(element, coins) {
+function formatCoins(element, coins, decimals = 2) {
     const renderPayload = [];
 
     switch (gameData.settings.currencyNotation) {
@@ -99,11 +127,11 @@ function formatCoins(element, coins) {
                 const m = money2[i];
                 const prev = money2[i - 1];
                 const diff = prev ? prev.value / m.value : Infinity;
-                const amount = Math.floor(coins / m.value) % diff;
+                const amount = floor(coins / m.value) % diff;
 
                 if (amount > 0 || (coins < 1 && m.value === 1)) {
                     renderPayload.push({
-                        text: (m.prefix ?? "") + format(amount, amount < 1000 ? 0 : 2) + m.name,
+                        text: (m.prefix ?? "") + format(amount, amount < 1000 ? 0 : decimals) + m.name,
                         color: m.color,
                         className: m.class || ""
                     });
@@ -114,7 +142,7 @@ function formatCoins(element, coins) {
         }
         case 3: {
             renderPayload.push({
-                text: "$" + format(coins / 100, 2),
+                text: "$" + format(coins / 100, decimals),
                 color: "#E5C100",
                 className: ""
             });
@@ -159,7 +187,7 @@ function formatCoins(element, coins) {
 }
 
 function safeFormatCoins(elementId, coins) {
-    const element = getElementCachedById(elementId);
+    const element = elById(elementId);
     formatCoins(element, coins);
 }
 
@@ -168,33 +196,33 @@ function formatTime(sec_num, show_ms = false) {
     if (sec_num < 0) return '-' + formatTime(-sec_num, show_ms);
 
     if (sec_num >= 31536000000) { // 1000 * 31536000
-        let years = Math.floor(sec_num / 31536000);
+        let years = floor(sec_num / 31536000);
         return formatWhole(years) + ' years';
     }
 
     let prefix = '';
 
     if (sec_num >= 31536000) {
-        let years = Math.floor(sec_num / 31536000);
+        let years = floor(sec_num / 31536000);
         prefix += years + 'y ';
         sec_num %= 31536000;
     }
 
     if (sec_num >= 86400) {
-        let days = Math.floor(sec_num / 86400);
+        let days = floor(sec_num / 86400);
         prefix += days + 'd ';
         sec_num %= 86400;
     }
 
     let hasHours = sec_num > 3600 || prefix.length > 0;
 
-    let hours = Math.floor(sec_num / 3600);
+    let hours = floor(sec_num / 3600);
     sec_num %= 3600;
 
-    let minutes = Math.floor(sec_num / 60);
-    let seconds = Math.floor(sec_num % 60);
+    let minutes = floor(sec_num / 60);
+    let seconds = floor(sec_num % 60);
 
-    let ms = Math.floor((sec_num - Math.floor(sec_num)) * 1000);
+    let ms = floor((sec_num - floor(sec_num)) * 1000);
     let mss = (show_ms ? "." + ms.toString().padStart(3, "0") : "");
 
     let hoursStr = hours < 10 ? "0" + hours : hours;
@@ -215,7 +243,7 @@ function formatLevel(level) {
 
 function formatTreshold(number, decimals = 1, treshold = 100000) {
     if (number < treshold)
-        return formatLevel(Math.floor(number))
+        return formatLevel(floor(number))
     else
         return format(number, decimals)
 }
@@ -232,8 +260,8 @@ function formatAge(days) {
 function formatGameDays(days) {
     if (days === Infinity || isNaN(days)) return "Infinity"
 
-    const years = Math.floor(days / 365)
-    const remainingDays = Math.floor(days % 365)
+    const years = floor(days / 365)
+    const remainingDays = floor(days % 365)
 
     if (years > 10000) {
         return format(years) + " years"
@@ -244,28 +272,28 @@ function formatGameDays(days) {
     }
 }
 
-function getBaseLog(x, y) {
-    return Math.log(y) / Math.log(x);
-}
-
 function yearsToDays(years) {
     return years * 365
 }
 
 function daysToYears(days) {
-    return Math.floor(days / 365)
+    return floor(days / 365)
 }
 
 function getCurrentDay(days) {
-    return Math.floor(days - daysToYears(days) * 365)
+    return floor(days - daysToYears(days) * 365)
 }
 
-function removeSpaces(string) {
-    return string.replaceAll(' ', '')
-}
-
-function removeStrangeCharacters(string) {
-    return string.replaceAll("'", "");
+function toId(str) {
+    let result = '';
+    for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i);
+        // 32 — код пробела, 39 — код одинарной кавычки
+        if (code !== 32 && code !== 39) {
+            result += str[i];
+        }
+    }
+    return result;
 }
 
 function bigIntToExponential(value, fractionDigits = 2) {
@@ -287,10 +315,10 @@ function bigIntToExponential(value, fractionDigits = 2) {
     if (str.length > requiredLength) {
         const significand = str.slice(0, requiredLength + 1);
 
-        let num = Math.round(parseInt(significand) / 10);
+        let num = round(parseInt(significand) / 10);
 
         if (num.toString().length > requiredLength) {
-            num = Math.round(num / 10);
+            num = round(num / 10);
             finalExp++;
         }
         roundedStr = num.toString();
@@ -350,7 +378,7 @@ function getFormattedChallengeTaskGoal(taskName, level) {
     if (level < 100000)
         return taskName + " lvl " + formatLevel(level)
     else
-        return "Great " + taskName + " lvl " + formatLevel(Math.ceil(level / 1000))
+        return "Great " + taskName + " lvl " + formatLevel(ceil(level / 1000))
 }
 
 function getFormattedTitle(parameter) {
@@ -363,15 +391,15 @@ function getFormattedTitle(parameter) {
 function splitmix32(a) {
     return function () {
         a |= 0; a = a + 0x9e3779b9 | 0;
-        var t = a ^ a >>> 16; t = Math.imul(t, 0x21f0aaad);
-        t = t ^ t >>> 15; t = Math.imul(t, 0x735a2d97);
+        var t = a ^ a >>> 16; t = imul(t, 0x21f0aaad);
+        t = t ^ t >>> 15; t = imul(t, 0x735a2d97);
         return ((t = t ^ t >>> 15) >>> 0) / 4294967296;
     }
 }
 
 function getRandomInt(seed, limit) {
     var rand = splitmix32(seed)
-    return Math.floor(rand() * limit)
+    return floor(rand() * limit)
 }
 
 function getDynamicProgress(current, required) {
@@ -384,13 +412,43 @@ function getDynamicProgress(current, required) {
         return (current / required) * 100
     }
 
-    const logCurrent = Math.log10(current)
-    const logRequired = Math.log10(required)
+    const logCurrent = log10(current)
+    const logRequired = log10(required)
 
     if (logRequired - 99 > 0) {
         const percent = ((logCurrent - 99) / (logRequired - 99)) * 100
-        return Math.min(Math.max(percent, 0), 100)
+        return min(max(percent, 0), 100)
     }
 
     return 100
+}
+
+function copyTextToClipboard(text) {
+    return navigator.clipboard.writeText(text);
+}
+
+function peekSettingFromSave(setting) {
+    try {
+        const save = localStorage.getItem("gameDataSave");
+        if (!save) return gameData?.settings?.[setting];
+
+        const gameDataSave = JSON.parse(save);
+        return gameDataSave?.settings?.[setting] ?? gameData?.settings?.[setting];
+    } catch (error) {
+        console.error("peekSettingFromSave ERROR, BUT WHY?!");
+        console.error(error);
+        try {
+            console.log(localStorage.getItem("gameDataSave"));
+        } catch (e) {
+            console.log("LocalStorage is blocked completely");
+        }
+    }
+}
+
+function getQuerySelector(name) {
+    return "#row" + toId(name)
+}
+
+function getRowByName(name) {
+    return el(getQuerySelector(name))
 }

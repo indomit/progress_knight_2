@@ -86,13 +86,6 @@
   border: 0.0625em solid #555555;
 }
 
-.hidden {
-  display: none !important;
-  opacity: 0;
-  pointer-events: none;
-}
-
-
 .universal-card {
   border: 0.125em solid #4444ff;
   box-shadow: 0 0 1.25em rgba(68, 68, 255, 0.2);
@@ -108,8 +101,9 @@
 }
 
 /* Disabled state for buttons */
-.btn:disabled {
-  background: #2a2a2a !important;
+.btn:disabled,
+.button:disabled:not(.w3-button) {
+  background: #ccc !important;
   color: #666666 !important;
   border: 0.0625em solid #444444 !important;
   box-shadow: none !important;
@@ -117,6 +111,15 @@
   transform: none !important;
   filter: none !important;
   pointer-events: none;
+
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
+.item-button:disabled:not(.w3-button) * {
+  color: inherit !important;
 }
 
 /* Styled text input for the modal */

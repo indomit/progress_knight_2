@@ -2,7 +2,7 @@ let activeTooltipData = null;
 let activeTooltipType = null;
 
 function initTooltip() {
-    const tooltip = getElementCachedById("globalTooltip");
+    const tooltip = elById("globalTooltip");
     let isVisible = false;
     let hideTimeout = null;
     let showTimeout = null;
@@ -24,19 +24,15 @@ function initTooltip() {
         return
 
         if (isHiding != isHiding_old) {
-            console.log(`isHiding ${isHiding_old}->${isHiding} (${src})`)
             isHiding_old = isHiding
         }
         if (lockedFlipX != lockedFlipX1_old) {
-            console.log(`lockedFlipX ${lockedFlipX1_old}->${lockedFlipX} (${src})`)
             lockedFlipX1_old = lockedFlipX
         }
         if (lockedShiftY != lockedShiftY1_old) {
-            console.log(`lockedShiftY ${lockedShiftY1_old}->${lockedShiftY} (${src})`)
             lockedShiftY1_old = lockedShiftY
         }
         if (lockedFlipY != lockedFlipY1_old) {
-            console.log(`lockedFlipY ${lockedFlipY1_old}->${lockedFlipY} (${src})`)
             lockedFlipY1_old = lockedFlipY
         }
     }
@@ -46,23 +42,6 @@ function initTooltip() {
         const padding = 15;
         let x = e.clientX + padding;
         let y = e.clientY + padding;
-
-        // // Стандартная проверка: если не влезает справа -> переносим влево
-        // if (x + tooltip.offsetWidth > window.innerWidth) {
-        //     x = e.clientX - tooltip.offsetWidth - padding;
-
-        //     // НОВАЯ ПРОВЕРКА: если после переноса влево он вылез за левый край экрана (x < 0)
-        //     if (x < 0) {
-        //         x = padding; // Сбрасываем координату X к левому краю экрана (с отступом)
-        //         y = e.clientY + padding + 25; // Смещаем ниже, чтобы палец его не перекрывал
-        //     }
-        // }
-
-        // // Проверка нижнего края экрана
-        // if (y + tooltip.offsetHeight > window.innerHeight) {
-        //     y = e.clientY - tooltip.offsetHeight - padding;
-        // }
-
 
         if (!isHiding) {
             lockedFlipX = (x + tooltip.offsetWidth > window.innerWidth);
@@ -134,12 +113,12 @@ function initTooltip() {
 
             if (showTimeout) clearTimeout(showTimeout);
 
-            if (isVisible || instant) {
-                tooltip.classList.add("visible");
+            if (isVisible || instant) {                
+                safeUpdateClass(tooltip, "visible", true)
                 isVisible = true;
             } else {
                 showTimeout = setTimeout(function () {
-                    tooltip.classList.add("visible");
+                    safeUpdateClass(tooltip, "visible", true)
                     isVisible = true;
                 }, 300);
             }
@@ -154,7 +133,7 @@ function initTooltip() {
         isHiding = true;
 
         hideTimeout = setTimeout(function () {
-            tooltip.classList.remove("visible");
+            safeUpdateClass(tooltip, "visible", false)
             isVisible = false;
 
             activeTooltipData = null;
@@ -226,7 +205,7 @@ function buildResourceTooltipHTML(resourceName, currentValue, requiredValue, pen
     result += `<div><span class="label">Required:</span> <span class="${renderResult.targetColorClass}">${format(requiredValue)}</span></div>            
         </div>`
 
-    if (resourceName == "Essence" && gameData.requirements["Faint Hope"].isCompleted()) {
+    if (resourceName == "Essence" && gameData.requirements["Faint Hope"].completed) {
 
         const faintHopeTime = getFaintHopeTime()
         const faintHopeEffect = milestoneData["Faint Hope"].getEffect()
@@ -334,7 +313,7 @@ function renderTooltipContentDarkOrbs(tooltip, task, type) {
     const lifeCoachCost = getLifeCoachCost()
     const gottaBeFastCost = getGottaBeFastCost()
 
-    const nextCost = Math.min(dealWithChairmanCost, giftFromGodCost, lifeCoachCost, gottaBeFastCost)
+    const nextCost = min(dealWithChairmanCost, giftFromGodCost, lifeCoachCost, gottaBeFastCost)
     const percent = getDynamicProgress(gameData.dark_orbs, nextCost)
 
     let result = { progressPercent: percent, pendingPercent: percent, targetColorClass: "color-dark-orbs" };
@@ -554,7 +533,7 @@ function calculateETA(current, required, genSpeed) {
         percent = (current / required) * 100;
         if (genSpeed > 0) {
             const totalGameDaysLeft = (required - current) / genSpeed;
-            const gameSpeed = getUnpausedGameSpeed();
+            const gameSpeed = gameData.game_speed;
             if (gameSpeed > 0) {
                 const seconds = totalGameDaysLeft / gameSpeed;
                 readyInRealTime = `<span class="w3-text-orange">${formatTime(seconds)}</span>`;
@@ -629,8 +608,8 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
                 `;
             } else {
                 const xpProgress = reqTask.getTaskXpProgressFraction();
-                const exactLevel = reqTask.level + Math.min(Math.max(xpProgress, 0), 0.999);
-                const totalCurrent = Math.min(exactLevel, curReqVal);
+                const exactLevel = reqTask.level + min(max(xpProgress, 0), 0.999);
+                const totalCurrent = min(exactLevel, curReqVal);
                 progressPercent += getDynamicProgress(totalCurrent, curReqVal);
                 reqCount++;
 
@@ -641,7 +620,7 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
 
                 if (daysLeftForCurrentLevel !== Infinity) {
                     goalGameTime = formatGameDays(totalGameDaysLeft);
-                    const gameSpeed = getUnpausedGameSpeed();
+                    const gameSpeed = gameData.game_speed;
                     if (gameSpeed > 0) goalRealTime = formatTime(totalGameDaysLeft / gameSpeed);
                     const lifespan = getLifespan();
                     if (totalGameDaysLeft + gameData.days > lifespan) {
@@ -673,14 +652,14 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
         `;
         let goalGameTime = "Infinity";
         let goalRealTime = "Infinity";
-        const moneyLeft = Math.max(curRequiredValue - gameData.coins, 0);
+        const moneyLeft = max(curRequiredValue - gameData.coins, 0);
 
         if (moneyLeft !== Infinity) {
-            let realIncome = getNet();
+            let realIncome = getTotalNet();
             if (realIncome > 0) {
                 let totalGameDaysLeft = moneyLeft / realIncome;
                 goalGameTime = formatGameDays(totalGameDaysLeft);
-                const gameSpeed = getUnpausedGameSpeed();
+                const gameSpeed = gameData.game_speed;
                 if (gameSpeed > 0) goalRealTime = formatTime(totalGameDaysLeft / gameSpeed);
                 const lifespan = getLifespan();
                 if (totalGameDaysLeft + gameData.days > lifespan) {
@@ -735,7 +714,7 @@ function renderTooltipContentEvilPerk(tooltipEl, data, type) {
         const gen = getEvilPerksGeneration();
         if (gen > 0) {
             const totalGameDaysLeft = (perkCost - gameData.evil_perks_points) / gen;
-            const gameSpeed = getUnpausedGameSpeed();
+            const gameSpeed = gameData.game_speed;
             if (gameSpeed > 0) {
                 const seconds = totalGameDaysLeft / gameSpeed;
                 readyInRealTime = `<span class="w3-text-orange">${formatTime(seconds)}</span>`;
@@ -805,7 +784,7 @@ function renderTooltipContentEvilPerk(tooltipEl, data, type) {
     }
 
     let tooltipHTML = `
-        <div class="job-tooltip-header">${header[i]}<span class="tooltip-lvl-span ${perkCost == Infinity ? "w3-text-orange" : ""}">Rank. ${getEvilPerkRank(i)}</span></div>
+        <div class="job-tooltip-header">${header[i]}<span style="padding-left:1em;" class="tooltip-lvl-span ${perkCost == Infinity ? "w3-text-orange" : ""}">Rank. ${getEvilPerkRank(i)}</span></div>
         <div class="shop-tooltip-body" style="text-align: left;">${body}</div>
         <div class="shop-tooltip-footer">
             ${footer}

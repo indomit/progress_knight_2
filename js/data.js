@@ -1,11 +1,22 @@
 ﻿var gameData = {
+    /** @type {any} */
     taskData: {},
+    /** @type {any} */
     itemData: {},
+    /** @type {any} */
     savedMaxLevels: {},
+    /** @type {any} */
     viewedTabs: {},
+    /** @type {any} */
+    requirements: {},
+
+    /** @type {string[]} */
+    completed_requirements: [],
+    is_game_over: false,
 
     coins: 0,
     days: 365 * 14,
+    is_alive: true,
     totalDays: 0,
     evil: 0,
     evil_perks_points: 0,
@@ -55,8 +66,9 @@
     rebirthFiveCount: 0,
     rebirthFiveTime: 0,
 
-    currentJob: null,
+    /** @type {any} */
     currentProperty: null,
+    /** @type {any} */
     currentMisc: null,
 
     settings: {
@@ -69,8 +81,11 @@
         fontSize: 3,
         selectedTab: 'jobs',
         settingsTab: 'settingsTab',
+        darkMatterTab: 'shopTab',
+        metaverseTab: 'metaverseTab1',
         enableKeybinds: false,
         requireShiftForTooltip: false,
+        taskAnimations: true,
     },
     stats: {
         startDate: new Date(),
@@ -96,6 +111,7 @@
         legends_never_die: 0,
         the_darkest_time: 0,
     },
+    challengeBonuses: {},
     dark_matter_shop: {
         // Upgradables.
         dark_orb_generator: 0,
@@ -134,7 +150,8 @@
     boost_active: false,
 
     save_date_time: 0,
-    game_over_viewed: false
+    game_over_viewed: false,
+    game_speed: 0
 }
 
 var tempData = {}
@@ -142,6 +159,7 @@ var tempData = {}
 var autoBuyEnabled = true
 
 const updateSpeed = 20
+const gameTickLength = 1000 / updateSpeed // 50 ms
 const baseLifespan = 365 * 70
 const baseGameSpeed = 4
 const heroIncomeMult = 2.5e18
@@ -155,9 +173,19 @@ const tabToRequirementMap = {
     'metaverse': 'Metaverse'
 }
 
-const permanentUnlocks = ["Quick task display", "Evil perks", "Rebirth tab", "Dark Matter", "Dark Matter Skills", "Dark Matter Skills2", "Metaverse", "Metaverse Perks", "Metaverse Perks Button", "Congratulations"]
-const metaverseUnlocks = ["Reduce Boost Cooldown", "Increase Boost Duration", "Increase Hypercube Gain", "Gain evil at new transcension",
-    "Essence gain multiplier", "Challenges are not reset", "Dark Matter gain multiplier"]
+
+const permanentUnlocks = ["Quick task display", "Evil perks", "Evil perk essence", "Evil perk essence SideBar", "Rebirth tab", "Challenges", "Milestones",
+    "Dark Matter", "Dark Matter Skills", "Dark Matter Skills2",
+
+    // sidebar resources
+    "Evil info", "Essence info", "Dark Matter info", "Dark Orbs info", "Hypercubes info",
+
+    // challenge cards
+    "Challenge1", "Challenge2", "Challenge3", "Challenge4", "Challenge5", "Challenge6",
+
+    // mataverse unlocks
+    "Metaverse", "Reduce Boost Cooldown", "Increase Boost Duration", "Increase Hypercube Gain", "Gain evil at new transcension",
+    "Essence gain multiplier", "Challenges are not reset", "Dark Matter gain multiplier", "Metaverse Perks", "Metaverse Perks Button", "Congratulations"]
 
 const eventsData = {
     1: { name: "Winter Wind", desc: "You're in a hurry, pal!", effect: "Time Warping x", mult: 10, style: "color-time-warping" },
@@ -263,9 +291,9 @@ const skillBaseData = {
     "Epiphany": { name: "Epiphany", maxXp: 100, heroxp: 280, effect: 0.012, description: "Galactic Council XP" },
 
 
-    "Dark Prince": { name: "Dark Prince", maxXp: 100, heroxp: 1120, effect: 0.01, description: "Skill XP" },
-    "Dark Ruler": { name: "Dark Ruler", maxXp: 100, heroxp: 1200, effect: 0.00003, description: "Dark Matter Gain" },
-    "Immortal Ruler": { name: "Immortal Ruler", maxXp: 100, heroxp: 1210, effect: 0.01, description: "All XP" },
+    "Dark Prince": { name: "Dark Prince", maxXp: 100, heroxp: 1110, effect: 0.01, description: "Skill XP" },
+    "Dark Ruler": { name: "Dark Ruler", maxXp: 100, heroxp: 1190, effect: 0.00003, description: "Dark Matter Gain" },
+    "Immortal Ruler": { name: "Immortal Ruler", maxXp: 100, heroxp: 1200, effect: 0.01, description: "All XP" },
     "Dark Magician": { name: "Dark Magician", maxXp: 100, heroxp: 1300, effect: 0.0001, description: "Essence Gain" },
     "Universal Ruler": { name: "Universal Ruler", maxXp: 100, heroxp: 1350, effect: 1, description: "Magic XP" },
     "Blinded By Darkness": { name: "Blinded By Darkness", maxXp: 100, heroxp: 1430, effect: 1, description: "All XP" },
@@ -333,18 +361,18 @@ const itemBaseData = {
 
 const requirementsBaseData = {
     // Categories
-    "The Arcane Association": new TaskRequirement([removeSpaces(".The Arcane Association")], [{ task: "Concentration", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
-    "Galactic Council": new AgeRequirement([removeSpaces(".Galactic Council")], [{ requirement: 10000 }]),
-    "The Void": new AgeRequirement([removeSpaces(".The Void")], [{ requirement: 1000 }]),
-    "Void Manipulation": new AgeRequirement([removeSpaces(".Void Manipulation")], [{ requirement: 1000 }]),
-    "Celestial Powers": new AgeRequirement([removeSpaces(".Celestial Powers")], [{ requirement: 10000 }]),
-    "Dark Magic": new EvilRequirement([removeSpaces(".Dark Magic")], [{ requirement: 1 }]),
+    "The Arcane Association": new TaskRequirement([toId(".The Arcane Association")], [{ task: "Concentration", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
+    "Galactic Council": new AgeRequirement([toId(".Galactic Council")], [{ requirement: 10000 }]),
+    "The Void": new AgeRequirement([toId(".The Void")], [{ requirement: 1000 }]),
+    "Void Manipulation": new AgeRequirement([toId(".Void Manipulation")], [{ requirement: 1000 }]),
+    "Celestial Powers": new AgeRequirement([toId(".Celestial Powers")], [{ requirement: 10000 }]),
+    "Dark Magic": new EvilRequirement([toId(".Dark Magic")], [{ requirement: 1 }]),
     "Almightiness": new EssenceRequirement([".Almightiness"], [{ requirement: 1 }]),
     "Darkness": new DarkMatterRequirement([".Darkness"], [{ requirement: 1 }]),
-    "Heroic Milestones": new EssenceRequirement([removeSpaces(".Heroic Milestones")], [{ requirement: 1000000 }]),
-    "Dark Milestones": new EssenceRequirement([removeSpaces(".Dark Milestones")], [{ requirement: 5e10 }]),
-    "Metaverse Milestones": new EssenceRequirement([removeSpaces(".Metaverse Milestones")], [{ requirement: 1e67 }]),
-    "Metaverse Guards": new EssenceRequirement([removeSpaces(".Metaverse Guards")], [{ requirement: 1e90 }]),
+    "Heroic Milestones": new EssenceRequirement([toId(".Heroic Milestones")], [{ requirement: 1000000 }]),
+    "Dark Milestones": new EssenceRequirement([toId(".Dark Milestones")], [{ requirement: 5e10 }]),
+    "Metaverse Milestones": new EssenceRequirement([toId(".Metaverse Milestones")], [{ requirement: 1e67 }]),
+    "Metaverse Guards": new EssenceRequirement([toId(".Metaverse Guards")], [{ requirement: 1e90 }]),
 
     // Rebirth items
     "Rebirth tab": new AgeRequirement(["#rebirthTabButton"], [{ requirement: 25 }]),
@@ -357,12 +385,6 @@ const requirementsBaseData = {
     "Rebirth note 6": new TaskRequirement(["#rebirthNote6"], [{ task: "Cosmic Recollection", requirement: 1 }]),
     "Rebirth note 7": new EssenceRequirement(["#rebirthNote7"], [{ requirement: 5e10 }]),
     "Rebirth note 8": new EssenceRequirement(["#rebirthNote8"], [{ requirement: 1e67 }]),
-
-    "Rebirth button 1": new AgeRequirement(["#rebirthButton1"], [{ requirement: 65 }]),
-    "Rebirth button 2": new AgeRequirement(["#rebirthButton2"], [{ requirement: 200 }]),
-    "Rebirth button 3": new TaskRequirement(["#rebirthButton3"], [{ task: "Cosmic Recollection", requirement: 1 }]),
-    "Rebirth button 4": new EssenceRequirement(["#rebirthButton4"], [{ requirement: 5e10 }]),
-    "Rebirth button 5": new EssenceRequirement(["#rebirthButton5"], [{ requirement: 1e67 }]),
 
     "Rebirth stats evil": new AgeRequirement(["#statsEvilGain"], [{ requirement: 200 }]),
     "Rebirth stats essence": new TaskRequirement(["#statsEssenceGain"], [{ task: "Cosmic Recollection", requirement: 1 }]),
@@ -421,8 +443,8 @@ const requirementsBaseData = {
 
     // Metaverse Guards
     "Snow Crash": new EssenceRequirement([getQuerySelector("Snow Crash")], [{ requirement: 1e90, herequirement: 1e120 }]),
-    "Player One": new TaskRequirement([getQuerySelector("Player One")], [{ task: "Snow Crash", requirement: 1000, herequirement: 160000 }]),
-    "Lost in the dark": new TaskRequirement([getQuerySelector("Lost in the dark")], [{ task: "Player One", requirement: 2500, herequirement: 158000 }]),
+    "Player One": new TaskRequirement([getQuerySelector("Player One")], [{ task: "Snow Crash", requirement: 1000, herequirement: 158000 }]),
+    "Lost in the dark": new TaskRequirement([getQuerySelector("Lost in the dark")], [{ task: "Player One", requirement: 2500, herequirement: 155000 }]),
     "Omega": new TaskRequirement([getQuerySelector("Omega")], [{ task: "Lost in the dark", requirement: 25000, herequirement: 185000 }]),
 
     // Fundamentals
@@ -469,7 +491,7 @@ const requirementsBaseData = {
     // Celestial Powers
     "Cosmic Longevity": new TaskRequirement([getQuerySelector("Cosmic Longevity")], [{ task: "Eternal Wanderer", requirement: 1 }]),
     "Cosmic Recollection": new TaskRequirement([getQuerySelector("Cosmic Recollection")], [{ task: "Nova", requirement: 50 }, { task: "Meditation", requirement: 4200 }, { task: "Mind Release", requirement: 900 }]),
-    "Essence Collector": new TaskRequirement([getQuerySelector("Essence Collector")], [{ task: "Sigma Proioxis", requirement: 500, herequirement: 640 }, { task: "Absolute Wish", requirement: 4900, herequirement: 2900 }, { task: "Dark Knowledge", requirement: 6300, herequirement: 3400 }]),
+    "Essence Collector": new TaskRequirement([getQuerySelector("Essence Collector")], [{ task: "Sigma Proioxis", requirement: 500, herequirement: 420 }, { task: "Absolute Wish", requirement: 4900, herequirement: 2900 }, { task: "Dark Knowledge", requirement: 6300, herequirement: 3400 }]),
     "Galactic Command": new TaskRequirement([getQuerySelector("Galactic Command")], [{ task: "Essence Collector", requirement: 5000, herequirement: 380 }, { task: "Bargaining", requirement: 5000 }]),
 
     // Essence
@@ -556,12 +578,19 @@ const requirementsBaseData = {
 
     // Challenges
     "Challenges": new EvilRequirement(["#challengesTabButton"], [{ requirement: 10000 }]),
-    "Challenge_an_unhappy_life": new EvilRequirement(["#anUnhappyLifeChallenge"], [{ requirement: 10000 }]),
-    "Challenge_rich_and_the_poor": new EvilRequirement(["#theRichAndThePoorChallenge"], [{ requirement: 1000000 }]),
-    "Challenge_time_does_not_fly": new EssenceRequirement(["#timeDoesNotFlyChallenge"], [{ requirement: 10000 }]),
-    "Challenge_dance_with_the_devil": new EssenceRequirement(["#danceWithTheDevilChallenge"], [{ requirement: 1e6 }]),
-    "Challenge_legends_never_die": new EssenceRequirement(["#legendsNeverDieChallenge"], [{ requirement: 2.5e7 }]),
-    "Challenge_the_darkest_time": new EssenceRequirement(["#theDarkestTimeChallenge"], [{ requirement: 1e47 }]),
+    "Challenge_an_unhappy_life": new EvilRequirement([], [{ requirement: 10000 }]),
+    "Challenge_rich_and_the_poor": new EvilRequirement([], [{ requirement: 1000000 }]),
+    "Challenge_time_does_not_fly": new EssenceRequirement([], [{ requirement: 10000 }]),
+    "Challenge_dance_with_the_devil": new EssenceRequirement([], [{ requirement: 1e6 }]),
+    "Challenge_legends_never_die": new EssenceRequirement([], [{ requirement: 2.5e7 }]),
+    "Challenge_the_darkest_time": new EssenceRequirement([], [{ requirement: 1e47 }]),
+
+    "Challenge1": new EvilRequirement(["#anUnhappyLifeChallenge"], [{ requirement: 10000 }]),
+    "Challenge2": new EvilRequirement(["#theRichAndThePoorChallenge"], [{ requirement: 1000000 }]),
+    "Challenge3": new EssenceRequirement(["#timeDoesNotFlyChallenge"], [{ requirement: 10000 }]),
+    "Challenge4": new EssenceRequirement(["#danceWithTheDevilChallenge"], [{ requirement: 1e6 }]),
+    "Challenge5": new EssenceRequirement(["#legendsNeverDieChallenge"], [{ requirement: 2.5e7 }]),
+    "Challenge6": new EssenceRequirement(["#theDarkestTimeChallenge"], [{ requirement: 1e47 }]),
 
     // Metaverse Altars
     "Metaverse": new MetaverseRequirement(["#metaverseTabButton"], [{ requirement: 1 }]),
@@ -618,28 +647,28 @@ const itemCategories = {
 }
 
 const headerRowColors = {
-    "Common work": "#55a630",
-    "Military": "#e63946",
-    "The Arcane Association": "#C71585",
-    "The Void": "#762B91",
-    "Galactic Council": "#D5C010",
-    "Fundamentals": "#55a630",
-    "Combat": "#e63946",
-    "Magic": "#C71585",
-    "Dark Magic": "#73000f",
-    "Almightiness": "#18d2d9",
-    "Darkness": "#8c6a0b",
-    "Void Manipulation": "#762B91",
-    "Celestial Powers": "#D5C010",
-    "Properties_Auto": "#21cc5e",
-    "Misc_Auto": "#f54546",
-    "Properties": "#219ebc",
-    "Misc": "#b56576",
-    "Essence Milestones": "#0066ff",
-    "Heroic Milestones": "#ff6600",
-    "Dark Milestones": "#873160",
-    "Metaverse Milestones": "#09a0e6",
-    "Metaverse Guards": "rgb(9, 160, 230)"
+    "Almightiness": "rgb(24, 210, 217)",
+    "Celestial Powers": "rgb(213, 192, 16)",
+    "Combat": "rgb(230, 57, 70)",
+    "Common work": "rgb(85, 166, 48)",
+    "Dark Magic": "rgb(115, 0, 15)",
+    "Dark Milestones": "rgb(135, 49, 96)",
+    "Darkness": "rgb(140, 106, 11)",
+    "Essence Milestones": "rgb(0, 102, 255)",
+    "Fundamentals": "rgb(85, 166, 48)",
+    "Galactic Council": "rgb(213, 192, 16)",
+    "Heroic Milestones": "rgb(255, 102, 0)",
+    "Magic": "rgb(199, 21, 133)",
+    "Metaverse Guards": "rgb(9, 160, 230)",
+    "Metaverse Milestones": "rgb(9, 160, 230)",
+    "Military": "rgb(230, 57, 70)",
+    "Misc": "rgb(181, 101, 118)",
+    "Misc_Auto": "rgb(245, 69, 70)",
+    "Properties": "rgb(33, 158, 188)",
+    "Properties_Auto": "rgb(33, 204, 94)",
+    "The Arcane Association": "rgb(199, 21, 133)",
+    "The Void": "rgb(118, 43, 145)",
+    "Void Manipulation": "rgb(118, 43, 145)",
 }
 
 const headerRowTextColors = {
@@ -708,7 +737,7 @@ const lightModeWarnings = [
 ];
 
 function getRandomWarning() {
-    return lightModeWarnings[Math.floor(Math.random() * lightModeWarnings.length)];
+    return lightModeWarnings[floor(random() * lightModeWarnings.length)];
 }
 
 
@@ -743,25 +772,36 @@ function getPreviousTaskInCategory(task) {
     return prev
 }
 
+function initializeTaskBindings() {
+    for (const key in gameData.taskData) {
+        const task = gameData.taskData[key];
+        task.boundEffect = task.getEffect?.bind(task);
+    }
+}
+
+function initializeItemBindings() {
+    for (const key in gameData.itemData) {
+        const task = gameData.itemData[key];
+        task.boundEffect = task.getEffect.bind(task);
+    }
+}
+
 function getBindedTaskEffect(taskName) {
-    const task = gameData.taskData[taskName]
-    return task.getEffect.bind(task)
+    return gameData.taskData[taskName]?.boundEffect || null;
 }
 
 function getBindedItemEffect(itemName) {
-    const item = gameData.itemData[itemName]
-    return item.getEffect.bind(item)
+    return gameData.itemData[itemName]?.boundEffect || null;
 }
 
 function getNextDarkMagicSkillInReach() {
-
-    const totalEvil = gameData.evil + getEvilGain()
+    const totalEvil = gameData.evil + getEvilGainAvailable()
 
     for (const key in gameData.taskData) {
         const skill = gameData.taskData[key]
         if (skillCategories["Dark Magic"].includes(key)) {
             const requirement = gameData.requirements[key]
-            if (!requirement.isCompleted()) {
+            if (!requirement.completed) {
                 if (totalEvil >= requirement.requirements[0].requirement)
                     return { inReach: true, requirement: requirement.requirements[0].requirement }
                 else
@@ -775,12 +815,12 @@ function getNextDarkMagicSkillInReach() {
 
 function getNextDarkMatterRequirement() {
 
-    const totalDarkMatter = gameData.dark_matter + getDarkMatterGain()
+    const totalDarkMatter = gameData.dark_matter + getDarkMatterGainAvailable()
 
     for (const key in gameData.requirements) {
         const requirement = gameData.requirements[key]
         if (requirement instanceof DarkMatterRequirement) {
-            if (!requirement.isCompleted()) {
+            if (!requirement.completed) {
                 if (totalDarkMatter >= requirement.requirements[0].requirement)
                     return { inReach: true, requirement: requirement.requirements[0].requirement }
                 else
@@ -793,13 +833,13 @@ function getNextDarkMatterRequirement() {
 }
 
 function getNextMilestoneInReach() {
-    const totalEssence = gameData.essence + getEssenceGain()
+    const totalEssence = gameData.essence + getEssenceGainAvailable()
 
     for (const key in milestoneData) {
         const requirement = gameData.requirements[key]
 
         if (requirement instanceof EssenceRequirement) {
-            if (!requirement.isCompleted()) {
+            if (!requirement.completed) {
                 if (totalEssence >= requirement.requirements[0].requirement)
                     return { inReach: true, requirement: requirement.requirements[0].requirement }
                 else

@@ -5,7 +5,7 @@ function findNextRequirement(category, data) {
 
         const requirements = gameData.requirements[entityName];
 
-        if (i === 0 && requirements && !requirements.isCompleted()) {
+        if (i === 0 && requirements && !requirements.completed && requirements.requirements.length > 0) {
             return data[entityName]
         }
 
@@ -15,7 +15,7 @@ function findNextRequirement(category, data) {
         const nextEntityName = category[nextIndex];
         const nextEntityRequirements = gameData.requirements[nextEntityName];
 
-        if (nextEntityRequirements && !nextEntityRequirements.isCompleted()) {
+        if (nextEntityRequirements && !nextEntityRequirements.completed && nextEntityRequirements.requirements.length > 0) {
             return data[nextEntityName]
         }
     }
@@ -27,139 +27,138 @@ function findNextRequirement(category, data) {
 // updateRequiredRows(gameData.taskData, skillCategories)
 // updateRequiredRows(gameData.itemData, itemCategories)
 // updateRequiredRows(milestoneData    , milestoneCategories)
-function updateRequiredRows(data, categories) {    
-    const requiredRows = document.querySelectorAll(".requiredRow");
+
+function updateRequiredRows(data, categories) {
+    // управляет видимостью строк для открытия следующего элемента в категории
+    const requiredRows = allByClass("requiredRow");
 
     for (const requiredRow of requiredRows) {
-        const category = categories[requiredRow.id];
-        if (category == null) continue;
+        const categoryName = requiredRow.dataset.category
+        const category = categories[categoryName];
+        if (!category) continue;
+        let nextEntity = null
 
-        const nextEntity = findNextRequirement(category, data);
+        if (gameData.requirements[categoryName]?.completed ?? true)
+            nextEntity = findNextRequirement(category, data);
 
-        
-        const tooltip = requiredRow.querySelector('.tooltip');
+        const tooltip = el(`#${requiredRow.id} .tooltip`);
         if (tooltip) {
             tooltip.setAttribute('data-type', 'requirement');
             tooltip.setAttribute('data-name', nextEntity ? nextEntity.name : "");
         }
-
-        if (nextEntity == null) {
-            requiredRow.classList.add("hiddenTask");
-        } else {
-            requiredRow.classList.remove("hiddenTask");
+        safeUpdateClass(requiredRow, "hidden", nextEntity == null);
+        if (nextEntity != null)
             renderRequirementRow(requiredRow, data, nextEntity);
-        }
     }
 }
 
 function renderRequirementRow(requiredRow, data, nextEntity) {
     const requirementObject = gameData.requirements[nextEntity.name];
     const requirements = requirementObject.requirements;
-
-    // cache
     const elements = clearAndFetchRequirementElements(requiredRow);
+    const visibilityMap = {
+        coin: false,
+        level: false,
+        evil: false,
+        essence: false,
+        darkMatter: false,
+        hypercube: false,
+        effect: false
+    };
 
     let renderResult = { progressPercent: 0, pendingPercent: 0, hasProgress: false, targetColorClass: "color-income" };
 
     if (data == gameData.taskData) {
-        renderResult = handleTaskRequirements(elements, nextEntity, requirementObject, requirements, requiredRow);
+        renderResult = handleTaskRequirements(elements, nextEntity, requirementObject, requirements, requiredRow, visibilityMap);
     } else if (data == gameData.itemData) {
-        renderResult = handleItemRequirements(elements, nextEntity, requirements, requiredRow);
+        renderResult = handleItemRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap);
     } else if (data == milestoneData) {
-        renderResult = handleMilestoneRequirements(elements, nextEntity, requirements, requiredRow);
+        renderResult = handleMilestoneRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap);
+    }
+    for (const resourceKey in visibilityMap) {
+        const isVisible = visibilityMap[resourceKey];
+        safeUpdateClass(elements[resourceKey], "hidden", !isVisible);
     }
 
-    renderProgessResource(elements.element, renderResult.progressPercent, renderResult.pendingPercent, renderResult.targetColorClass)
+    renderProgessResource(`#${elements.element.id}`, renderResult.progressPercent, renderResult.pendingPercent, renderResult.targetColorClass)
 }
-
 
 function clearAndFetchRequirementElements(requiredRow) {
-    const elements = {
+    const id = requiredRow.id
+    return {
         element: requiredRow,
-        coin: requiredRow.querySelector(".coins"),
-        level: requiredRow.querySelector(".levels"),
-        evil: requiredRow.querySelector(".evil"),
-        essence: requiredRow.querySelector(".essence"),
-        darkMatter: requiredRow.querySelector(".darkMatter"),
-        hypercube: requiredRow.querySelector(".hypercube"),
-        effect: requiredRow.querySelector(".effect"),
-        effectValue: requiredRow.querySelector(".effectValue"),
-        progressContainer: requiredRow.querySelector(".req-progress-container"),
-        progressBar: requiredRow.querySelector(".req-progress-bar"),
-        pendingBar: requiredRow.querySelector(".req-pending-bar"),
+        coin: el(`#${id} .coins`),
+        level: el(`#${id} .levels`),
+        evil: el(`#${id} .evil`),
+        essence: el(`#${id} .essence`),
+        darkMatter: el(`#${id} .darkMatter`),
+        hypercube: el(`#${id} .hypercube`),
+        effect: el(`#${id} .effect`),
+        effectValue: el(`#${id} .effectValue`),
+        progressContainer: el(`#${id} .req-progress-container`),
+        progressBar: el(`#${id} .req-progress-bar`),
+        pendingBar: el(`#${id} .req-pending-bar`),
     };
-
-    elements.coin.classList.add("hiddenTask");
-    elements.level.classList.add("hiddenTask");
-    elements.evil.classList.add("hiddenTask");
-    elements.essence.classList.add("hiddenTask");
-    elements.darkMatter.classList.add("hiddenTask");
-    elements.hypercube.classList.add("hiddenTask");
-    elements.effect.classList.add("hiddenTask");
-
-    return elements;
 }
 
-function handleTaskRequirements(elements, nextEntity, requirementObject, requirements, requiredRow) {
+function handleTaskRequirements(elements, nextEntity, requirementObject, requirements, requiredRow, visibilityMap) {
     const task = gameData.taskData[nextEntity.name];
-    elements.effect.classList.remove("hiddenTask");
+    visibilityMap.effect = true;
 
     let effectValueText = "[Unknown]"
     if (task.unlocked)
         effectValueText = task.name + (task.baseData.description ? " (" + task.baseData.description + ")" : "")
 
-    if (elements.effectValue.textContent !== effectValueText)
-        elements.effectValue.textContent = effectValueText
-
+    safeUpdateText(elements.effectValue, effectValueText)
 
     let result = { progressPercent: 0, pendingPercent: 0, hasProgress: false, targetColorClass: "color-income" };
     const curRequiredValue = requirements[0].requirement
 
     if (requirementObject instanceof EvilRequirement) {
-        elements.evil.classList.remove("hiddenTask");
-        elements.evil.textContent = format(curRequiredValue) + " evil";
+        visibilityMap.evil = true;
+        safeUpdateText(elements.evil, format(curRequiredValue) + " evil")
         result.progressPercent = getDynamicProgress(gameData.evil, curRequiredValue);
         result.targetColorClass = "color-evil";
         result.hasProgress = true;
         result.pendingPercent = getDynamicProgress(gameData.evil + getEvilGainAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof EssenceRequirement) {
-        elements.essence.classList.remove("hiddenTask");
-        elements.essence.textContent = format(curRequiredValue) + " essence";
+        visibilityMap.essence = true;
+        safeUpdateText(elements.essence, format(curRequiredValue) + " essence")
         result.progressPercent = getDynamicProgress(gameData.essence, curRequiredValue);
         result.targetColorClass = "color-essence";
         result.hasProgress = true;
         result.pendingPercent = getDynamicProgress(gameData.essence + getEssenceGainAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof DarkMatterRequirement) {
-        elements.darkMatter.classList.remove("hiddenTask");
-        elements.darkMatter.textContent = format(curRequiredValue) + " Dark Matter";
+        visibilityMap.darkMatter = true;
+        safeUpdateText(elements.darkMatter, format(curRequiredValue) + " Dark Matter")
         result.progressPercent = getDynamicProgress(gameData.dark_matter, curRequiredValue);
         result.targetColorClass = "color-dark-matter";
         result.hasProgress = true;
         result.pendingPercent = getDynamicProgress(gameData.dark_matter + getDarkMatterGainAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof HypercubeRequirement) {
-        elements.hypercube.classList.remove("hiddenTask");
-        elements.hypercube.textContent = format(curRequiredValue) + " hypercubes";
+        visibilityMap.hypercube = true;
+        safeUpdateText(elements.hypercube, format(curRequiredValue) + " hypercubes")
         result.progressPercent = getDynamicProgress(gameData.hypercubes, curRequiredValue);
         result.targetColorClass = "color-hypercubes";
         result.hasProgress = true;
         result.pendingPercent = getDynamicProgress(gameData.hypercubes + getHypercubeGenerationAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof AgeRequirement) {
-        elements.essence.classList.remove("hiddenTask");
-        elements.essence.textContent = "Age " + format(curRequiredValue);
+        console.log("requirementObject instanceof AgeRequirement in handleTaskRequirements as essence!")
+        visibilityMap.essence = true;
+        safeUpdateText(elements.essence, "Age " + format(curRequiredValue))
         result.progressPercent = getDynamicProgress(gameData.days, curRequiredValue);
         result.targetColorClass = "color-essence";
         result.hasProgress = true;
     }
     else {
         // jobs and skills
-        elements.level.classList.remove("hiddenTask");
+        visibilityMap.level = true;
 
-        let finalText = "";
-
+        let finalText = ""
         let progressPercent = 0
         let reqCount = 0
 
@@ -177,22 +176,19 @@ function handleTaskRequirements(elements, nextEntity, requirementObject, require
                 finalText += " " + reqTaskName + " " + formatLevel(reqTask.level) + "/" + formatLevel(curRequiredValue) + ",";
 
                 const xpProgress = reqTask.getTaskXpProgressFraction();
-                const exactLevel = reqTask.level + Math.min(Math.max(xpProgress, 0), 0.999);
-                const totalCurrent = Math.min(exactLevel, curRequiredValue);
+                const exactLevel = reqTask.level + min(max(xpProgress, 0), 0.999);
+                const totalCurrent = min(exactLevel, curRequiredValue);
 
                 progressPercent += getDynamicProgress(totalCurrent, curRequiredValue)
                 reqCount++
             }
         }
 
-        if (reqCount > 0) {
-            progressPercent /= reqCount
-        }
+        if (reqCount > 0) progressPercent /= reqCount
 
-        if (finalText.length > 0) {
-            finalText = finalText.substring(0, finalText.length - 1);
-        }
-        elements.level.textContent = finalText;
+        if (finalText.length > 0) finalText = finalText.substring(0, finalText.length - 1);
+
+        safeUpdateText(elements.level, finalText)
 
         result.progressPercent = progressPercent;
         result.targetColorClass = "color-income";
@@ -202,39 +198,37 @@ function handleTaskRequirements(elements, nextEntity, requirementObject, require
     return result;
 }
 
-function handleItemRequirements(elements, nextEntity, requirements, requiredRow) {
-    elements.coin.classList.remove("hiddenTask");
+function handleItemRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap) {
+    visibilityMap.coin = true;
+    visibilityMap.effect = true;
+
     let curRequiredValue = requirements[0].requirement;
     formatCoins(elements.coin, curRequiredValue);
     const item = gameData.itemData[nextEntity.name];
-    elements.effect.classList.remove("hiddenTask");
 
     let effectValueText = "[Unknown]"
     if (item.unlocked)
         effectValueText = (item.baseData.description ? item.baseData.description : "Happiness")
 
-    if (elements.effectValue.textContent !== effectValueText)
-        elements.effectValue.textContent = effectValueText
+    safeUpdateText(elements.effectValue, effectValueText)
 
     return {
         progressPercent: getDynamicProgress(gameData.coins, curRequiredValue),
         hasProgress: true,
-        targetColorClass: (getNet() > 0) ? "color-income" : "color-evil"
+        targetColorClass: (totalIncome > totalExpense) ? "color-income" : "color-evil"
     };
 }
 
-
-function handleMilestoneRequirements(elements, nextEntity, requirements, requiredRow) {
+function handleMilestoneRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap) {
     let result = { progressPercent: 0, pendingPercent: 0, hasProgress: false, targetColorClass: "color-income" };
     let tooltipHTML = "";
     const curRequiredValue = requirements[0].requirement
 
-    elements.essence.classList.remove("hiddenTask");
-    elements.essence.textContent = format(curRequiredValue) + " essence";
+    visibilityMap.essence = true;
+    safeUpdateText(elements.essence, format(curRequiredValue) + " essence")
     const milestone = milestoneData[nextEntity.name];
     if (milestone.baseData.description) {
-        elements.effect.classList.remove("hiddenTask");
-
+        visibilityMap.effect = true;
         let effectValueText = "[Unknown]"
         if (gameData.stats.maxEssenceReached > milestone.expense) {
             if (nextEntity.name == "Magic Eye")
@@ -242,10 +236,7 @@ function handleMilestoneRequirements(elements, nextEntity, requirements, require
             else
                 effectValueText = nextEntity.name + ': ' + milestone.baseData.description
         }
-
-        if (elements.effectValue.textContent !== effectValueText)
-            elements.effectValue.textContent = effectValueText
-
+        safeUpdateText(elements.effectValue, effectValueText)
     }
 
     result.progressPercent = getDynamicProgress(gameData.essence, curRequiredValue);

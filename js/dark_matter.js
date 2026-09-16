@@ -17,7 +17,7 @@ function buyDarkOrbGenerator() {
 
 // Costs Dark Orbs
 function getADealWithTheChairmanCost() {
-    return Math.pow(1e3, gameData.dark_matter_shop.a_deal_with_the_chairman + 1)
+    return pow(1e3, gameData.dark_matter_shop.a_deal_with_the_chairman + 1)
 }
 
 function canBuyADealWithTheChairman() {
@@ -32,7 +32,7 @@ function buyAllDarkOrbsUpgrades() {
     while (canBuyGottaBeFast())
         buyGottaBeFast()
     while (canBuyLifeCoach())
-        buyLifeCoach()    
+        buyLifeCoach()
 }
 
 function buyADealWithTheChairman() {
@@ -43,7 +43,7 @@ function buyADealWithTheChairman() {
 }
 
 function getAGiftFromGodCost() {
-    return Math.pow(1e5, gameData.dark_matter_shop.a_gift_from_god + 1)
+    return pow(1e5, gameData.dark_matter_shop.a_gift_from_god + 1)
 }
 
 function canBuyAGiftFromGod() {
@@ -58,11 +58,11 @@ function buyAGiftFromGod() {
 }
 
 function getLifeCoachCost() {
-    return Math.pow(1e10, gameData.dark_matter_shop.life_coach + 1)
+    return pow(1e10, gameData.dark_matter_shop.life_coach + 1)
 }
 
 function canBuyLifeCoach() {
-    return gameData.dark_orbs >= getLifeCoachCost() && getLifeCoachCost() !== Infinity 
+    return gameData.dark_orbs >= getLifeCoachCost() && getLifeCoachCost() !== Infinity
 }
 
 function buyLifeCoach() {
@@ -73,7 +73,7 @@ function buyLifeCoach() {
 }
 
 function getGottaBeFastCost() {
-    return Math.pow(5e7, gameData.dark_matter_shop.gotta_be_fast + 1)
+    return pow(5e7, gameData.dark_matter_shop.gotta_be_fast + 1)
 }
 
 function canBuyGottaBeFast() {
@@ -91,27 +91,29 @@ function buyGottaBeFast() {
 function getDarkOrbGeneration() {
     if (gameData.dark_matter_shop.dark_orb_generator == 0) return 0
 
-    const darkOrbiter = gameData.requirements["Dark Orbiter"].isCompleted() ? 1e10 : 1
+    const darkOrbiter = gameData.requirements["Dark Orbiter"].completed ? 1e10 : 1
 
-    return Math.pow(100, gameData.dark_matter_shop.dark_orb_generator - 1) * darkOrbiter
+    return pow(100, gameData.dark_matter_shop.dark_orb_generator - 1) * darkOrbiter
 }
 
 function getTaaAndMagicXpGain() {
     if (gameData.active_challenge == "the_darkest_time") return 1
 
-    return Math.pow(4, gameData.dark_matter_shop.a_deal_with_the_chairman)
+    return pow(4, gameData.dark_matter_shop.a_deal_with_the_chairman)
 }
 
 function getAGiftFromGodEssenceGain() {
     if (gameData.active_challenge == "the_darkest_time") return 1
 
-    return Math.pow(2.1, gameData.dark_matter_shop.a_gift_from_god)
+    return pow(2.1, gameData.dark_matter_shop.a_gift_from_god)
 }
 
 function getLifeCoachIncomeGain() {
+    // TODO check slow?
+
     if (gameData.active_challenge == "the_darkest_time") return 1
 
-    return Math.pow(14, gameData.dark_matter_shop.life_coach)
+    return pow(14, gameData.dark_matter_shop.life_coach)
 }
 
 function getGottaBeFastGain() {
@@ -126,20 +128,19 @@ function getAMiracleCost() {
 
 // Permanent unlocks
 function canBuyAMiracle() {
-    return getDarkMatter() >= getAMiracleCost()
+    return gameData.dark_matter >= getAMiracleCost()
 }
 
 async function buyAMiracle() {
     if (!gameData.dark_matter_shop.a_miracle && canBuyAMiracle()) {
-        if (gameData.dark_matter < 30)
-        {            
+        if (gameData.dark_matter < 30) {
             const isConfirmed = await customConfirm({
                 title: "CONFIRM PURCHASE",
                 text: "Are you sure you want to buy A Miracle? Your XP gain will decrease!",
-                confirmText : "Buy",
-                cancelText : "Cancel"
+                confirmText: "Buy",
+                cancelText: "Cancel"
 
-            });                
+            });
             if (!isConfirmed)
                 return
         }
@@ -147,7 +148,7 @@ async function buyAMiracle() {
         gameData.dark_matter -= getAMiracleCost()
         gameData.requirements["Magic Eye"].completed = true
     }
-    else if (gameData.dark_matter_shop.a_miracle){
+    else if (gameData.dark_matter_shop.a_miracle) {
         gameData.dark_matter_shop.a_miracle = false
         gameData.dark_matter += getAMiracleCost()
         gameData.requirements["Magic Eye"].completed = false
@@ -158,8 +159,8 @@ async function buyAMiracle() {
 // Skill tree
 async function resetSkillTree() {
     const needConfirmation = gameData.dark_matter < 1e11;
-    
-    const isConfirmed = needConfirmation 
+
+    const isConfirmed = needConfirmation
         ? await customConfirm({
             title: "RESET ABILITIES",
             text: "Are you sure you want to reset your Dark Matter Abilities? You will NOT get your Dark Matter back!",
@@ -167,7 +168,7 @@ async function resetSkillTree() {
             cancelText: "Save my precious Dark Matter",
             confirmColor: "red",
             cancelColor: "green"
-          })
+        })
         : true;
 
     if (isConfirmed) {
@@ -176,50 +177,35 @@ async function resetSkillTree() {
         gameData.dark_matter_shop.essence_collector = 0;
         gameData.dark_matter_shop.explosion_of_the_universe = 0;
         gameData.dark_matter_shop.multiverse_explorer = 0;
-        
-        return true; 
+
+        return true;
     }
-    
+
     return false;
 }
 
 
 function buySpeedOfLife(number) {
-    buyDarkMatterSkill("speed_is_life", getDarkMatterSkillCost(1), number)   
+    buyDarkMatterSkill("speed_is_life", DARK_MATTER_SKILL_COSTS[1], number)
 }
 
 function buyYourGreatestDebt(number) {
-    buyDarkMatterSkill("your_greatest_debt", getDarkMatterSkillCost(2), number)    
+    buyDarkMatterSkill("your_greatest_debt", DARK_MATTER_SKILL_COSTS[2], number)
 }
 
 function buyEssenceCollector(number) {
-    buyDarkMatterSkill("essence_collector", getDarkMatterSkillCost(3), number)
+    buyDarkMatterSkill("essence_collector", DARK_MATTER_SKILL_COSTS[3], number)
 }
 
 function buyExplosionOfTheUniverse(number) {
-    buyDarkMatterSkill("explosion_of_the_universe", getDarkMatterSkillCost(4), number)
+    buyDarkMatterSkill("explosion_of_the_universe", DARK_MATTER_SKILL_COSTS[4], number)
 }
 
 function buyMultiverseExplorer(number) {
-    buyDarkMatterSkill("multiverse_explorer", getDarkMatterSkillCost(5), number)
+    buyDarkMatterSkill("multiverse_explorer", DARK_MATTER_SKILL_COSTS[5], number)
 }
 
-
-function getDarkMatterSkillCost(i){
-    switch (i)  {
-    case 1:
-        return 100
-    case 2:
-        return 10000 // 1000
-    case 3:
-        return 50000 // 10000
-    case 4:
-        return 5e5 // 100000
-    case 5:
-        return 1e9
-    }
-
-}
+const DARK_MATTER_SKILL_COSTS = [0, 100, 10000, 50000, 500000, 1000000000];
 
 function buyDarkMatterSkill(skill_name, cost, number) {
     if (gameData.dark_matter >= cost) {
@@ -244,13 +230,13 @@ function getDarkMatterSkillIncome() {
         return 1
 
     let income = 1
-    
+
     income *= [1, 3].includes(gameData.dark_matter_shop.your_greatest_debt) ? 0.1 : 1
     income *= [2, 3].includes(gameData.dark_matter_shop.your_greatest_debt) ? 0.5 : 1
     income *= [2, 3].includes(gameData.dark_matter_shop.essence_collector) ? 0.04 : 1
     income *= [2, 3].includes(gameData.dark_matter_shop.explosion_of_the_universe) ? 0.00001 : 1
 
-    return income 
+    return income
 
 }
 

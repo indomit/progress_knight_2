@@ -25,6 +25,10 @@
     margin-right: 0.3em !important
 }
 
+.w3-padding {
+    padding: 0.4em 0.8em 0.4em 0.8em !important;
+}
+
 @media (max-width: 600px) {
     .w3-margin {
         margin: 0 !important
@@ -45,44 +49,13 @@
     .w3-margin-right {
         margin-right: 0.3em !important
     }
-}
 
-.w3-bordered tr {
-    border-bottom: 0 solid #ddd
-}
-
-.w3-bordered tr,
-.w3-bordered tr::before,
-.w3-bordered tr::after {
-    box-sizing: content-box;
-}
-
-.w3-striped tbody tr:nth-child(even) {
-    background-color: #f1f1f1
-}
-
-.w3-bordered th {
-    height: 2em;
-    vertical-align: middle;
-    padding: 0.4em 1em 0em 1em;
-}
-
-.w3-bordered td {
-    height: 2em;
-    vertical-align: middle;
-    padding: 0 0 0 0;
-    padding-left: 0.8em;
-}
-
-.w3-table td:first-child,
-.w3-table th:first-child {
-    padding-left: 0.3em;
-}
-
-.w3-padding {
-    padding: 0.4em 0.8em !important;
+    .w3-padding {
+        padding: 0.2em 0.4em 0.2em 0.4em !important;
+    }
 }
 
 .w3-text-blue {
     color: #2196F3 !important;
 }
+
