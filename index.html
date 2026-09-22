@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+	<script>(function () { const rawSet = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set;/* Object.freeze(Element.prototype); Object.freeze(HTMLDivElement.prototype);*/ Object.defineProperty(window, 'safeSetHTML', { value: function (element, html) { rawSet.call(element, html); }, writable: false, configurable: false }); })();</script>
+	<script type="text/javascript" src="js/lib/decimal.js"></script>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="css/w3.css">
@@ -98,7 +100,7 @@
 								<div class="sidebar-element" style="color: gray">
 									Lifespan: <span id="lifespanDisplay">70</span> years
 									<br>Real Time: <span id="realtimeDisplay">00:00:00</span>
-									<!--div id="fps"></div-->
+									<div id="fps"></div>
 								</div>
 							</div>
 							<div style="padding-top: 0.2em;">
@@ -1332,7 +1334,7 @@
 											</button>
 										</div>
 										<div id="Congratulations" class="congrats no-select hidden"
-											onclick="gameOver()">
+											onclick="gameData.p5=false">
 											<div>Congratulations!</div>
 											<div>You have beaten the game!</div>
 										</div>
@@ -1534,7 +1536,7 @@
 											</div>
 										</div>
 										<div class="panel w3-padding challenge-header">
-											<!--div id="fpsCounter" style="font-size: smaller; color: #555; ">FPS: --</div-->
+											<div id="fpsCounter" style="font-size: smaller; color: #555; ">FPS: --</div>
 											<span id="version" style="font-size: smaller; color: #555; ">Version:
 												2.7.0</span>
 										</div>
@@ -1683,9 +1685,12 @@
 	</div>
 	<script type="text/javascript" src="js/lib/break_infinity.js"></script>
 	<script type="text/javascript" src="js/lib/HackTimer.js"></script>
+	<script type="text/javascript" src="js/lib/UPNG.js"></script>
+	<script type="text/javascript" src="js/lib/test.js"></script>
 	<script type="text/javascript" src="js/el.js"></script>
 	<script type="text/javascript" src="js/changelog.js"></script>
 	<script type="text/javascript" src="js/utils.js"></script>
+	<script type="text/javascript" src="js/ui_dialogs.js"></script>
 	<script type="text/javascript" src="js/ui_cache.js"></script>
 	<script type="text/javascript" src="js/ui_requirements.js"></script>
 	<script type="text/javascript" src="js/ui_tooltip.js"></script>

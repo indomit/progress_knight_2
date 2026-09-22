@@ -1,18 +1,172 @@
-﻿var gameData = {
-    /** @type {any} */
+﻿/**
+ * @typedef {Object} EvilPerks
+ * @property {number} reduce_eye_requirement
+ * @property {number} reduce_evil_requirement
+ * @property {number} reduce_the_void_requirement
+ * @property {number} reduce_celestial_requirement
+ * @property {number} receive_essence
+ */
+
+/**
+ * @typedef {Object} MetaversePerks
+ * @property {boolean} auto_dark_orb
+ * @property {boolean} auto_dark_shop
+ * @property {boolean} auto_boost
+ * @property {boolean} instant_evil
+ * @property {boolean} instant_essence
+ * @property {boolean} hypercube_boost
+ * @property {boolean} positive_dark_mater_skills
+ * @property {boolean} save_challenges
+ * @property {boolean} auto_sacrifice
+ * @property {boolean} double_perk_points_gain
+ * @property {boolean} instant_dark_matter
+ * @property {boolean} keep_dark_mater_skills
+ * @property {boolean} hyper_speed
+ * @property {boolean} both_dark_mater_skills
+ * @property {boolean} evil_booster
+ * @property {boolean} more_perk_points
+ */
+
+/**
+ * @typedef {Object} GameSettings
+ * @property {boolean} stickySidebar
+ * @property {boolean} sidebarVisible
+ * @property {boolean} EPSidebar
+ * @property {number} theme
+ * @property {number} currencyNotation
+ * @property {number} numberNotation
+ * @property {number} layout
+ * @property {number} fontSize
+ * @property {Tab} selectedTab
+ * @property {string} settingsTab
+ * @property {string} darkMatterTab
+ * @property {string} metaverseTab
+ * @property {boolean} enableKeybinds
+ * @property {boolean} requireShiftForTooltip
+ * @property {boolean} taskAnimations
+ */
+
+/**
+ * @typedef {Object} GameStats
+ * @property {Date} startDate
+ * @property {number | null} fastest1
+ * @property {number | null} fastest2
+ * @property {number | null} fastest3
+ * @property {number | null} fastest4
+ * @property {number | null} fastestGame
+ * @property {number} EvilPerSecond
+ * @property {number} maxEvilPerSecond
+ * @property {number} maxEvilPerSecondRt
+ * @property {number} EssencePerSecond
+ * @property {number} maxEssencePerSecond
+ * @property {number} maxEssencePerSecondRt
+ * @property {number} maxEssenceReached
+ */
+
+/**
+ * @typedef {Object} GameChallenges
+ * @property {number} an_unhappy_life
+ * @property {number} rich_and_the_poor
+ * @property {number} time_does_not_fly
+ * @property {number} dance_with_the_devil
+ * @property {number} legends_never_die
+ * @property {number} the_darkest_time
+ */
+
+/**
+ * @typedef {Object} DarkMatterShop
+ * @property {number} dark_orb_generator
+ * @property {number} a_deal_with_the_chairman
+ * @property {number} a_gift_from_god
+ * @property {number} life_coach
+ * @property {number} gotta_be_fast
+ * @property {boolean} a_miracle
+ * @property {number} speed_is_life
+ * @property {number} your_greatest_debt
+ * @property {number} essence_collector
+ * @property {number} explosion_of_the_universe
+ * @property {number} multiverse_explorer
+ */
+
+/**
+ * @typedef {Object} MetaverseModifiers
+ * @property {number} boost_cooldown_modifier
+ * @property {number} boost_timer_modifier
+ * @property {number} boost_warp_modifier
+ * @property {number} hypercube_gain_modifier
+ * @property {number} evil_tran_gain
+ * @property {number} essence_gain_modifier
+ * @property {number} challenge_altar
+ * @property {number} dark_mater_gain_modifer
+ */
+
+/**
+ * @typedef {Object} GameData
+ * @property {Record<string, Job | Skill>} taskData
+ * @property {Record<string, Job>} jobData
+ * @property {Record<string, Skill>} skillData
+ * @property {Record<string, Item>} itemData
+ * @property {Record<string, number>} savedMaxLevels
+ * @property {Record<string, boolean>} viewedTabs
+ * @property {Record<string, Requirement>} requirements
+ * @property {string[]} completed_requirements
+ * @property {boolean} p4
+ * @property {number} coins
+ * @property {number} days
+ * @property {boolean} is_alive
+ * @property {number} totalDays
+ * @property {number} evil
+ * @property {number} evil_perks_points
+ * @property {EvilPerks & Record<string, number>} evil_perks
+ * @property {boolean} evil_perks_keep
+ * @property {number} essence
+ * @property {number} dark_matter
+ * @property {number} dark_orbs
+ * @property {number} hypercubes
+ * @property {number} perks_points
+ * @property {MetaversePerks & Record<string, boolean>} perks
+ * @property {boolean} paused
+ * @property {boolean} timeWarpingEnabled
+ * @property {number} rebirthOneCount
+ * @property {number} rebirthOneTime
+ * @property {number} rebirthTwoCount
+ * @property {number} rebirthTwoTime
+ * @property {number} rebirthThreeCount
+ * @property {number} rebirthThreeTime
+ * @property {number} rebirthFourCount
+ * @property {number} rebirthFourTime
+ * @property {number} rebirthFiveCount
+ * @property {number} rebirthFiveTime
+ * @property {Item | null} currentProperty
+ * @property {Item[]} currentMisc
+ * @property {GameSettings} settings
+ * @property {GameStats & Record<string, any> } stats
+ * @property {string} active_challenge
+ * @property {GameChallenges & Record<string, number>} challenges
+ * @property {Record<string, number>} challengeBonuses
+ * @property {DarkMatterShop} dark_matter_shop
+ * @property {MetaverseModifiers} metaverse
+ * @property {number} realtime
+ * @property {number} realtimeRun
+ * @property {number} boost_cooldown
+ * @property {number} boost_timer
+ * @property {boolean} boost_active
+ * @property {number} save_date_time
+ * @property {boolean} p5
+ * @property {number} game_speed
+ */
+
+/** @type {GameData & Record<string, any>} */
+var gameData = {
     taskData: {},
-    /** @type {any} */
+    jobData: {},
+    skillData: {},
     itemData: {},
-    /** @type {any} */
     savedMaxLevels: {},
-    /** @type {any} */
     viewedTabs: {},
-    /** @type {any} */
     requirements: {},
 
-    /** @type {string[]} */
     completed_requirements: [],
-    is_game_over: false,
 
     coins: 0,
     days: 365 * 14,
@@ -33,23 +187,24 @@
     dark_orbs: 0,
     hypercubes: 0,
     perks_points: 0,
+
     perks: {
-        auto_dark_orb: 0,
-        auto_dark_shop: 0,
-        auto_boost: 0,
-        instant_evil: 0,
-        instant_essence: 0,
-        hypercube_boost: 0,
-        positive_dark_mater_skills: 0,
-        save_challenges: 0,
-        auto_sacrifice: 0,
-        double_perk_points_gain: 0,
-        instant_dark_matter: 0,
-        keep_dark_mater_skills: 0,
-        hyper_speed: 0,
-        both_dark_mater_skills: 0,
-        evil_booster: 0,
-        more_perk_points: 0
+        auto_dark_orb: false,
+        auto_dark_shop: false,
+        auto_boost: false,
+        instant_evil: false,
+        instant_essence: false,
+        hypercube_boost: false,
+        positive_dark_mater_skills: false,
+        save_challenges: false,
+        auto_sacrifice: false,
+        double_perk_points_gain: false,
+        instant_dark_matter: false,
+        keep_dark_mater_skills: false,
+        hyper_speed: false,
+        both_dark_mater_skills: false,
+        evil_booster: false,
+        more_perk_points: false
     },
 
     paused: false,
@@ -66,13 +221,12 @@
     rebirthFiveCount: 0,
     rebirthFiveTime: 0,
 
-    /** @type {any} */
     currentProperty: null,
-    /** @type {any} */
-    currentMisc: null,
+    currentMisc: [],
 
     settings: {
         stickySidebar: true,
+        sidebarVisible: true,
         EPSidebar: false,
         theme: 1,
         currencyNotation: 0,
@@ -150,16 +304,18 @@
     boost_active: false,
 
     save_date_time: 0,
-    game_over_viewed: false,
+    p4: false,
+    p5: false,
     game_speed: 0
 }
 
-var tempData = {}
+var tempData = { hasError: false }
 
 var autoBuyEnabled = true
 
 const updateSpeed = 20
 const gameTickLength = 1000 / updateSpeed // 50 ms
+const saveTickLength = 3000 // 3s
 const baseLifespan = 365 * 70
 const baseGameSpeed = 4
 const heroIncomeMult = 2.5e18
@@ -173,8 +329,10 @@ const tabToRequirementMap = {
     'metaverse': 'Metaverse'
 }
 
+const tabRequirementKeys = new Set(Object.values(tabToRequirementMap))
 
-const permanentUnlocks = ["Quick task display", "Evil perks", "Evil perk essence", "Evil perk essence SideBar", "Rebirth tab", "Challenges", "Milestones",
+
+const permanentUnlocks = new Set(["Quick task display", "Evil perks", "Evil perk essence", "Evil perk essence SideBar", "Rebirth tab", "Challenges", "Milestones",
     "Dark Matter", "Dark Matter Skills", "Dark Matter Skills2",
 
     // sidebar resources
@@ -185,8 +343,22 @@ const permanentUnlocks = ["Quick task display", "Evil perks", "Evil perk essence
 
     // mataverse unlocks
     "Metaverse", "Reduce Boost Cooldown", "Increase Boost Duration", "Increase Hypercube Gain", "Gain evil at new transcension",
-    "Essence gain multiplier", "Challenges are not reset", "Dark Matter gain multiplier", "Metaverse Perks", "Metaverse Perks Button", "Congratulations"]
+    "Essence gain multiplier", "Challenges are not reset", "Dark Matter gain multiplier", "Metaverse Perks", "Metaverse Perks Button", "Congratulations"])
 
+
+/** 
+ * Structure of a Event entity 
+ * @typedef {Object} EventEntity
+ * @property {string} name
+ * @property {string} desc 
+ * @property {string} effect
+ * @property {number} mult
+ * @property {string} style
+ */
+
+/** 
+ * @type {Record<number, EventEntity>} 
+ */
 const eventsData = {
     1: { name: "Winter Wind", desc: "You're in a hurry, pal!", effect: "Time Warping x", mult: 10, style: "color-time-warping" },
     2: { name: "Claustrophobic", desc: "No more of this thing!", effect: "Essence gain x", mult: 10, style: "color-essence" },
@@ -196,6 +368,18 @@ const eventsData = {
     6: { name: "The Darkness", desc: "No kidding", effect: "Dark Matter gain x", mult: 10, style: "color-dark-matter" }
 }
 
+
+/** 
+ * @typedef JobBaseData
+ * @property {string} name
+ * @property {number} maxXp 
+ * @property {number} heroxp
+ * @property {number} income
+ */
+
+/** 
+ * @type {Record<string, JobBaseData>} 
+ */
 const jobBaseData = {
     "Beggar": { name: "Beggar", maxXp: 50, income: 5, heroxp: 36 },
     "Farmer": { name: "Farmer", maxXp: 100, income: 9, heroxp: 37 },
@@ -243,6 +427,19 @@ const jobBaseData = {
     "Omega": { name: "Omega", maxXp: Infinity, income: 2.5e62, heroxp: 3120 },
 }
 
+
+/** 
+ * @typedef SkillBaseData
+ * @property {string} name
+ * @property {number} maxXp 
+ * @property {number} heroxp
+ * @property {number} effect
+ * @property {string} description
+ */
+
+/** 
+ * @type {Record<string, SkillBaseData>} 
+ */
 const skillBaseData = {
     "Concentration": { name: "Concentration", maxXp: 100, heroxp: 36, effect: 0.01, description: "Skill XP" },
     "Productivity": { name: "Productivity", maxXp: 100, heroxp: 37, effect: 0.01, description: "Hero XP" },
@@ -291,7 +488,7 @@ const skillBaseData = {
     "Epiphany": { name: "Epiphany", maxXp: 100, heroxp: 280, effect: 0.012, description: "Galactic Council XP" },
 
 
-    "Dark Prince": { name: "Dark Prince", maxXp: 100, heroxp: 1110, effect: 0.01, description: "Skill XP" },
+    "Dark Prince": { name: "Dark Prince", maxXp: 100, heroxp: 1109, effect: 0.01, description: "Skill XP" },
     "Dark Ruler": { name: "Dark Ruler", maxXp: 100, heroxp: 1190, effect: 0.00003, description: "Dark Matter Gain" },
     "Immortal Ruler": { name: "Immortal Ruler", maxXp: 100, heroxp: 1200, effect: 0.01, description: "All XP" },
     "Dark Magician": { name: "Dark Magician", maxXp: 100, heroxp: 1300, effect: 0.0001, description: "Essence Gain" },
@@ -299,6 +496,21 @@ const skillBaseData = {
     "Blinded By Darkness": { name: "Blinded By Darkness", maxXp: 100, heroxp: 1430, effect: 1, description: "All XP" },
 }
 
+
+/** 
+ * Structure of a Item base entity 
+ * @typedef {Object} ItemBaseData
+ * @property {string} name
+ * @property {number} expense 
+ * @property {number} effect
+ * @property {number} heromult 
+ * @property {number} heroeffect
+ * @property {string} [description]
+  */
+
+/** 
+ * @type {Record<string, ItemBaseData>} 
+ */
 const itemBaseData = {
 
     "Homeless": { name: "Homeless", expense: 0, effect: 1, heromult: 2, heroeffect: 2e6 },
@@ -359,6 +571,10 @@ const itemBaseData = {
     "Hypersphere": { name: "Hypersphere", expense: 1e91, effect: 1, description: "Hypercube Gain", heromult: 30, heroeffect: 1e50 },
 }
 
+/** 
+ * Maps string keys to any class instance that extends the base Requirement class
+ * @type {Record<string, Requirement>} 
+ */
 const requirementsBaseData = {
     // Categories
     "The Arcane Association": new TaskRequirement([toId(".The Arcane Association")], [{ task: "Concentration", requirement: 200 }, { task: "Meditation", requirement: 200 }]),
@@ -618,9 +834,10 @@ const requirementsBaseData = {
     "Evil perk essence": new EssenceRequirement(["#evilperk5"], [{ requirement: 150000000 }]),
     "Evil perk essence SideBar": new EssenceRequirement(["#evilperkSideBar5"], [{ requirement: 150000000 }]),
 
-    "Congratulations": new EssenceRequirement(["#Congratulations"], [{ requirement: 1e300 }]),
+    "Congratulations": new EssenceRequirement(["#Congratulations"], [{ requirement: 1e308 }]),
 }
 
+/** @type {Record<string, string[]>} */
 const jobCategories = {
     "Common work": ["Beggar", "Farmer", "Fisherman", "Miner", "Blacksmith", "Merchant"],
     "Military": ["Squire", "Footman", "Veteran footman", "Centenary", "Knight", "Veteran Knight", "Holy Knight", "Lieutenant General"],
@@ -630,6 +847,7 @@ const jobCategories = {
     "Metaverse Guards": ["Snow Crash", "Player One", "Lost in the dark", "Omega"]
 }
 
+/** @type {Record<string, string[]>} */
 const skillCategories = {
     "Fundamentals": ["Concentration", "Productivity", "Bargaining", "Meditation"],
     "Combat": ["Strength", "Battle Tactics", "Muscle Memory"],
@@ -641,6 +859,7 @@ const skillCategories = {
     "Darkness": ["Dark Prince", "Dark Ruler", "Immortal Ruler", "Dark Magician", "Universal Ruler", "Blinded By Darkness"]
 }
 
+/** @type {Record<string, string[]>} */
 const itemCategories = {
     "Properties": ["Homeless", "Tent", "Wooden Hut", "Cottage", "House", "Large House", "Small Palace", "Grand Palace", "Town Ruler", "City Ruler", "Nation Ruler", "Pocket Dimension", "Void Realm", "Void Universe", "Astral Realm", "Galactic Throne", "Spaceship", "Planet", "Ringworld", "Stellar Neighborhood", "Galaxy", "Supercluster", "Galaxy Filament", "Observable Universe", "Multiverse", "Quantum World", "Boötes Void"],
     "Misc": ["Book", "Dumbbells", "Personal Squire", "Steel Longsword", "Butler", "Sapphire Charm", "Study Desk", "Library", "Observatory", "Mind's Eye", "Void Necklace", "Void Armor", "Void Blade", "Void Orb", "Void Dust", "Celestial Robe", "Universe Fragment", "Multiverse Fragment", "Stairway to heaven", "Highway to hell", "Tesseract", "Desintegration", "Custom Galaxy", "Hypersphere"]
@@ -740,12 +959,16 @@ function getRandomWarning() {
     return lightModeWarnings[floor(random() * lightModeWarnings.length)];
 }
 
-
-function getPreviousTaskInCategory(task) {
+/**
+ * 
+ * @param {string} taskName 
+ * @returns 
+ */
+function getPreviousTaskInCategory(taskName) {
     var prev = ""
     for (const category in jobCategories) {
-        for (job of jobCategories[category]) {
-            if (job == task)
+        for (const job of jobCategories[category]) {
+            if (job == taskName)
                 return prev
             prev = job
         }
@@ -753,8 +976,8 @@ function getPreviousTaskInCategory(task) {
 
     prev = ""
     for (const category in skillCategories) {
-        for (skill of skillCategories[category]) {
-            if (skill == task)
+        for (const skill of skillCategories[category]) {
+            if (skill == taskName)
                 return prev
             prev = skill
         }
@@ -762,8 +985,8 @@ function getPreviousTaskInCategory(task) {
 
     prev = ""
     for (const category in itemCategories) {
-        for (item of itemCategories[category]) {
-            if (item == task)
+        for (const item of itemCategories[category]) {
+            if (item == taskName)
                 return prev
             prev = item
         }
@@ -772,80 +995,74 @@ function getPreviousTaskInCategory(task) {
     return prev
 }
 
-function initializeTaskBindings() {
-    for (const key in gameData.taskData) {
-        const task = gameData.taskData[key];
-        task.boundEffect = task.getEffect?.bind(task);
+function initializeSkillBindings() {
+    for (const key in gameData.skillData) {
+        const skill = gameData.skillData[key]
+        skill.boundEffect = skill.getEffect.bind(skill);
     }
 }
 
 function initializeItemBindings() {
     for (const key in gameData.itemData) {
-        const task = gameData.itemData[key];
-        task.boundEffect = task.getEffect.bind(task);
+        const item = gameData.itemData[key];
+        item.boundEffect = item.getEffect.bind(item);
     }
 }
 
-function getBindedTaskEffect(taskName) {
-    return gameData.taskData[taskName]?.boundEffect || null;
+/**
+ * 
+ * @param {string} skillName 
+ * @returns {function}
+ */
+function getBindedSkillEffect(skillName) {
+    return gameData.skillData[skillName].boundEffect;
 }
 
+/**
+ * 
+ * @param {string} itemName 
+ * @returns {function}
+ */
 function getBindedItemEffect(itemName) {
-    return gameData.itemData[itemName]?.boundEffect || null;
+    return gameData.itemData[itemName].boundEffect;
 }
 
-function getNextDarkMagicSkillInReach() {
-    const totalEvil = gameData.evil + getEvilGainAvailable()
+function checkRequirementInReach(currentValue, availableGain, requiredValue) {
+    if (requiredValue == null) return { inReach: false, requirement: null };
 
+    const total = currentValue + availableGain;
+    return {
+        inReach: total >= requiredValue,
+        requirement: requiredValue
+    };
+}
+
+function getNextDarkMagicRequired() {
     for (const key in gameData.taskData) {
-        const skill = gameData.taskData[key]
         if (skillCategories["Dark Magic"].includes(key)) {
-            const requirement = gameData.requirements[key]
-            if (!requirement.completed) {
-                if (totalEvil >= requirement.requirements[0].requirement)
-                    return { inReach: true, requirement: requirement.requirements[0].requirement }
-                else
-                    return { inReach: false, requirement: requirement.requirements[0].requirement }
-            }
+            const requirement = gameData.requirements[key];
+            if (!requirement.completed) return requirement.requirements[0].requirement;
         }
     }
-    return { inReach: false, requirement: null }
+    return null;
 }
 
-
-function getNextDarkMatterRequirement() {
-
-    const totalDarkMatter = gameData.dark_matter + getDarkMatterGainAvailable()
-
+function getNextDarkMatterRequired() {
     for (const key in gameData.requirements) {
-        const requirement = gameData.requirements[key]
-        if (requirement instanceof DarkMatterRequirement) {
-            if (!requirement.completed) {
-                if (totalDarkMatter >= requirement.requirements[0].requirement)
-                    return { inReach: true, requirement: requirement.requirements[0].requirement }
-                else
-                    return { inReach: false, requirement: requirement.requirements[0].requirement }
-            }
+        const requirement = gameData.requirements[key];
+        if (requirement instanceof DarkMatterRequirement && !requirement.completed) {
+            return requirement.requirements[0].requirement;
         }
     }
-
-    return { inReach: false, requirement: null }
+    return null;
 }
 
-function getNextMilestoneInReach() {
-    const totalEssence = gameData.essence + getEssenceGainAvailable()
-
+function getNextMilestoneRequired() {
     for (const key in milestoneData) {
-        const requirement = gameData.requirements[key]
-
-        if (requirement instanceof EssenceRequirement) {
-            if (!requirement.completed) {
-                if (totalEssence >= requirement.requirements[0].requirement)
-                    return { inReach: true, requirement: requirement.requirements[0].requirement }
-                else
-                    return { inReach: false, requirement: requirement.requirements[0].requirement }
-            }
+        const requirement = gameData.requirements[key];
+        if (requirement instanceof EssenceRequirement && !requirement.completed) {
+            return requirement.requirements[0].requirement;
         }
     }
-    return { inReach: false, requirement: null }
+    return null;
 }

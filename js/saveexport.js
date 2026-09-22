@@ -3,11 +3,12 @@ function importGameData() {
 
     // check import data
     try {
-        const importExportBox = elById("importExportBox")
-        if (importExportBox.value == "") {
-            alert("It looks like you tried to load an empty save... Paste save data into the box, then click \"Import Save\" again.")
+        const importExportBox = /** @type {HTMLInputElement} */ (elById("importExportBox"))
+        if (!importExportBox || (importExportBox).value == "") {
+            alert(`It looks like you tried to load an empty save... Paste save data into the box, then click "Import Save" again.`)
             return
         }
+
         data = JSON.parse(window.atob(importExportBox.value))
         if (!isValidSaveData(data)) {
             throw new Error("Invalid save structure");
@@ -19,8 +20,8 @@ function importGameData() {
 
     // enter critical section
     try {
-        clearInterval(saveloop)
-        clearInterval(gameloop)
+        stopSaveLoop()
+        stopGameLoop()
         pauseRender()
         saveGameData(data)
 
@@ -39,15 +40,22 @@ function importGameDataFromFile() {
     fileInput.accept = ".txt";
 
     fileInput.onchange = (event) => {
-        const file = event.target.files[0];
+        const target = /** @type {HTMLInputElement} */ (event.target);
+        const file = target?.files?.[0];
         if (!file) return;
 
         const reader = new FileReader();
 
         reader.onload = (e) => {
-            let data;
-            const saveContent = e.target.result.trim();
+            const result = e.target?.result;
+            const saveContent = typeof result === "string" ? result.trim() : "";
 
+            if (!saveContent) {
+                alert("Cannot read file or file is empty!");
+                return;
+            }
+
+            let data;
             try {
                 data = JSON.parse(window.atob(saveContent));
 
@@ -60,8 +68,8 @@ function importGameDataFromFile() {
             }
 
             try {
-                clearInterval(saveloop)
-                clearInterval(gameloop)
+                stopSaveLoop()
+                stopGameLoop()
                 pauseRender()
                 saveGameData(data);
             } catch (criticalError) {
@@ -80,18 +88,18 @@ function importGameDataFromFile() {
 }
 
 function exportGameData() {
-    const importExportBox = elById("importExportBox")
+    const importExportBox = /** @type {HTMLInputElement} */ (elById("importExportBox"))
     const saveString = window.btoa(JSON.stringify(gameData))
     importExportBox.value = saveString
 
     copyTextToClipboard(saveString)
         .then(() => {
             const tooltip = elById("exportTooltip")
-            tooltip.innerHTML = "&nbsp;&nbsp;Save copied to clipboard!"
+            if (tooltip)
+                tooltip.innerHTML = "&nbsp;&nbsp;Save copied to clipboard!"
         })
         .catch(err => {
-            // Здесь можно обработать ошибку, если пользователю запрещено копировать
-            // console.error('Could not copy text: ', err)
+            console.error('Could not copy text: ', err)
         })
     setTimeout(() => {
         if (importExportBox.value == saveString) {
@@ -102,7 +110,7 @@ function exportGameData() {
 
 function outExportButton() {
     const tooltip = elById("exportTooltip")
-    tooltip.textContent = ""
+    safeUpdateText(tooltip, "")
 }
 
 function exportGameDataToFile() {
@@ -110,6 +118,10 @@ function exportGameDataToFile() {
     exportToFile(saveString)
 }
 
+/**
+ * 
+ * @param {string} saveString 
+ */
 function exportToFile(saveString) {
     try {
         const blob = new Blob([saveString], { type: "text/plain;charset=utf-8" });

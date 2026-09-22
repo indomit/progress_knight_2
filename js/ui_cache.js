@@ -1,14 +1,15 @@
 const uiCache = {
-    text: new Map(),       // Map<HTMLElement, string>
-    hidden: new Map(),     // Map<HTMLElement, boolean>
-    disabled: new Map(),   // Map<HTMLElement, boolean>
-    classes: new Map(),    // Map<HTMLElement, Map<string, boolean>>
-    styles: new Map()      // Map<HTMLElement, Map<string, string>>
+    text: new Map(),       // Map<HTMLElementNullable, string>
+    hidden: new Map(),     // Map<HTMLElementNullable, boolean>
+    disabled: new Map(),   // Map<HTMLElementNullable, boolean>
+    classes: new Map(),    // Map<HTMLElementNullable, Map<string, boolean>>
+    styles: new Map(),     // Map<HTMLElementNullable, Map<string, string>>
+    viewKey: new Map()     // Map<HTMLElementNullable, string>
 };
 
 /**
- * @param {string | HTMLElement} target 
- * @returns {HTMLElement | null}
+ * @param {string | HTMLElementNullable} target 
+ * @returns {HTMLElementNullable}
  */
 function resolveElement(target) {
     if (target instanceof HTMLElement) return target;
@@ -22,10 +23,11 @@ function resolveElement(target) {
 }
 
 /**
- * @param {string | HTMLElement} target 
+ * @param {string | HTMLElementNullable} target 
  * @param {string} text 
  */
 function safeUpdateText(target, text) {
+    if (!target) return;
     const element = resolveElement(target);
     if (!element) return;
 
@@ -36,10 +38,11 @@ function safeUpdateText(target, text) {
 }
 
 /**
- * @param {string | HTMLElement} target 
+ * @param {string | HTMLElementNullable} target 
  * @param {boolean} hidden 
  */
 function safeUpdateHidden(target, hidden) {
+    if (!target) return;
     const element = resolveElement(target);
     if (!element) return;
 
@@ -50,7 +53,7 @@ function safeUpdateHidden(target, hidden) {
 }
 
 /**
- * @param {string | HTMLElement} target 
+ * @param {string | HTMLElementNullable} target 
  * @param {boolean} disabled 
  */
 function safeUpdateDisabled(target, disabled) {
@@ -59,28 +62,29 @@ function safeUpdateDisabled(target, disabled) {
 
     if (uiCache.disabled.get(element) === disabled) return;
 
-    element.disabled = disabled;
+    if (element instanceof HTMLButtonElement) {
+        element.disabled = disabled;
+    }
     uiCache.disabled.set(element, disabled);
 }
 
 /**
  * Безопасное переключение конкретного класса без задействования других.
- * @param {string | HTMLElement} target 
+ * @param {string | HTMLElementNullable} target 
  * @param {string} className 
  * @param {boolean} force 
  */
 function safeUpdateClass(target, className, force) {
+    if (!target || !className) return;    
     const element = resolveElement(target);
     if (!element) return;
 
-    // Достаем или создаем внутренний кэш классов для конкретно этого элемента
     let elementClassCache = uiCache.classes.get(element);
     if (!elementClassCache) {
         elementClassCache = new Map();
         uiCache.classes.set(element, elementClassCache);
     }
 
-    // Проверяем состояние именно этого класса на этом элементе
     if (elementClassCache.get(className) === force) return;
 
     element.classList.toggle(className, force);
@@ -88,9 +92,14 @@ function safeUpdateClass(target, className, force) {
 }
 
 /**
+ * @template {string} K
+ * @typedef {K extends keyof CSSStyleDeclaration ? (CSSStyleDeclaration[K] extends string ? K : never) : never} WritableStyleKeys
+ */
+
+/**
  * Безопасное переключение стилей.
- * @param {string | HTMLElement} target 
- * @param {string} styleName 
+ * @param {string | HTMLElementNullable} target 
+ * @param {WritableStyleKeys<any>} styleName 
  * @param {string} value 
  */
 function safeUpdateStyle(target, styleName, value) {

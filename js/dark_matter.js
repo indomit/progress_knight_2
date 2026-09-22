@@ -131,27 +131,52 @@ function canBuyAMiracle() {
     return gameData.dark_matter >= getAMiracleCost()
 }
 
+/**
+ * 
+ * @param {boolean} forceState 
+ * @returns 
+ */
+function toggleAMiracle(forceState) {
+    const shouldEnable = forceState !== undefined ? forceState : !gameData.dark_matter_shop.a_miracle;
+
+    if (shouldEnable) {
+        if (canBuyAMiracle()) {
+            gameData.dark_matter_shop.a_miracle = true;
+            gameData.dark_matter -= getAMiracleCost();
+            gameData.requirements["Magic Eye"].completed = true;
+            return true;
+        }
+        return false;
+    } else {
+        if (gameData.dark_matter_shop.a_miracle) {
+            gameData.dark_matter_shop.a_miracle = false;
+            gameData.dark_matter += getAMiracleCost();
+            gameData.requirements["Magic Eye"].completed = false;
+            return true;
+        }
+        return false;
+    }
+}
+
 async function buyAMiracle() {
-    if (!gameData.dark_matter_shop.a_miracle && canBuyAMiracle()) {
+    if (gameData.dark_matter_shop.a_miracle) {
+        toggleAMiracle(false);
+        return;
+    }
+
+    if (canBuyAMiracle()) {
         if (gameData.dark_matter < 30) {
             const isConfirmed = await customConfirm({
                 title: "CONFIRM PURCHASE",
                 text: "Are you sure you want to buy A Miracle? Your XP gain will decrease!",
                 confirmText: "Buy",
                 cancelText: "Cancel"
-
             });
-            if (!isConfirmed)
-                return
+
+            if (!isConfirmed) return;
         }
-        gameData.dark_matter_shop.a_miracle = true
-        gameData.dark_matter -= getAMiracleCost()
-        gameData.requirements["Magic Eye"].completed = true
-    }
-    else if (gameData.dark_matter_shop.a_miracle) {
-        gameData.dark_matter_shop.a_miracle = false
-        gameData.dark_matter += getAMiracleCost()
-        gameData.requirements["Magic Eye"].completed = false
+
+        toggleAMiracle(true);
     }
 }
 
@@ -226,18 +251,23 @@ function getDarkMatterSkillIncome() {
     if (gameData.active_challenge == "the_darkest_time")
         return 0
 
-    if (gameData.perks.positive_dark_mater_skills == 1)
+    if (gameData.perks.positive_dark_mater_skills)
         return 1
 
     let income = 1
+    const shop = gameData.dark_matter_shop
 
-    income *= [1, 3].includes(gameData.dark_matter_shop.your_greatest_debt) ? 0.1 : 1
-    income *= [2, 3].includes(gameData.dark_matter_shop.your_greatest_debt) ? 0.5 : 1
-    income *= [2, 3].includes(gameData.dark_matter_shop.essence_collector) ? 0.04 : 1
-    income *= [2, 3].includes(gameData.dark_matter_shop.explosion_of_the_universe) ? 0.00001 : 1
+    const debt = shop.your_greatest_debt
+    if (debt === 1 || debt === 3) income *= 0.1
+    if (debt === 2 || debt === 3) income *= 0.5
+
+    const collector = shop.essence_collector
+    if (collector === 2 || collector === 3) income *= 0.04
+
+    const explosion = shop.explosion_of_the_universe
+    if (explosion === 2 || explosion === 3) income *= 0.00001
 
     return income
-
 }
 
 function getDarkMatterSkillTimeWarping() {
@@ -245,11 +275,15 @@ function getDarkMatterSkillTimeWarping() {
         return 1
 
     let timewarping = 1
+    const shop = gameData.dark_matter_shop
+    const positive = gameData.perks.positive_dark_mater_skills
 
-    timewarping *= [1, 3].includes(gameData.dark_matter_shop.speed_is_life) ? 3 : 1
-    timewarping *= [2, 3].includes(gameData.dark_matter_shop.speed_is_life) ? 7 : 1
-    timewarping *= [1, 3].includes(gameData.dark_matter_shop.multiverse_explorer) ?
-        (gameData.perks.positive_dark_mater_skills == 1 ? 1 : 0.001) : 1
+    const speed = shop.speed_is_life
+    if (speed === 1 || speed === 3) timewarping *= 3
+    if (speed === 2 || speed === 3) timewarping *= 7
+
+    const multiverse = shop.multiverse_explorer
+    if (multiverse === 1 || multiverse === 3) timewarping *= positive ? 1 : 0.001
 
     return timewarping
 }
@@ -259,10 +293,14 @@ function getDarkMatterSkillXP() {
         return 1
 
     let xp = 1
+    const shop = gameData.dark_matter_shop
 
-    xp *= [1, 3].includes(gameData.dark_matter_shop.your_greatest_debt) ? 500 : 1
-    xp *= [1, 3].includes(gameData.dark_matter_shop.explosion_of_the_universe) ? 1e100 : 1
-    xp *= [2, 3].includes(gameData.dark_matter_shop.explosion_of_the_universe) ? 1e150 : 1
+    const debt = shop.your_greatest_debt
+    if (debt === 1 || debt === 3) xp *= 500
+
+    const explosion = shop.explosion_of_the_universe
+    if (explosion === 1 || explosion === 3) xp *= 1e100
+    if (explosion === 2 || explosion === 3) xp *= 1e150
 
     return xp
 }
@@ -272,15 +310,22 @@ function getDarkMatterSkillEssence() {
         return 0.25
 
     let ess = 1
+    const shop = gameData.dark_matter_shop
+    const positive = gameData.perks.positive_dark_mater_skills
 
-    ess *= (gameData.perks.positive_dark_mater_skills == 0 && [2, 3].includes(gameData.dark_matter_shop.speed_is_life)) ? 0.5 : 1
-    ess *= (gameData.perks.positive_dark_mater_skills == 0 && [1, 3].includes(gameData.dark_matter_shop.explosion_of_the_universe)) ? 0.5 : 1
+    const speed = shop.speed_is_life
+    if (!positive && (speed === 2 || speed === 3)) ess *= 0.5
 
-    ess *= [1, 3].includes(gameData.dark_matter_shop.essence_collector) ? 500 : 1
-    ess *= [2, 3].includes(gameData.dark_matter_shop.essence_collector) ? 1000 : 1
+    const explosion = shop.explosion_of_the_universe
+    if (!positive && (explosion === 1 || explosion === 3)) ess *= 0.5
 
-    ess *= [1, 3].includes(gameData.dark_matter_shop.multiverse_explorer) ? 5000 : 1
-    ess *= [2, 3].includes(gameData.dark_matter_shop.multiverse_explorer) ? 10000 : 1
+    const collector = shop.essence_collector
+    if (collector === 1 || collector === 3) ess *= 500
+    if (collector === 2 || collector === 3) ess *= 1000
+
+    const multiverse = shop.multiverse_explorer
+    if (multiverse === 1 || multiverse === 3) ess *= 5000
+    if (multiverse === 2 || multiverse === 3) ess *= 10000
 
     return ess
 }
@@ -290,16 +335,26 @@ function getDarkMatterSkillEvil() {
         return 0.25
 
     let evil = 1
+    const shop = gameData.dark_matter_shop
+    const positive = gameData.perks.positive_dark_mater_skills
 
-    evil *= [2, 3].includes(gameData.dark_matter_shop.your_greatest_debt) ? 100 : 1
-    evil *= (gameData.perks.positive_dark_mater_skills == 0 && [1, 3].includes(gameData.dark_matter_shop.speed_is_life)) ? 0.5 : 1
-    evil *= (gameData.perks.positive_dark_mater_skills == 0 && [1, 3].includes(gameData.dark_matter_shop.essence_collector)) ? 0.5 : 1
+    const debt = shop.your_greatest_debt
+    if (debt === 2 || debt === 3) evil *= 100
+
+    const speed = shop.speed_is_life
+    if (!positive && (speed === 1 || speed === 3)) evil *= 0.5
+
+    const collector = shop.essence_collector
+    if (!positive && (collector === 1 || collector === 3)) evil *= 0.5
 
     return evil
 }
+
+
 function getDarkMatterSkillDarkMater() {
     if (gameData.active_challenge == "the_darkest_time")
         return 1
 
-    return (gameData.perks.positive_dark_mater_skills == 0 && [2, 3].includes(gameData.dark_matter_shop.multiverse_explorer)) ? 0.01 : 1
+    const multiverse = gameData.dark_matter_shop.multiverse_explorer
+    return (!gameData.perks.positive_dark_mater_skills && (multiverse === 2 || multiverse === 3)) ? 0.01 : 1
 }

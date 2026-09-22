@@ -125,6 +125,10 @@ button.item-button .name {
     opacity: 0.5;
 }
 
+.button-collapse .req-pending-bar {
+    opacity: 0.75;
+}
+
 .req-progress-bar {
     z-index: 2;
 }

@@ -1,8 +1,12 @@
+/** @type {string | null} */
 let activeTooltipData = null;
+
+/** @type {string | null} */
 let activeTooltipType = null;
 
 function initTooltip() {
-    const tooltip = elById("globalTooltip");
+    const tooltip = /** @type {HTMLElement} */ (elById("globalTooltip"));
+    if (!tooltip) return;
     let isVisible = false;
     let hideTimeout = null;
     let showTimeout = null;
@@ -14,28 +18,6 @@ function initTooltip() {
     let lockedFlipY = false;
     let lockedShiftX = false;
     let lockedShiftY = false;
-
-    let isHiding_old = isHiding;
-    let lockedFlipX1_old = lockedFlipX;
-    let lockedShiftY1_old = lockedShiftY;
-    let lockedFlipY1_old = lockedFlipY;
-
-    function dfs(src) {
-        return
-
-        if (isHiding != isHiding_old) {
-            isHiding_old = isHiding
-        }
-        if (lockedFlipX != lockedFlipX1_old) {
-            lockedFlipX1_old = lockedFlipX
-        }
-        if (lockedShiftY != lockedShiftY1_old) {
-            lockedShiftY1_old = lockedShiftY
-        }
-        if (lockedFlipY != lockedFlipY1_old) {
-            lockedFlipY1_old = lockedFlipY
-        }
-    }
 
     function updatePosition(e) {
         if (!tooltip || !e) return;
@@ -89,31 +71,15 @@ function initTooltip() {
         }
 
         activeTooltipType = target.dataset.type;
-        const name = target.dataset.name;
+        activeTooltipData = target.dataset.name;
 
-        switch (activeTooltipType) {
-            case 'job':
-            case 'skill':
-                activeTooltipData = gameData.taskData[name];
-                break;
-            case 'item':
-                activeTooltipData = gameData.itemData[name];
-                break;
-            case 'milestone':
-                activeTooltipData = tooltips[name];
-                break;
-            default:
-                activeTooltipData = name;
-                break;
-        }
-
-        if (activeTooltipData) {
+        if (activeTooltipData && activeTooltipType) {
             renderTooltipContent(tooltip, activeTooltipData, activeTooltipType);
             updatePosition(e);
 
             if (showTimeout) clearTimeout(showTimeout);
 
-            if (isVisible || instant) {                
+            if (isVisible || instant) {
                 safeUpdateClass(tooltip, "visible", true)
                 isVisible = true;
             } else {
@@ -143,7 +109,7 @@ function initTooltip() {
     }
 
     document.addEventListener("mouseover", function (e) {
-        const target = e.target.closest(".tooltip");
+        const target = /** @type {Element} */(e.target).closest(".tooltip");
 
         if (target) {
             currentTargetElement = target;
@@ -167,8 +133,8 @@ function initTooltip() {
     });
 
     document.addEventListener("mouseout", function (e) {
-        const target = e.target.closest(".tooltip");
-        const relatedTarget = e.relatedTarget ? e.relatedTarget.closest(".tooltip") : null;
+        const target = /** @type {Element} */(e.target)?.closest?.(".tooltip");
+        const relatedTarget = e.relatedTarget ? /** @type {Element} */(e.relatedTarget).closest?.(".tooltip") : null;
 
         if (target && target !== relatedTarget) {
             currentTargetElement = null;
@@ -189,6 +155,12 @@ function initTooltip() {
     });
 }
 
+/**
+ * @param {string} resourceName
+ * @param {number} currentValue
+ * @param {number} requiredValue
+ * @param {{ progressPercent: any; pendingPercent?: any; targetColorClass: any; }} renderResult
+ */
 function buildResourceTooltipHTML(resourceName, currentValue, requiredValue, pendingValue = 0, renderResult, speed = 0) {
     // pending here is without current
 
@@ -237,6 +209,11 @@ function buildResourceTooltipHTML(resourceName, currentValue, requiredValue, pen
     return result
 }
 
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
 function renderTooltipContent(tooltip, data, type) {
     switch (type) {
         case 'simple':
@@ -281,6 +258,11 @@ function renderTooltipContent(tooltip, data, type) {
     }
 }
 
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
 function renderTooltipContentMetaPerk(tooltip, data, type) {
     const name = data
     const perkCost = getPerkCost(name);
@@ -306,6 +288,11 @@ function renderTooltipContentMetaPerk(tooltip, data, type) {
     }
 }
 
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} task
+ * @param {string} type
+ */
 function renderTooltipContentDarkOrbs(tooltip, task, type) {
 
     const dealWithChairmanCost = getADealWithTheChairmanCost()
@@ -318,17 +305,23 @@ function renderTooltipContentDarkOrbs(tooltip, task, type) {
 
     let result = { progressPercent: percent, pendingPercent: percent, targetColorClass: "color-dark-orbs" };
 
-    tooltipHTML = buildResourceTooltipHTML("Dark Orbs", gameData.dark_orbs, nextCost, 0, result, getDarkOrbGeneration());
+    let tooltipHTML = buildResourceTooltipHTML("Dark Orbs", gameData.dark_orbs, nextCost, 0, result, getDarkOrbGeneration());
 
     if (tooltip.innerHTML !== tooltipHTML) {
         tooltip.innerHTML = tooltipHTML;
     }
 }
 
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
 function renderTooltipContentSimple(tooltip, data, type) {
+    const text = tooltips[data]
     let tooltipHTML = `
         <div class="generic-tooltip-header" style="font-weight: bold; margin-bottom: 5px;">
-            ${data}
+            ${text}
         </div>        
     `;
 
@@ -338,6 +331,11 @@ function renderTooltipContentSimple(tooltip, data, type) {
 }
 
 
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
 function renderTooltipContentError(tooltip, data, type) {
     let tooltipHTML = `
         <div class="generic-tooltip-header" style="font-weight: bold; margin-bottom: 5px;">
@@ -356,18 +354,25 @@ function renderTooltipContentError(tooltip, data, type) {
     }
 }
 
-function getHeroicRequiredTooltip(task) {
-    const requirementObject = gameData.requirements[task]
+/**
+ * 
+ * @param {string} taskName 
+ * @returns 
+ */
+function getHeroicRequiredTooltip(taskName) {
+    const requirementObject = gameData.requirements[taskName]
     const requirements = requirementObject.requirements
-    const prev = getPreviousTaskInCategory(task)
+    const prev = getPreviousTaskInCategory(taskName)
 
     let tooltip = "<br> <span style=\"color: red\">Required</span>: <span style=\"color: orange\">"
     let reqlist = ""
     let prevReq = ""
+    let prevTask = null
+    let prevlvl = 0
 
     if (prev !== "") {
-        var prevTask = gameData.taskData[prev]
-        var prevlvl = (prevTask.isHero ? prevTask.level : 0)
+        prevTask = gameData.taskData[prev]
+        prevlvl = (prevTask.isHero ? prevTask.level : 0)
         if (prevlvl < 20)
             prevReq = "Great " + prev + " " + prevlvl + "/20<br>"
     }
@@ -380,14 +385,14 @@ function getHeroicRequiredTooltip(task) {
         reqlist += "Age " + format((requirements[0].herequirement == undefined) ? requirements[0].requirement : requirements[0].herequirement) + "<br>"
     } else if (requirementObject instanceof DarkMatterRequirement) {
         reqlist += format((requirements[0].herequirement == undefined) ? requirements[0].requirement : requirements[0].herequirement) + " Dark Matter<br>"
-    } else {
+    } else if (requirementObject instanceof TaskRequirement) {
         for (const requirement of requirements) {
-            const task_check = gameData.taskData[requirement.task]
+            const task_check = gameData.taskData[/** @type {TaskRequirementConfig} */ (requirement).task]
 
             const reqvalue = (requirement.herequirement == null ? requirement.requirement : requirement.herequirement)
 
             if (task_check.isHero && task_check.level >= reqvalue) continue
-            if (prev !== "" && task_check.name == prevTask.name) {
+            if (prev !== "" && task_check.name == prevTask?.name) {
                 if (reqvalue <= 20)
                     continue
                 else
@@ -404,12 +409,18 @@ function getHeroicRequiredTooltip(task) {
     return tooltip
 }
 
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
+function renderTooltipContentJob(tooltip, data, type) {
+    const job = gameData.jobData[data]
 
-function renderTooltipContentJob(tooltip, task, type) {
-    const displayName = (task.isHero ? "Great " : "") + task.name;
-    const currentLevelFormatted = formatLevel(task.level);
-    const baseDescription = tooltips[task.name] || "";
-    const progressPercent = (task.getTaskXpProgressFraction() * 100);
+    const displayName = (job.isHero ? "Great " : "") + job.name;
+    const currentLevelFormatted = formatLevel(job.level);
+    const baseDescription = tooltips[job.name] || "";
+    const progressPercent = (job.getTaskXpProgressFraction() * 100);
 
     let tooltipHTML = `
         <div class="job-tooltip-header">
@@ -419,16 +430,16 @@ function renderTooltipContentJob(tooltip, task, type) {
         <div class="job-tooltip-body">${baseDescription}</div>
     `;
 
-    if (!task.isHero && isHeroesUnlocked()) {
-        tooltipHTML += `<div class="job-tooltip-heroic-req">${getHeroicRequiredTooltip(task.name)}</div>`;
+    if (!job.isHero && isHeroesUnlocked()) {
+        tooltipHTML += `<div class="job-tooltip-heroic-req">${getHeroicRequiredTooltip(job.name)}</div>`;
     }
 
     tooltipHTML += `
         <div class="job-tooltip-footer">
-            <div><span class="label">Progress:</span> <span>${task.getCurrentXpFormatted()} / ${task.getMaxXpFormatted()} (${format(progressPercent)}%)</span></div>
-            <div><span class="label">XP Gain:</span> <span class="w3-text-green">${task.getXpGainFormatted()} / day</span></div>
-            <div><span class="label">Time to Level Up:</span> <span class="w3-text-blue">${task.getGameDaysLeftFormatted()}</span></div>
-            <div><span class="label">ETA (realtime):</span> <span class="w3-text-orange">${task.getRealTimeLeftFormatted()}</span></div>
+            <div><span class="label">Progress:</span> <span>${job.getCurrentXpFormatted()} / ${job.getMaxXpFormatted()} (${format(progressPercent)}%)</span></div>
+            <div><span class="label">XP Gain:</span> <span class="w3-text-green">${job.getXpGainFormatted()} / day</span></div>
+            <div><span class="label">Time to Level Up:</span> <span class="w3-text-blue">${job.getGameDaysLeftFormatted()}</span></div>
+            <div><span class="label">ETA (realtime):</span> <span class="w3-text-orange">${job.getRealTimeLeftFormatted()}</span></div>
             <div class="income-desc">
                 <span class="label">Income:</span> 
                 <span class="income-value">
@@ -445,18 +456,25 @@ function renderTooltipContentJob(tooltip, task, type) {
         tooltip.innerHTML = tooltipHTML;
     }
 
-    const tooltipIncomeElement = tooltip.querySelector(".income-value");
+    const tooltipIncomeElement = /** @type {HTMLElement} */ (tooltip.querySelector(".income-value"));
     if (tooltipIncomeElement) {
-        formatCoins(tooltipIncomeElement, task.getIncome());
+        formatCoins(tooltipIncomeElement, job.getIncome());
     }
 }
 
 
-function renderTooltipContentSkill(tooltip, task, type) {
-    const displayName = (task.isHero ? "Great " : "") + task.name;
-    const currentLevelFormatted = formatLevel(task.level);
-    const baseDescription = tooltips[task.name] || "";
-    const progressPercent = (task.getTaskXpProgressFraction() * 100);
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
+function renderTooltipContentSkill(tooltip, data, type) {
+    const skill = gameData.skillData[data]
+
+    const displayName = (skill.isHero ? "Great " : "") + skill.name;
+    const currentLevelFormatted = formatLevel(skill.level);
+    const baseDescription = tooltips[skill.name] || "";
+    const progressPercent = (skill.getTaskXpProgressFraction() * 100);
 
     let tooltipHTML = `
         <div class="skill-tooltip-header">
@@ -466,17 +484,17 @@ function renderTooltipContentSkill(tooltip, task, type) {
         <div class="skill-tooltip-body">${baseDescription}</div>
     `;
 
-    if (!task.isHero && isHeroesUnlocked()) {
-        tooltipHTML += `<div class="skill-tooltip-heroic-req">${getHeroicRequiredTooltip(task.name)}</div>`;
+    if (!skill.isHero && isHeroesUnlocked()) {
+        tooltipHTML += `<div class="skill-tooltip-heroic-req">${getHeroicRequiredTooltip(skill.name)}</div>`;
     }
 
     tooltipHTML += `
         <div class="skill-tooltip-footer">
-            <div><span class="label">Progress:</span> <span>${task.getCurrentXpFormatted()} / ${task.getMaxXpFormatted()} (${format(progressPercent)}%)</span></div>
-            <div><span class="label">XP Gain:</span> <span class="w3-text-green">${task.getXpGainFormatted()} / day</span></div>
-            <div><span class="label">Time to Level Up:</span> <span class="w3-text-blue">${task.getGameDaysLeftFormatted()}</span></div>
-            <div><span class="label">ETA (realtime):</span> <span class="w3-text-orange">${task.getRealTimeLeftFormatted()}</span></div>
-            <div class="skill-tooltip-footer-effect"><span class="label">Effect:</span> ${task.getEffectDescription()}</div>
+            <div><span class="label">Progress:</span> <span>${skill.getCurrentXpFormatted()} / ${skill.getMaxXpFormatted()} (${format(progressPercent)}%)</span></div>
+            <div><span class="label">XP Gain:</span> <span class="w3-text-green">${skill.getXpGainFormatted()} / day</span></div>
+            <div><span class="label">Time to Level Up:</span> <span class="w3-text-blue">${skill.getGameDaysLeftFormatted()}</span></div>
+            <div><span class="label">ETA (realtime):</span> <span class="w3-text-orange">${skill.getRealTimeLeftFormatted()}</span></div>
+            <div class="skill-tooltip-footer-effect"><span class="label">Effect:</span> ${skill.getEffectDescription()}</div>
         </div>
     `;
 
@@ -485,15 +503,21 @@ function renderTooltipContentSkill(tooltip, task, type) {
     }
 }
 
-function renderTooltipContentItem(tooltip, item, type) {
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
+function renderTooltipContentItem(tooltip, data, type) {
+    const item = gameData.itemData[data]
     const isLegendary = isHeroesUnlocked();
     const isItemActive = gameData.currentMisc.includes(item) || item == gameData.currentProperty;
 
     let statusDotColor = "#444";
     if (isItemActive) {
         statusDotColor = autoBuyEnabled
-            ? (itemCategories["Properties"].includes(item.name) ? headerRowColors["Properties_Auto"] : headerRowColors["Misc_Auto"])
-            : (itemCategories["Properties"].includes(item.name) ? headerRowColors["Properties"] : headerRowColors["Misc"]);
+            ? (item.isProperty ? headerRowColors["Properties_Auto"] : headerRowColors["Misc_Auto"])
+            : (item.isProperty ? headerRowColors["Properties"] : headerRowColors["Misc"]);
     }
 
     const baseDescription = tooltips[item.name] || "";
@@ -514,6 +538,11 @@ function renderTooltipContentItem(tooltip, item, type) {
     }
 }
 
+/**
+ * @param {number} current
+ * @param {number} required
+ * @param {number} genSpeed
+ */
 function calculateETA(current, required, genSpeed) {
     let percent = 0;
     let readyInRealTime = "";
@@ -554,8 +583,13 @@ function calculateETA(current, required, genSpeed) {
     return { readyInGameTime, readyInRealTime };
 }
 
-function renderTooltipContentRequirement(tooltip, reqName, type) {
-    const requirementObject = gameData.requirements[reqName];
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
+function renderTooltipContentRequirement(tooltip, data, type) {
+    const requirementObject = gameData.requirements[data];
     if (!requirementObject) return;
 
     const requirements = requirementObject.requirements;
@@ -586,7 +620,7 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
         let result = { progressPercent: getDynamicProgress(gameData.days, curRequiredValue), targetColorClass: "color-essence", pendingPercent: 0 };
         tooltipHTML = buildResourceTooltipHTML("Age", gameData.days, curRequiredValue, 0, result);
     }
-    else if (gameData.taskData[reqName]) {
+    else if (gameData.taskData[data]) {
         tooltipHTML = `
             <div class="shop-tooltip-header">Requirements Goal Tracker</div>
             <div class="job-tooltip-body" style="text-align: left; font-size: 0.85em;">
@@ -595,6 +629,10 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
         let reqCount = 0;
 
         for (const requirement of requirements) {
+            if (!requirement.task) {
+                console.warn("requirement has no task assigned (renderTooltipContentRequirement)")
+                continue
+            }
             const reqTask = gameData.taskData[requirement.task];
             const curReqVal = requirement.requirement;
 
@@ -645,7 +683,7 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
         }
         tooltipHTML += `</div>`;
     }
-    else if (gameData.itemData[reqName]) {
+    else if (gameData.itemData[data]) {
         tooltipHTML = `
             <div class="shop-tooltip-header">Requirements Goal Tracker</div>
             <div class="job-tooltip-body" style="text-align: left; font-size: 0.85em;">
@@ -681,7 +719,7 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
             <div><span class="label" style="color: #fff; font-weight: bold;">Progress:</span> <span>${format(progressPercent)}%</span></div>
         </div>`;
     }
-    else if (milestoneData && milestoneData[reqName]) {
+    else if (milestoneData && milestoneData[data]) {
         let result = { progressPercent: getDynamicProgress(gameData.essence, curRequiredValue), targetColorClass: "color-essence" };
         result.pendingPercent = getDynamicProgress(gameData.essence + getEssenceGainAvailable(), curRequiredValue);
         tooltipHTML = buildResourceTooltipHTML("Essence", gameData.essence, curRequiredValue, getEssenceGainAvailable(), result);
@@ -692,7 +730,12 @@ function renderTooltipContentRequirement(tooltip, reqName, type) {
     }
 }
 
-function renderTooltipContentEvilPerk(tooltipEl, data, type) {
+/**
+ * @param {HTMLElement} tooltip
+ * @param {string} data
+ * @param {string} type
+ */
+function renderTooltipContentEvilPerk(tooltip, data, type) {
     const i = Number(data);
     const perkCost = getEvilPerkCost(i);
 
@@ -791,7 +834,7 @@ function renderTooltipContentEvilPerk(tooltipEl, data, type) {
         </div>
     `;
 
-    if (tooltipEl.innerHTML !== tooltipHTML) {
-        tooltipEl.innerHTML = tooltipHTML;
+    if (tooltip.innerHTML !== tooltipHTML) {
+        tooltip.innerHTML = tooltipHTML;
     }
 }

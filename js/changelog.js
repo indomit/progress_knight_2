@@ -1,14 +1,17 @@
 const changelogText = `version 2.7.0 / xx.xx.2026
 * Income calculated from all jobs / Current job removed	
-* Added progress bars for requirements
+* Added progress bars for requirements/resources
 * Added enhanced tooltips
+* Better mobile support
 * Moved XP Gain / XP Left columns to tooltips
 * Added Evil Perks sidebar option
 * Save game to file / Load from file
 * Keep max levels in base game after entering and exiting challenge
-* Faint Hope milestone reworked
+* Faint Hope reworked (again)
 * Heroic Milestones rebalanced
-* A lot of tweaks
+* Game layout enhancements
+* A lot of tweaks, optimizations, changes
+* ts-checks
 
 version 2.6.0 / xx.xx.2025
 * Events update

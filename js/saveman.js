@@ -34,7 +34,7 @@ function createRequirements() {
 function restorePrototypes() {
     for (const key in gameData.taskData) {
         let task = gameData.taskData[key]
-        if (task.baseData.income)
+        if ("income" in task.baseData)
             task = Object.assign(new Job(jobBaseData[task.name]), task)
         else
             task = Object.assign(new Skill(skillBaseData[task.name]), task)
@@ -44,6 +44,15 @@ function restorePrototypes() {
         gameData.taskData[key] = task
     }
 
+
+    gameData.jobData = {};
+    gameData.skillData = {};
+    for (const key in gameData.taskData) {
+        const t = gameData.taskData[key];
+        if (t instanceof Job) gameData.jobData[key] = t;
+        else if (t instanceof Skill) gameData.skillData[key] = t;
+    }
+
     for (const key in gameData.itemData) {
         let item = gameData.itemData[key]
         item.baseData = itemBaseData[item.name]
@@ -51,7 +60,12 @@ function restorePrototypes() {
         gameData.itemData[key] = item
     }
 
-    gameData.currentProperty = gameData.itemData[gameData.currentProperty.name]
+    if (gameData.currentProperty?.name && gameData.itemData?.[gameData.currentProperty.name]) {
+        gameData.currentProperty = gameData.itemData[gameData.currentProperty.name];
+    } else {
+        gameData.currentProperty = gameData.itemData["Homeless"]
+    }
+
     const newArray = []
     for (const misc of gameData.currentMisc) {
         newArray.push(gameData.itemData[misc.name])
@@ -59,6 +73,11 @@ function restorePrototypes() {
     gameData.currentMisc = newArray
 }
 
+/**
+ * 
+ * @param {any} data 
+ * @returns 
+ */
 function isValidSaveData(data) {
     if (!data || typeof data !== 'object') return false;
 
@@ -81,7 +100,11 @@ function isValidSaveData(data) {
     return true;
 }
 
-
+/**
+ * 
+ * @param {any} saveDict 
+ * @param {any} gameDict 
+ */
 function syncSaveWithGameData(saveDict, gameDict) {
     for (const key in gameDict) {
         if (!(key in saveDict)) {
@@ -97,20 +120,13 @@ function syncSaveWithGameData(saveDict, gameDict) {
 }
 
 function saveGameData(data = gameData) {
-    if (gameData.is_game_over)
+    if (gameData.p4)
         return
 
-    const saveCopy = { ...data };
+    const { requirements, ...saveCopy } = data;
     saveCopy.save_date_time = Date.now()
     saveCopy.completed_requirements = Object.keys(data.requirements).filter(key => data.requirements[key].completed);
-    if ("requirements" in saveCopy) {
-        delete saveCopy["requirements"]
-    }
     localStorage.setItem("gameDataSave", JSON.stringify(saveCopy))
-}
-
-function initChallengeBonusCache() {
-
 }
 
 function loadGameData() {
@@ -166,6 +182,7 @@ function loadGameData() {
             gameData.completed_requirements.forEach(name => {
                 if (gameData.requirements[name]) {
                     gameData.requirements[name].completed = true;
+                    gameData.requirements[name].needs_rerender = true;
                 }
             });
 
@@ -190,7 +207,7 @@ function loadGameData() {
         }
         restorePrototypes()
         setCustomEffects()
-        initializeTaskBindings()
+        initializeSkillBindings()
         initializeItemBindings()
         addMultipliers()
         updateAllChallengeBonusCache()
@@ -205,12 +222,12 @@ function loadGameData() {
 async function resetGameData() {
 
     function restoreLoops() {
-        gameloop = setInterval(update, gameTickLength);
-        saveloop = setInterval(saveGameData, 3000);
+        startGameLoop()
+        startSaveLoop()
     }
 
-    clearInterval(saveloop);
-    clearInterval(gameloop);
+    stopSaveLoop()
+    stopGameLoop()
 
     let isConfirmed = await customConfirm({
         title: "HARD RESET",

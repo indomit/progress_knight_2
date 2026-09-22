@@ -1,3 +1,15 @@
+/**
+ * 
+ * @param {string} taskName 
+ * @returns 
+ */
+function getChallengeTaskGoalProgress(taskName) {
+    const task = gameData.taskData[taskName]
+    if (!task) return 0
+
+    return task.level * (task.isHero ? 1000 : 1)
+}
+
 function resetChallenges() {
     for (const challenge in gameData.challenges) {
         gameData.challenges[challenge] = 0
@@ -17,11 +29,15 @@ function updateAllChallengeBonusCache() {
     cb["the_darkest_time"] = softcap(pow((c.the_darkest_time || 0) + 1, 0.85), 25, 0.6);
 }
 
-
+/**
+ * 
+ * @param {string} challengeName 
+ * @returns 
+ */
 function enterChallenge(challengeName) {
     if (!gameData.requirements["Challenge_" + challengeName].completed)
         return
-    
+
     const alreadyInChallenge = gameData.active_challenge !== "";
 
     if (alreadyInChallenge)
@@ -92,10 +108,20 @@ function setChallengeProgress() {
 
 const getChallengeBonus = getChallengeBonusByName;
 
+/**
+ * 
+ * @param {string} challenge_name 
+ * @returns 
+ */
 function getChallengeBonusByName(challenge_name) {
     return gameData.challengeBonuses[challenge_name] || 1;
 }
 
+/**
+ * 
+ * @param {number} challenge_id 
+ * @returns 
+ */
 function getChallengeBonusById(challenge_id) {
     const cb = gameData.challengeBonuses;
     switch (challenge_id) {
@@ -109,6 +135,11 @@ function getChallengeBonusById(challenge_id) {
     }
 }
 
+/**
+ * 
+ * @param {string} challenge_name 
+ * @returns 
+ */
 function getCurrentChallengeBonusByName(challenge_name) {
     switch (challenge_name) {
         case "an_unhappy_life": return softcap(pow(getHappiness() + 1, 0.31), 500, 0.45);
@@ -121,6 +152,11 @@ function getCurrentChallengeBonusByName(challenge_name) {
     }
 }
 
+/**
+ * 
+ * @param {number} challenge_id 
+ * @returns 
+ */
 function getCurrentChallengeBonusById(challenge_id) {
     switch (challenge_id) {
         case 1: return softcap(pow(getHappiness() + 1, 0.31), 500, 0.45);
@@ -135,6 +171,12 @@ function getCurrentChallengeBonusById(challenge_id) {
 
 
 
+/**
+ * 
+ * @param {number} challenge_id 
+ * @param {boolean} camel_case 
+ * @returns 
+ */
 function getChallengeName(challenge_id, camel_case = false) {
     if (camel_case) {
         switch (challenge_id) {
@@ -158,23 +200,28 @@ function getChallengeName(challenge_id, camel_case = false) {
     }
 }
 
-function getChallengeGoal(challenge_name) {
-    if (challenge_name == "an_unhappy_life" || challenge_name == 1) {
-        return gameData.challenges.an_unhappy_life + 1
+/**
+ * 
+ * @param {string | number} challenge_name_or_id 
+ * @returns {number}
+ */
+function getChallengeGoal(challenge_name_or_id) {
+    let challenge_name = typeof challenge_name_or_id === "number" ? getChallengeName(challenge_name_or_id) : challenge_name_or_id;
+
+    switch (challenge_name) {
+        case "an_unhappy_life":
+            return gameData.challenges.an_unhappy_life + 1
+        case "rich_and_the_poor":
+            return gameData.challenges.rich_and_the_poor + 1
+        case "time_does_not_fly":
+            return max(1, gameData.challenges.time_does_not_fly + 0.1)
+        case "dance_with_the_devil":
+            return gameData.challenges.dance_with_the_devil + 10.1
+        case "legends_never_die":
+            return gameData.challenges.legends_never_die + 1
+        case "the_darkest_time":
+            return gameData.challenges.the_darkest_time + 1
     }
-    else if (challenge_name == "rich_and_the_poor" || challenge_name == 2) {
-        return gameData.challenges.rich_and_the_poor + 1
-    }
-    else if (challenge_name == "time_does_not_fly" || challenge_name == 3) {
-        return max(1, gameData.challenges.time_does_not_fly + 0.1)
-    }
-    else if (challenge_name == "dance_with_the_devil" || challenge_name == 4) {
-        return gameData.challenges.dance_with_the_devil + 10.1
-    }
-    else if (challenge_name == "legends_never_die" || challenge_name == 5) {
-        return gameData.challenges.legends_never_die + 1
-    }
-    else if (challenge_name == "the_darkest_time" || challenge_name == 6) {
-        return gameData.challenges.the_darkest_time + 1
-    }
+
+    return Infinity
 }

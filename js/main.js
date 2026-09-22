@@ -10,17 +10,17 @@ onerror = (message, source, lineno, colno, error) => {
         "Stack Trace": error ? error.stack : "Not available"
     });
 
-    elById("errorInfo").hidden = false
+    safeUpdateHidden("errorInfo", false)
     tempData.hasError = true
     setTimeout(() => {
-        elById("errorInfo").hidden = true
+        safeUpdateHidden("errorInfo", true)
     }, 30 * 1000)
 }
 
-
 const sidebarMediaQuery = window.matchMedia("(min-width: 48em)");
-sidebarMediaQuery.addEventListener("change",handleSidebarLayout);
+sidebarMediaQuery.addEventListener("change", handleSidebarLayout);
 
+// Initialization
 
 // Loads the game save, does the initial render and starts the game update and render loop.
 
@@ -41,56 +41,70 @@ if ("save_date_time" in gameData && gameData.save_date_time > 0) {
     calc_offline_progress(Date.now() - gameData.save_date_time)
 }
 
-el("#mainarea").hidden = isProcessingOfflineProgress
+safeUpdateHidden("mainarea", isProcessingOfflineProgress)
 
 handleSidebarLayout(sidebarMediaQuery);
-update()
 
-let ticking = false
-let lastUpdate = 0
+
+// game loop
 let nextTick = Date.now();
 
-/*
-var gameloop = setInterval(function () {
-    if (ticking)
-        return
-    ticking = true
-    update()
-    var ms = Date.now() - lastUpdate
-    if (lastUpdate !== 0 && ms >= 10000 && !isProcessingOfflineProgress)
-        calc_offline_progress(ms)
-    lastUpdate = Date.now()
+/** @type {number | null} */
+var gameloopTimeoutId = null;
 
-    ticking = false
-}, gameTickLength) */
+function startGameLoop() {
+    if (gameloopTimeoutId !== null) return;
+    nextTick = Date.now();
 
-function gameloop() {
+    gameLoop();
+}
+
+function stopGameLoop() {
+    if (gameloopTimeoutId !== null) {
+        clearTimeout(gameloopTimeoutId);
+        gameloopTimeoutId = null;
+    }
+}
+
+function gameLoop() {
     let now = Date.now();
     let msSinceLastCall = now - (nextTick - gameTickLength);
 
-    // 1. Check for massive offline gaps first
     if (msSinceLastCall >= 10000 && !isProcessingOfflineProgress) {
         calc_offline_progress(msSinceLastCall);
-        nextTick = Date.now(); // Reset the clock after offline processing
+        nextTick = Date.now();
     } else {
-        // 2. Catch up on missed ticks if a frame took too long
         while (Date.now() >= nextTick) {
             update();
-            nextTick += gameTickLength; // Strictly advances by exactly 50ms
+            nextTick += gameTickLength;
         }
     }
 
-    // 3. Dynamic delay: schedules the next check based on how much time is left
     let delay = Math.max(0, nextTick - Date.now());
-    setTimeout(gameloop, delay);
+    gameloopTimeoutId = setTimeout(gameLoop, delay);
 }
 
-var saveloop = setInterval(saveGameData, 3000)
+// save loop
 
+/** @type {number | null} */
+var saveloopIntervalId = null;
+
+function startSaveLoop() {
+    if (saveloopIntervalId !== null) return;
+    saveGameData();
+    saveloopIntervalId = setInterval(saveGameData, saveTickLength)
+}
+
+function stopSaveLoop() {
+    if (saveloopIntervalId !== null) {
+        clearInterval(saveloopIntervalId);
+        saveloopIntervalId = null;
+    }
+}
+
+// render loop
 
 let isRenderPaused = false;
-let lastFpsUpdateTime = performance.now();
-let frameCount = 0;
 
 function pauseRender() {
     isRenderPaused = true;
@@ -100,7 +114,6 @@ function resumeRender() {
     if (!isRenderPaused) return;
 
     isRenderPaused = false;
-
     lastFpsUpdateTime = performance.now();
     frameCount = 0;
 
@@ -108,32 +121,14 @@ function resumeRender() {
 }
 
 function renderLoop() {
-    if (isRenderPaused) {
+    if (isRenderPaused)
         return;
-    }
 
     updateUI();
-
-    // ---FPS ---
-    /*
-    frameCount++;
-    const now = performance.now();
-    const elapsed = now - lastFpsUpdateTime;
-
-    if (elapsed >= 1000) {
-        const currentFps = round((frameCount * 1000) / elapsed);
-
-        safeUpdateText("fpsCounter", `FPS: ${currentFps}`);
-        safeUpdateText("fps", `FPS: ${currentFps}`);
-
-        frameCount = 0;
-        lastFpsUpdateTime = now;
-    }
-    */
-    // -------------------------
-
     requestAnimationFrame(renderLoop);
 }
 
-gameloop()
+// start the game loops
+startGameLoop()
+startSaveLoop()
 requestAnimationFrame(renderLoop);
