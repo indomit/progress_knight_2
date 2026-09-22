@@ -102,7 +102,7 @@ function updateUI() {
     if (currentTab == Tab.INFO || gameData.settings.sidebarVisible) {
         renderAliveUI()
         renderSideBar()
-        renderFPS()
+        // renderFPS()
     }
 
     if (currentTab == Tab.JOBS) {
