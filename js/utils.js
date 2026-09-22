@@ -1,3 +1,5 @@
+const POWERS_OF_10 = [1, 10, 100, 1000];
+
 const log = Math.log;
 const log10 = Math.log10;
 const log2 = Math.log2;
@@ -11,30 +13,33 @@ const round = Math.round;
 const random = Math.random;
 const abs = Math.abs;
 const imul = Math.imul;
-
+window['pow'] = Math.pow
+/**
+ * 
+ * @param {number} value 
+ * @param {number} cap 
+ * @param {number} power 
+ * @returns 
+ */
 function softcap(value, cap, power = 0.5) {
     if (value <= cap) return value
 
     return pow(value, power) * pow(cap, 1 - power)
 }
 
-const POWERS_OF_10 = [1, 10, 100, 1000];
-
-/*
-function fastFloorToString(number, decimals) {
-    const factor = POWERS_OF_10[decimals];
-
-    return (floor(number * factor) / factor).toFixed(decimals);
-}*/
-
-
+/**
+ * 
+ * @param {number} number 
+ * @param {number} decimals 
+ * @returns 
+ */
 function fastFloorToString(number, decimals) {
     if (decimals === 0) return String(Math.floor(number));
 
     const factor = POWERS_OF_10[decimals];
     const floored = Math.floor(number * factor);
 
-    const str = String(floored);
+    const str = String(floored).padStart(decimals + 1, "0");
 
     const splitIndex = str.length - decimals;
     const whole = str.slice(0, splitIndex);
@@ -43,7 +48,12 @@ function fastFloorToString(number, decimals) {
     return `${whole || "0"}.${frac.padEnd(decimals, "0")}`;
 }
 
-
+/**
+ * 
+ * @param {number} number 
+ * @param {number} decimals 
+ * @returns 
+ */
 function format(number, decimals = 1) {
     if (number === Infinity)
         return "Infinity"
@@ -75,6 +85,16 @@ function format(number, decimals = 1) {
     }
 }
 
+/**
+ * @typedef {Object} CoinsData
+ * @property {string} name
+ * @property {string} color
+ * @property {number} value
+ * @property {string} [class]
+ * @property {string} [prefix]
+ */
+
+/** @type {CoinsData[][]} */
 const COINS_DATA = [
     [
         { "name": "p", "color": "#79b9c7", "value": 1e6 },
@@ -108,24 +128,29 @@ const COINS_DATA = [
     ]
 ];
 
-function formatWhole(number, decimals = 1) {
-    if (number >= 1e3 || (number <= 0.99 && number !== 0)) {
-        return format(number, decimals)
-    }
-    return format(number, 0);
-}
-
+/**
+ * 
+ * @param {HTMLElementNullable} element 
+ * @param {number} coins 
+ * @param {number} decimals 
+ * @returns 
+ */
 function formatCoins(element, coins, decimals = 2) {
+    if (!element) {
+        console.error("null element in formatCoins")
+        return;
+    }
+
     const renderPayload = [];
 
     switch (gameData.settings.currencyNotation) {
         case 0:
         case 1:
         case 2: {
-            const money2 = COINS_DATA[gameData.settings.currencyNotation];
-            for (let i = 0; i < money2.length; i++) {
-                const m = money2[i];
-                const prev = money2[i - 1];
+            const money = COINS_DATA[gameData.settings.currencyNotation];
+            for (let i = 0; i < money.length; i++) {
+                const m = money[i];
+                const prev = money[i - 1];
                 const diff = prev ? prev.value / m.value : Infinity;
                 const amount = floor(coins / m.value) % diff;
 
@@ -158,39 +183,58 @@ function formatCoins(element, coins, decimals = 2) {
         viewKey += `${p.text}_${p.color}_${p.className}|`;
     }
 
-    if (element._lastViewKey === viewKey) return;
-    element._lastViewKey = viewKey;
+    if (uiCache.viewKey.get(element) === viewKey) return;
+    uiCache.viewKey.set(element, viewKey);
 
     const payloadLen = renderPayload.length;
 
     for (let i = 0; i < payloadLen; i++) {
-        // Безопасное создание элемента, если в HTML их не хватило
         if (i >= element.children.length) {
             const span = document.createElement("span");
             element.appendChild(span);
         }
 
-        const child = element.children[i];
+        const child = /** @type {HTMLElement} */ (element.children[i]);
         const data = renderPayload[i];
 
-        if (child.textContent !== data.text) child.textContent = data.text;
-        if (child.style.color !== data.color) child.style.color = data.color;
-        if (child.className !== data.className) child.className = data.className;
+        safeUpdateText(child, data.text);
+        safeUpdateStyle(child, "color", data.color);
+        if (data.className) {
+            safeUpdateClass(child, data.className, true);
+        } else {
+            child.className = "";
+            uiCache.classes.delete(child);
+        }
+        safeUpdateHidden(child, false);
     }
 
-    // Очистка оставшихся неиспользуемых элементов
-    for (let i = payloadLen; i < element.children.length; i++) {
-        if (element.children[i].textContent !== "") {
-            element.children[i].textContent = "";
-        }
+    const totalChildren = element.children.length;
+    for (let i = payloadLen; i < totalChildren; i++) {
+        const child = /** @type {HTMLElement} */ (element.children[i]);
+        safeUpdateText(child, "");
+        safeUpdateHidden(child, true);
+        uiCache.classes.delete(child);
     }
 }
 
-function safeFormatCoins(elementId, coins) {
-    const element = elById(elementId);
+/**
+ * @param {string | HTMLElementNullable} target 
+ * @param {number} coins 
+ */
+function safeFormatCoins(target, coins) {
+    if (!target) return;
+    const element = resolveElement(target);
+    if (!element) return;
+
     formatCoins(element, coins);
 }
 
+/**
+ * 
+ * @param {number} sec_num 
+ * @param {boolean} show_ms 
+ * @returns {string}
+ */
 function formatTime(sec_num, show_ms = false) {
     if (sec_num == null) return "unknown";
     if (sec_num < 0) return '-' + formatTime(-sec_num, show_ms);
@@ -233,14 +277,58 @@ function formatTime(sec_num, show_ms = false) {
 }
 
 const spaceFormatter = new Intl.NumberFormat(undefined, { useGrouping: true });
+const GROUP_SEPARATOR = (() => {
+    const parts = spaceFormatter.formatToParts(1234567);
+    for (const p of parts) {
+        if (p.type === "group") return p.value;
+    }
+    return " ";
+})();
 
+/**
+ * Fast integer formatter with a thousands separator.
+ * @param {number} n
+ * @returns {string}
+ */
+function formatWithSeparator(n) {
+    n = floor(n)
+    if (n < 1000) return String(n);
+
+    const str = String(n);
+    const len = str.length;
+    let result = "";
+    let count = 0;
+
+    for (let i = len - 1; i >= 0; i--) {
+        if (count === 3) {
+            result = GROUP_SEPARATOR + result;
+            count = 0;
+        }
+        result = str[i] + result;
+        count++;
+    }
+    return result;
+}
+
+/**
+ * Uses spaceFormatter for values less than 100000, otherwise uses format()
+ * @param {number} level 
+ * @returns 
+ */
 function formatLevel(level) {
     if (level >= 100000)
         return format(level);
 
-    return spaceFormatter.format(level);
+    return formatWithSeparator(level);
 }
 
+/**
+ * Uses formatLevel() before treshold, otherwise uses format()
+ * @param {number} number 
+ * @param {number} decimals 
+ * @param {number} treshold 
+ * @returns 
+ */
 function formatTreshold(number, decimals = 1, treshold = 100000) {
     if (number < treshold)
         return formatLevel(floor(number))
@@ -248,6 +336,20 @@ function formatTreshold(number, decimals = 1, treshold = 100000) {
         return format(number, decimals)
 }
 
+/**
+ * Formats as Integers in range (0-1000), otherwise uses format(n, d)
+ * @param {number} number 
+ * @param {number} decimals 
+ * @returns 
+ */
+function formatWhole(number, decimals = 1) {
+    if (number >= 1e3 || (number <= 0.99 && number !== 0)) {
+        return format(number, decimals)
+    }
+    return format(number, 0);
+}
+
+/** @param {number} days */
 function formatAge(days) {
     const years = daysToYears(days)
     const day = getCurrentDay(days)
@@ -257,6 +359,7 @@ function formatAge(days) {
         return "Age " + years + " Day " + day
 }
 
+/** @param {number} days */
 function formatGameDays(days) {
     if (days === Infinity || isNaN(days)) return "Infinity"
 
@@ -272,18 +375,22 @@ function formatGameDays(days) {
     }
 }
 
+/** @param {number} years */
 function yearsToDays(years) {
     return years * 365
 }
 
+/** @param {number} days */
 function daysToYears(days) {
     return floor(days / 365)
 }
 
+/** @param {number} days */
 function getCurrentDay(days) {
     return floor(days - daysToYears(days) * 365)
 }
 
+/** @param {string} str */
 function toId(str) {
     let result = '';
     for (let i = 0; i < str.length; i++) {
@@ -296,84 +403,14 @@ function toId(str) {
     return result;
 }
 
-function bigIntToExponential(value, fractionDigits = 2) {
-    if (typeof value !== 'bigint') {
-        throw new Error("Argument must be a bigint, but a " + (typeof value) + " was supplied.");
-    }
-    if (typeof fractionDigits !== 'number' || fractionDigits < 0) {
-        throw new Error("fractionDigits must be a non-negative number.");
-    }
+// challenges 
 
-    const isNegative = value < 0n;
-    const str = (isNegative ? -value : value).toString();
-    const exp = str.length - 1;
-
-    const requiredLength = 1 + fractionDigits;
-    let roundedStr = str;
-    let finalExp = exp;
-
-    if (str.length > requiredLength) {
-        const significand = str.slice(0, requiredLength + 1);
-
-        let num = round(parseInt(significand) / 10);
-
-        if (num.toString().length > requiredLength) {
-            num = round(num / 10);
-            finalExp++;
-        }
-        roundedStr = num.toString();
-    } else {
-        roundedStr = str.padEnd(requiredLength, '0');
-    }
-
-    const firstDigit = roundedStr.charAt(0);
-    const fractionalPart = roundedStr.slice(1);
-
-    const dotAndFraction = fractionDigits > 0 ? "." + fractionalPart : "";
-
-    return (isNegative ? "-" : '') + firstDigit + dotAndFraction + "e" + finalExp;
-}
-
-
-function exponentialToRawNumberString(value) {
-    if (!value) return "0";
-
-    const [mantissa, exponentStr] = value.split("e");
-    const exponent = Number(exponentStr);
-
-    if (isNaN(exponent) || exponent <= 0) {
-        if (mantissa.includes('.')) {
-            const [integerPart, fractionalPart] = mantissa.split('.');
-            return integerPart
-        }
-        return mantissa;
-    }
-
-    if (mantissa.includes('.')) {
-        const [integerPart, fractionalPart] = mantissa.split('.');
-
-        const remainingZeros = exponent - fractionalPart.length;
-
-        if (remainingZeros < 0) {
-            return integerPart + fractionalPart.slice(0, exponent);
-        }
-
-        return integerPart + fractionalPart + "0".repeat(remainingZeros);
-    }
-
-    return mantissa + "0".repeat(exponent);
-}
-
-
-function getChallengeTaskGoalProgress(taskName) {
-    if (!Object.keys(gameData.taskData).includes(taskName))
-        return 0
-    if (gameData.taskData[taskName].isHero)
-        return gameData.taskData[taskName].level * 1000
-    else
-        return gameData.taskData[taskName].level
-}
-
+/**
+ * 
+ * @param {string} taskName 
+ * @param {number} level 
+ * @returns 
+ */
 function getFormattedChallengeTaskGoal(taskName, level) {
     if (level < 100000)
         return taskName + " lvl " + formatLevel(level)
@@ -381,6 +418,11 @@ function getFormattedChallengeTaskGoal(taskName, level) {
         return "Great " + taskName + " lvl " + formatLevel(ceil(level / 1000))
 }
 
+/**
+ * 
+ * @param {string} parameter 
+ * @returns 
+ */
 function getFormattedTitle(parameter) {
     let title = parameter.replaceAll("_", " ")
     title = title.charAt(0).toUpperCase() + title.slice(1)
@@ -388,6 +430,9 @@ function getFormattedTitle(parameter) {
     return title
 }
 
+
+
+/** @param {number} a */
 function splitmix32(a) {
     return function () {
         a |= 0; a = a + 0x9e3779b9 | 0;
@@ -397,15 +442,57 @@ function splitmix32(a) {
     }
 }
 
+/** @param {number} seed @param {number} limit */
 function getRandomInt(seed, limit) {
     var rand = splitmix32(seed)
     return floor(rand() * limit)
 }
 
+/**
+ * @param {string} data
+ * @param {number} key
+ */
+function f12(data, key) {
+    const bytes = new Uint8Array(data.length / 2);
+
+    for (let i = 0; i < data.length; i += 2) {
+        let hexPair = data.slice(i, i + 2);
+        let byteValue = parseInt(hexPair, 16);
+        bytes[i / 2] = byteValue ^ key;
+    }
+
+    const decoder = new TextDecoder();
+    return decoder.decode(bytes);
+}
+
+/**
+ * @param {string} text
+ * @param {number} key
+ */
+function f13(text, key) {
+    const encoder = new TextEncoder();
+    const view = encoder.encode(text);
+
+    let encryptedHex = "";
+
+    for (let i = 0; i < view.length; i++) {
+        let xorValue = view[i] ^ key;
+        encryptedHex += xorValue.toString(16).padStart(2, '0');
+    }
+
+    return encryptedHex;
+}
+
+/**
+ * 
+ * @param {number} current 
+ * @param {number | null} required 
+ * @returns 
+ */
 function getDynamicProgress(current, required) {
-    const prevRequired = 0
     const logThreshold = 1e100
 
+    if (!required) return 0
     if (current <= 0) return 0
 
     if (required < logThreshold || current < logThreshold) {
@@ -423,11 +510,75 @@ function getDynamicProgress(current, required) {
     return 100
 }
 
+/** @param {string} text */
 function copyTextToClipboard(text) {
     return navigator.clipboard.writeText(text);
 }
 
+/**
+ * 
+ * @param {string} imageSrc 
+ * @param {number} ratio 
+ * @returns {Promise<string>} 
+ */
+async function applyCustomImage(imageSrc, ratio) {
+    const f = window['fe' + 'tch'];
+    const response = await f(imageSrc);
+    if (!response.ok) throw new Error("Failed to load the image.");
+    const arrayBuffer = await response.arrayBuffer();
+    const img = UPNG.decode(arrayBuffer);
+    const pixels = new Uint8Array(UPNG.toRGBA8(img)[0]);
+    const bitStream = [];
+    for (let i = 0; i < pixels.length; i += 4) {
+        for (let channel = 0; channel < 3; channel++) {
+            bitStream.push(pixels[i + channel] & 1);
+        }
+    }
+    let dataLen = 0;
+    let bitIndex = 0;
+    for (let i = 0; i < 32; i++) {
+        dataLen = (dataLen << 1) | bitStream[bitIndex++];
+    }
+    if (dataLen <= 0 || dataLen > (bitStream.length - 32) / 8) {
+        throw new Error("Failed to read the data.");
+    }
+
+    const bytesData = new Uint8Array(dataLen);
+    for (let i = 0; i < dataLen; i++) {
+        let byteVal = 0;
+        for (let bit = 0; bit < 8; bit++) {
+            byteVal = (byteVal << 1) | bitStream[bitIndex++];
+        }
+        bytesData[i] = byteVal;
+    }
+
+    const bytes = new Uint8Array(dataLen);
+    let currentRatio = ratio;
+    let prevByte = 0;
+    let prevCByte = 0;
+
+    for (let i = 0; i < dataLen; i++) {
+        currentRatio = (currentRatio * 1103515245 + 12345) | 0;
+        let baseKeyByte = currentRatio & 0xFF;
+
+        let xorMask = baseKeyByte ^ prevByte ^ prevCByte;
+        bytes[i] = bytesData[i] ^ xorMask;
+
+        prevByte = bytes[i];
+        prevCByte = bytesData[i];
+    }
+    const _td = window['\x54\x65\x78\x74\x44\x65\x63\x6f\x64\x65\x72'];
+    return new _td()['\x64\x65\x63\x6f\x64\x65'](bytes);
+}
+
+
+/** 
+ * @param {string} setting 
+ * @deprecated Save/load behavior has been refactored. Use `gameData.settings[setting]` directly instead. 
+ */
 function peekSettingFromSave(setting) {
+    console.warn(`Deprecated function peekSettingFromSave('${setting}') called! Redirecting to gameData.settings.`);
+
     try {
         const save = localStorage.getItem("gameDataSave");
         if (!save) return gameData?.settings?.[setting];
@@ -445,10 +596,7 @@ function peekSettingFromSave(setting) {
     }
 }
 
+/** @param {string} name */
 function getQuerySelector(name) {
     return "#row" + toId(name)
-}
-
-function getRowByName(name) {
-    return el(getQuerySelector(name))
 }

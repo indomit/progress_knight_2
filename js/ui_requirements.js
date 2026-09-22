@@ -1,3 +1,7 @@
+/**
+ * @param {string[]} category
+ * @param {Record<string, Job | Skill | Item | Milestone>} data
+ */
 function findNextRequirement(category, data) {
     for (let i = 0; i < category.length; i++) {
         const entityName = category[i]
@@ -27,13 +31,18 @@ function findNextRequirement(category, data) {
 // updateRequiredRows(gameData.taskData, skillCategories)
 // updateRequiredRows(gameData.itemData, itemCategories)
 // updateRequiredRows(milestoneData    , milestoneCategories)
-
+/**
+ * 
+ * @param {Record<string, Job | Skill | Item | Milestone>} data 
+ * @param {Record<string, string[]>} categories 
+ */
 function updateRequiredRows(data, categories) {
     // управляет видимостью строк для открытия следующего элемента в категории
     const requiredRows = allByClass("requiredRow");
 
     for (const requiredRow of requiredRows) {
         const categoryName = requiredRow.dataset.category
+        if (!categoryName) continue;
         const category = categories[categoryName];
         if (!category) continue;
         let nextEntity = null
@@ -48,14 +57,33 @@ function updateRequiredRows(data, categories) {
         }
         safeUpdateClass(requiredRow, "hidden", nextEntity == null);
         if (nextEntity != null)
-            renderRequirementRow(requiredRow, data, nextEntity);
+            renderRequirementRow(requiredRow, data, nextEntity.name);
     }
 }
 
-function renderRequirementRow(requiredRow, data, nextEntity) {
-    const requirementObject = gameData.requirements[nextEntity.name];
+/**
+ * @typedef {Object} VisibilityMap
+ * @property {boolean} coin
+ * @property {boolean} level
+ * @property {boolean} evil
+ * @property {boolean} essence
+ * @property {boolean} darkMatter
+ * @property {boolean} hypercube
+ * @property {boolean} effect
+ */
+
+
+/**
+ * @param {HTMLElement} requiredRow
+ * @param {Record<string, Job | Skill | Item | Milestone>} data
+ * @param {string} nextEntityName
+ */
+function renderRequirementRow(requiredRow, data, nextEntityName) {
+    const requirementObject = gameData.requirements[nextEntityName];
     const requirements = requirementObject.requirements;
     const elements = clearAndFetchRequirementElements(requiredRow);
+
+    /** @type {VisibilityMap} */
     const visibilityMap = {
         coin: false,
         level: false,
@@ -69,11 +97,11 @@ function renderRequirementRow(requiredRow, data, nextEntity) {
     let renderResult = { progressPercent: 0, pendingPercent: 0, hasProgress: false, targetColorClass: "color-income" };
 
     if (data == gameData.taskData) {
-        renderResult = handleTaskRequirements(elements, nextEntity, requirementObject, requirements, requiredRow, visibilityMap);
+        renderResult = handleTaskRequirements(elements, nextEntityName, requirementObject, /** @type {TaskRequirementConfig[]} */(requirements), visibilityMap);
     } else if (data == gameData.itemData) {
-        renderResult = handleItemRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap);
+        renderResult = handleItemRequirements(elements, nextEntityName, requirements, visibilityMap);
     } else if (data == milestoneData) {
-        renderResult = handleMilestoneRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap);
+        renderResult = handleMilestoneRequirements(elements, nextEntityName, requirements, visibilityMap);
     }
     for (const resourceKey in visibilityMap) {
         const isVisible = visibilityMap[resourceKey];
@@ -83,6 +111,27 @@ function renderRequirementRow(requiredRow, data, nextEntity) {
     renderProgessResource(`#${elements.element.id}`, renderResult.progressPercent, renderResult.pendingPercent, renderResult.targetColorClass)
 }
 
+/**
+ * @typedef {Object} RequirementElements
+ * @property {HTMLElement} element
+ * @property {HTMLElementNullable} coin
+ * @property {HTMLElementNullable} level
+ * @property {HTMLElementNullable} evil
+ * @property {HTMLElementNullable} essence
+ * @property {HTMLElementNullable} darkMatter
+ * @property {HTMLElementNullable} hypercube
+ * @property {HTMLElementNullable} effect
+ * @property {HTMLElementNullable} effectValue
+ * @property {HTMLElementNullable} progressContainer
+ * @property {HTMLElementNullable} progressBar
+ * @property {HTMLElementNullable} pendingBar
+ */
+
+
+/**
+ * @param {HTMLElement} requiredRow
+ * @returns {RequirementElements}
+ */
 function clearAndFetchRequirementElements(requiredRow) {
     const id = requiredRow.id
     return {
@@ -101,13 +150,24 @@ function clearAndFetchRequirementElements(requiredRow) {
     };
 }
 
-function handleTaskRequirements(elements, nextEntity, requirementObject, requirements, requiredRow, visibilityMap) {
-    const task = gameData.taskData[nextEntity.name];
+/**
+ * @param {RequirementElements} elements
+ * @param {string} nextEntityName
+ * @param {Requirement} requirementObject
+ * @param {TaskRequirementConfig[]} requirements
+ * @param {VisibilityMap} visibilityMap
+ */
+function handleTaskRequirements(elements, nextEntityName, requirementObject, requirements, visibilityMap) {
+    const task = gameData.taskData[nextEntityName];
     visibilityMap.effect = true;
 
     let effectValueText = "[Unknown]"
-    if (task.unlocked)
-        effectValueText = task.name + (task.baseData.description ? " (" + task.baseData.description + ")" : "")
+    if (task.unlocked) {
+        if (task instanceof Skill)
+            effectValueText = task.name + (task.baseData.description ? " (" + task.baseData.description + ")" : "")
+        else
+            effectValueText = task.name
+    }
 
     safeUpdateText(elements.effectValue, effectValueText)
 
@@ -118,43 +178,44 @@ function handleTaskRequirements(elements, nextEntity, requirementObject, require
         visibilityMap.evil = true;
         safeUpdateText(elements.evil, format(curRequiredValue) + " evil")
         result.progressPercent = getDynamicProgress(gameData.evil, curRequiredValue);
+        result.pendingPercent = getDynamicProgress(gameData.evil + getEvilGainAvailable(), curRequiredValue);
         result.targetColorClass = "color-evil";
         result.hasProgress = true;
-        result.pendingPercent = getDynamicProgress(gameData.evil + getEvilGainAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof EssenceRequirement) {
         visibilityMap.essence = true;
         safeUpdateText(elements.essence, format(curRequiredValue) + " essence")
         result.progressPercent = getDynamicProgress(gameData.essence, curRequiredValue);
+        result.pendingPercent = getDynamicProgress(gameData.essence + getEssenceGainAvailable(), curRequiredValue);
         result.targetColorClass = "color-essence";
         result.hasProgress = true;
-        result.pendingPercent = getDynamicProgress(gameData.essence + getEssenceGainAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof DarkMatterRequirement) {
         visibilityMap.darkMatter = true;
         safeUpdateText(elements.darkMatter, format(curRequiredValue) + " Dark Matter")
         result.progressPercent = getDynamicProgress(gameData.dark_matter, curRequiredValue);
+        result.pendingPercent = getDynamicProgress(gameData.dark_matter + getDarkMatterGainAvailable(), curRequiredValue);
         result.targetColorClass = "color-dark-matter";
         result.hasProgress = true;
-        result.pendingPercent = getDynamicProgress(gameData.dark_matter + getDarkMatterGainAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof HypercubeRequirement) {
         visibilityMap.hypercube = true;
         safeUpdateText(elements.hypercube, format(curRequiredValue) + " hypercubes")
         result.progressPercent = getDynamicProgress(gameData.hypercubes, curRequiredValue);
+        result.pendingPercent = getDynamicProgress(gameData.hypercubes + getHypercubeGenerationAvailable(), curRequiredValue);
         result.targetColorClass = "color-hypercubes";
         result.hasProgress = true;
-        result.pendingPercent = getDynamicProgress(gameData.hypercubes + getHypercubeGenerationAvailable(), curRequiredValue);
     }
     else if (requirementObject instanceof AgeRequirement) {
         console.log("requirementObject instanceof AgeRequirement in handleTaskRequirements as essence!")
         visibilityMap.essence = true;
         safeUpdateText(elements.essence, "Age " + format(curRequiredValue))
         result.progressPercent = getDynamicProgress(gameData.days, curRequiredValue);
+        result.pendingPercent = getDynamicProgress(gameData.days, curRequiredValue);
         result.targetColorClass = "color-essence";
         result.hasProgress = true;
     }
-    else {
+    else if (requirementObject instanceof TaskRequirement) {
         // jobs and skills
         visibilityMap.level = true;
 
@@ -191,6 +252,7 @@ function handleTaskRequirements(elements, nextEntity, requirementObject, require
         safeUpdateText(elements.level, finalText)
 
         result.progressPercent = progressPercent;
+        result.pendingPercent = progressPercent;
         result.targetColorClass = "color-income";
         result.hasProgress = true;
     }
@@ -198,13 +260,19 @@ function handleTaskRequirements(elements, nextEntity, requirementObject, require
     return result;
 }
 
-function handleItemRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap) {
+/**
+ * @param {RequirementElements} elements
+ * @param {string} nextEntityName
+ * @param {RequirementConfig[]} requirements
+ * @param {VisibilityMap} visibilityMap
+ */
+function handleItemRequirements(elements, nextEntityName, requirements, visibilityMap) {
     visibilityMap.coin = true;
     visibilityMap.effect = true;
 
     let curRequiredValue = requirements[0].requirement;
     formatCoins(elements.coin, curRequiredValue);
-    const item = gameData.itemData[nextEntity.name];
+    const item = gameData.itemData[nextEntityName];
 
     let effectValueText = "[Unknown]"
     if (item.unlocked)
@@ -212,37 +280,46 @@ function handleItemRequirements(elements, nextEntity, requirements, requiredRow,
 
     safeUpdateText(elements.effectValue, effectValueText)
 
+    let percent = getDynamicProgress(gameData.coins, curRequiredValue)
+
     return {
-        progressPercent: getDynamicProgress(gameData.coins, curRequiredValue),
+        progressPercent: percent,
+        pendingPercent: percent,
         hasProgress: true,
         targetColorClass: (totalIncome > totalExpense) ? "color-income" : "color-evil"
     };
 }
 
-function handleMilestoneRequirements(elements, nextEntity, requirements, requiredRow, visibilityMap) {
-    let result = { progressPercent: 0, pendingPercent: 0, hasProgress: false, targetColorClass: "color-income" };
-    let tooltipHTML = "";
+/**
+ * @param {RequirementElements} elements
+ * @param {string} nextEntityName
+ * @param {RequirementConfig[]} requirements
+ * @param {VisibilityMap} visibilityMap
+ */
+function handleMilestoneRequirements(elements, nextEntityName, requirements, visibilityMap) {
     const curRequiredValue = requirements[0].requirement
 
     visibilityMap.essence = true;
     safeUpdateText(elements.essence, format(curRequiredValue) + " essence")
-    const milestone = milestoneData[nextEntity.name];
+    const milestone = milestoneData[nextEntityName];
     if (milestone.baseData.description) {
         visibilityMap.effect = true;
         let effectValueText = "[Unknown]"
         if (gameData.stats.maxEssenceReached > milestone.expense) {
-            if (nextEntity.name == "Magic Eye")
-                effectValueText = nextEntity.name + ': ' + milestone.baseData.description.replace('65', getEyeRequirement())
+            if (nextEntityName == "Magic Eye")
+                effectValueText = nextEntityName + ': ' + milestone.baseData.description.replace('65', `${getEyeRequirement()}`)
             else
-                effectValueText = nextEntity.name + ': ' + milestone.baseData.description
+                effectValueText = nextEntityName + ': ' + milestone.baseData.description
         }
         safeUpdateText(elements.effectValue, effectValueText)
     }
 
-    result.progressPercent = getDynamicProgress(gameData.essence, curRequiredValue);
-    result.targetColorClass = "color-essence";
-    result.hasProgress = true;
-    result.pendingPercent = getDynamicProgress(gameData.essence + getEssenceGainAvailable(), curRequiredValue);
+    let percent = getDynamicProgress(gameData.essence, curRequiredValue)
 
-    return result;
+    return {
+        progressPercent: percent,
+        pendingPercent: percent,
+        hasProgress: true,
+        targetColorClass: "color-essence"
+    }
 }

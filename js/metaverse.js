@@ -5,11 +5,13 @@ function isInMetaverse() {
 function getHypercubeGeneration() {
     if (gameData.rebirthFiveCount == 0) return 0
 
+    const basegen = gameData.perks_points > 0 ? 0.03 : 0.01
+
     let tesseractEffect = gameData.itemData["Tesseract"].getEffect()
     let hypersphereEffect = gameData.itemData["Hypersphere"].getEffect()
 
-    return 0.03 * hypersphereEffect * tesseractEffect * gameData.metaverse.hypercube_gain_modifier * (gameData.perks.hypercube_boost == 1 ? 10 : 1)
-        * (gameData.perks.hyper_speed == 1 ? 1000 : 1)
+    return basegen * hypersphereEffect * tesseractEffect * gameData.metaverse.hypercube_gain_modifier * (gameData.perks.hypercube_boost ? 10 : 1)
+        * (gameData.perks.hyper_speed ? 1000 : 1)
 }
 
 function getHypercubeGenerationAvailable() {
@@ -18,6 +20,12 @@ function getHypercubeGenerationAvailable() {
     return getHypercubeGeneration()
 }
 
+/**
+ * 
+ * @param {number} number 
+ * @param {number} add_power 
+ * @returns 
+ */
 function getNextPowerOfNumber(number, add_power = 0) {
     return pow(10, add_power + ceil(log10(number)))
 }
@@ -181,14 +189,15 @@ function buyDarkMaterMult() {
 
 function getMetaversePerkPointsGain() {
     if (gameData.essence >= 1e90)
-        return (gameData.perks.more_perk_points == 1 ? 10 : 1)
-            * (gameData.perks.double_perk_points_gain == 1 ? 2 : 1)
+        return (gameData.perks.more_perk_points ? 10 : 1)
+            * (gameData.perks.double_perk_points_gain ? 2 : 1)
             * (floor(log10(gameData.essence)) - 89)
             * (gameData.essence >= 1e200 ? 4 : 1)
 
     return 0
 }
 
+/** @type {Record<string,number>} */
 const perks_cost = {
     auto_dark_orb: 1,
     auto_dark_shop: 1,
@@ -208,6 +217,11 @@ const perks_cost = {
     more_perk_points: 5000,
 }
 
+const sortedPerks = Object.freeze(
+    Object.entries(perks_cost).sort((a, b) => a[1] - b[1])
+)
+
+/** @type {Record<string,string>} */
 const perk_names = {
     auto_dark_orb: "Auto buy dark orb generators",
     auto_dark_shop: "Auto buy dark shop items",
@@ -227,6 +241,7 @@ const perk_names = {
     more_perk_points: "10x perk points gain",
 }
 
+/** @type {Record<string,string>} */
 const perk_descriptions = {
     auto_dark_orb: "Automatically buys Dark Orb Generators when Dark Matter is at least 10x the cost. Also buys 'A Miracle' if Dark Matter is 100 or more.",
     auto_dark_shop: "Automatically buys 'A Deal With The Chairman', 'A Gift From God', 'Gotta Be Fast', and 'Life Coach' once you have 1,000 or more Dark Orbs.",
@@ -246,28 +261,31 @@ const perk_descriptions = {
     more_perk_points: "Permanently multiplies all Metaverse Perk Points earned by 10x.",
 }
 
-
+/** @param {string} perkName */
 function getMetaversePerkName(perkName) {
     return perk_names[perkName]
 }
 
+/** @param {string} perkName */
 function getPerkCost(perkName) {
     return perks_cost[perkName]
 }
 
+/** @param {string} perkName */
 function canBuyPerk(perkName) {
     return gameData.perks_points >= getPerkCost(perkName)
 }
 
-function buyPerk(perkName) {
-    if (gameData.perks[perkName] == 0) {
+/** @param {string} perkName */
+function togglePerk(perkName) {
+    if (!gameData.perks[perkName]) {
         if (canBuyPerk(perkName)) {
             gameData.perks_points -= getPerkCost(perkName)
-            gameData.perks[perkName] = 1
+            gameData.perks[perkName] = true
         }
     }
     else {
-        gameData.perks[perkName] = 0
+        gameData.perks[perkName] = false
         gameData.perks_points += getPerkCost(perkName)
 
         if (perkName == "both_dark_mater_skills") {
@@ -288,16 +306,19 @@ function buyPerk(perkName) {
 function getTotalPerkPoints() {
     let total = gameData.perks_points
     for (const key of Object.keys(gameData.perks)) {
-        if (gameData.perks[key] == 1)
+        if (gameData.perks[key])
             total += getPerkCost(key)
     }
     return total
 }
 
+/** 
+ * @param {boolean} value false = Assign unspent perk points, true = Collect all perk points
+ */
 function collectPerkPoints(value) {
     for (const key of Object.keys(gameData.perks)) {
         if (gameData.perks[key] == value) {
-            buyPerk(key)
+            togglePerk(key)
         }
     }
 }

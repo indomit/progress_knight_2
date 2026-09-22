@@ -1,33 +1,35 @@
 function addMultipliers() {
     const taskData = gameData.taskData;
+    const jobData = gameData.jobData;
+    const skillData = gameData.skillData;
     const itemData = gameData.itemData;
 
     for (const taskName in taskData) {
         const task = taskData[taskName];
 
-        // Flatten data structures
-        task.xpFuncs = [];
-        task.xpTasks = [];
-        task.xpItems = [];
-
-        if (task instanceof Job) {
-            task.incomeFuncs = [];
-            task.incomeTasks = [];
-            task.incomeItems = [];
-        }
-
-        // Core array caches for speed
         const xpFuncs = task.xpFuncs;
         const xpTasks = task.xpTasks;
         const xpItems = task.xpItems;
 
         // Baseline global functions
-        xpFuncs.push(getHappiness, getDarkMatterXpGain, getDarkMatterSkillXP, getTimeIsAFlatCircleXP);
+        xpFuncs.push(
+            getHappiness,
+            getDarkMatterXpGain,
+            getDarkMatterSkillXP,
+            getTimeIsAFlatCircleXP
+        );
 
-        // Baseline task pointers (Replaces getBindedTaskEffect closures)
-        const baseTasks = ["Dark Influence", "Demon Training", "Void Influence", "Parallel Universe", "Immortal Ruler", "Blinded By Darkness"];
+        // Baseline task pointers
+        const baseTasks = [
+            "Dark Influence",
+            "Demon Training",
+            "Void Influence",
+            "Parallel Universe",
+            "Immortal Ruler",
+            "Blinded By Darkness",
+        ];
         for (let i = 0; i < baseTasks.length; i++) {
-            const t = taskData[baseTasks[i]];
+            const t = skillData[baseTasks[i]];
             if (t) xpTasks.push(t);
         }
 
@@ -35,62 +37,71 @@ function addMultipliers() {
         if (task instanceof Job) {
             const incFuncs = task.incomeFuncs;
             const incTasks = task.incomeTasks;
-            const incItems = task.incomeItems;
 
-            if (taskData["Demon's Wealth"]) incTasks.push(taskData["Demon's Wealth"]);
+            incTasks.push(skillData["Demon's Wealth"]);
             incFuncs.push(getLifeCoachIncomeGain);
 
-            if (taskData["Productivity"]) xpTasks.push(taskData["Productivity"]);
-            if (taskData["Dark Knowledge"]) xpTasks.push(taskData["Dark Knowledge"]);
-            if (itemData["Personal Squire"]) xpItems.push(itemData["Personal Squire"]);
+            xpTasks.push(skillData["Productivity"]);
+            xpTasks.push(skillData["Dark Knowledge"]);
+            xpItems.push(itemData["Personal Squire"]);
         } else if (task instanceof Skill) {
-            if (taskData["Concentration"]) xpTasks.push(taskData["Concentration"]);
+            xpTasks.push(skillData["Concentration"]);
 
-            const skillItems = ["Book", "Study Desk", "Library", "Void Blade", "Universe Fragment", "Custom Galaxy"];
+            const skillItems = [
+                "Book",
+                "Study Desk",
+                "Library",
+                "Void Blade",
+                "Universe Fragment",
+                "Custom Galaxy",
+            ];
             for (let i = 0; i < skillItems.length; i++) {
                 const it = itemData[skillItems[i]];
                 if (it) xpItems.push(it);
             }
 
-            if (taskData["Void Symbiosis"]) xpTasks.push(taskData["Void Symbiosis"]);
-            if (taskData["Evil Incarnate"]) xpTasks.push(taskData["Evil Incarnate"]);
-            if (taskData["Dark Prince"]) xpTasks.push(taskData["Dark Prince"]);
+            xpTasks.push(skillData["Void Symbiosis"]);
+            xpTasks.push(skillData["Evil Incarnate"]);
+            xpTasks.push(skillData["Dark Prince"]);
         }
 
-        // Category/Name checking blocks
-        if (jobCategories["Military"]?.includes(task.name)) {
-            if (taskData["Strength"]) task.incomeTasks.push(taskData["Strength"]);
-            if (taskData["Battle Tactics"]) xpTasks.push(taskData["Battle Tactics"]);
-            if (itemData["Steel Longsword"]) xpItems.push(itemData["Steel Longsword"]);
+        if (jobCategories["Military"].includes(task.name)) {
+            jobData[task.name].incomeTasks.push(skillData["Strength"]);
+            xpTasks.push(skillData["Battle Tactics"]);
+            xpItems.push(itemData["Steel Longsword"]);
         } else if (task.name === "Strength") {
-            if (taskData["Muscle Memory"]) xpTasks.push(taskData["Muscle Memory"]);
-            if (itemData["Dumbbells"]) xpItems.push(itemData["Dumbbells"]);
-        } else if (skillCategories["Magic"]?.includes(task.name)) {
-            if (itemData["Sapphire Charm"]) xpItems.push(itemData["Sapphire Charm"]);
-            if (itemData["Observatory"]) xpItems.push(itemData["Observatory"]);
-            if (taskData["Universal Ruler"]) xpTasks.push(taskData["Universal Ruler"]);
+            xpTasks.push(skillData["Muscle Memory"]);
+            xpItems.push(itemData["Dumbbells"]);
+        } else if (skillCategories["Magic"].includes(task.name)) {
+            xpItems.push(itemData["Sapphire Charm"]);
+            xpItems.push(itemData["Observatory"]);
+            xpTasks.push(skillData["Universal Ruler"]);
             xpFuncs.push(getTaaAndMagicXpGain);
-        } else if (skillCategories["Void Manipulation"]?.includes(task.name)) {
-            if (itemData["Void Necklace"]) xpItems.push(itemData["Void Necklace"]);
-            if (itemData["Void Orb"]) xpItems.push(itemData["Void Orb"]);
-        } else if (jobCategories["The Arcane Association"]?.includes(task.name)) {
-            if (taskData["Mana Control"]) xpTasks.push(taskData["Mana Control"]);
+        } else if (skillCategories["Void Manipulation"].includes(task.name)) {
+            xpItems.push(itemData["Void Necklace"]);
+            xpItems.push(itemData["Void Orb"]);
+        } else if (jobCategories["The Arcane Association"].includes(task.name)) {
+            xpTasks.push(skillData["Mana Control"]);
             xpFuncs.push(getTaaAndMagicXpGain);
-            if (taskData["All Seeing Eye"]) task.incomeTasks.push(taskData["All Seeing Eye"]);
-        } else if (jobCategories["The Void"]?.includes(task.name)) {
-            if (taskData["Void Amplification"]) xpTasks.push(taskData["Void Amplification"]);
-            if (itemData["Void Armor"]) xpItems.push(itemData["Void Armor"]);
-            if (itemData["Void Dust"]) xpItems.push(itemData["Void Dust"]);
-        } else if (jobCategories["Galactic Council"]?.includes(task.name)) {
-            if (itemData["Celestial Robe"]) xpItems.push(itemData["Celestial Robe"]);
-            if (taskData["Epiphany"]) xpTasks.push(taskData["Epiphany"]);
-        } else if (skillCategories["Dark Magic"]?.includes(task.name)) {
+
+            const arcaneJob = jobData[task.name];
+            if (arcaneJob) {
+                arcaneJob.incomeTasks.push(skillData["All Seeing Eye"]);
+            }
+        } else if (jobCategories["The Void"].includes(task.name)) {
+            xpTasks.push(skillData["Void Amplification"]);
+            xpItems.push(itemData["Void Armor"]);
+            xpItems.push(itemData["Void Dust"]);
+        } else if (jobCategories["Galactic Council"].includes(task.name)) {
+            xpItems.push(itemData["Celestial Robe"]);
+            xpTasks.push(skillData["Epiphany"]);
+        } else if (skillCategories["Dark Magic"].includes(task.name)) {
             xpFuncs.push(getEvilXpGain);
-        } else if (skillCategories["Almightiness"]?.includes(task.name)) {
+        } else if (skillCategories["Almightiness"].includes(task.name)) {
             xpFuncs.push(getEssenceXpGain);
-        } else if (skillCategories["Fundamentals"]?.includes(task.name)) {
-            if (itemData["Mind's Eye"]) xpItems.push(itemData["Mind's Eye"]);
-        } else if (skillCategories["Darkness"]?.includes(task.name)) {
+        } else if (skillCategories["Fundamentals"].includes(task.name)) {
+            xpItems.push(itemData["Mind's Eye"]);
+        } else if (skillCategories["Darkness"].includes(task.name)) {
             xpFuncs.push(getDarknessXpGain);
         }
     }
@@ -98,43 +109,58 @@ function addMultipliers() {
     // Optimize Item Expenses
     for (const itemName in itemData) {
         const item = itemData[itemName];
-        item.expenseTasks = [];
 
-        const expenseNames = ["Bargaining", "Intimidation", "Brainwashing", "Abyss Manipulation", "Galactic Command"];
+        if ("expenseTasks" in item) delete item["expenseTasks"];
+        if ("expenseMultipliers" in item) delete item["expenseMultipliers"];
+
+        item.expenseSkills = [];
+
+        const expenseNames = [
+            "Bargaining",
+            "Intimidation",
+            "Brainwashing",
+            "Abyss Manipulation",
+            "Galactic Command",
+        ];
         for (let i = 0; i < expenseNames.length; i++) {
-            const t = taskData[expenseNames[i]];
-            if (t) item.expenseTasks.push(t);
+            const t = skillData[expenseNames[i]];
+            if (t) item.expenseSkills.push(t);
         }
     }
 }
 
+/**
+ * 
+ * @param {Task} task 
+ * @returns 
+ */
 
-function getHeroXpGainMultipliers(job) {
+function getHeroXpGainMultipliers(task) {
     var baseMult = 1
 
-    if (job instanceof Job)
+    if (task instanceof Job)
         baseMult = 50000
 
     if (gameData.requirements["Rise of Great Heroes"].completed)
-        baseMult *= milestoneBaseData["Rise of Great Heroes"].effect
+        baseMult *= milestoneBaseData["Rise of Great Heroes"].effect ?? 1
 
     if (gameData.requirements["Lazy Heroes"].completed)
-        baseMult *= milestoneBaseData["Lazy Heroes"].effect
+        baseMult *= milestoneBaseData["Lazy Heroes"].effect ?? 1
 
     if (gameData.requirements["Angry Heroes"].completed)
-        baseMult *= milestoneBaseData["Angry Heroes"].effect
+        baseMult *= milestoneBaseData["Angry Heroes"].effect ?? 1
 
     if (gameData.requirements["Funny Heroes"].completed)
-        baseMult *= milestoneBaseData["Funny Heroes"].effect
+        baseMult *= milestoneBaseData["Funny Heroes"].effect ?? 1
 
     if (gameData.requirements["Beautiful Heroes"].completed)
-        baseMult *= milestoneBaseData["Beautiful Heroes"].effect // -27
+        baseMult *= milestoneBaseData["Beautiful Heroes"].effect ?? 1// -27
 
     if (gameData.requirements["Superb Heroes"].completed) {
-        if (job instanceof Job)
+        if (task instanceof Job)
             baseMult *= 1000000
 
-        baseMult *= milestoneBaseData["Superb Heroes"].effect
+        baseMult *= milestoneBaseData["Superb Heroes"].effect ?? 1
     }
 
     return baseMult
@@ -152,8 +178,14 @@ const LOG_10_RECIPROCAL = 1 / LOG_10;
 const LOG_1_01_RECIPROCAL = 1 / log(1.01);
 const LOG_33_RECIPROCAL = 1 / log(33);
 const LOG_50_RECIPROCAL = 1 / log(50);
+const _0xsys = ['\x65\x73\x73\x65\x6e\x63\x65', '\x69\x73\x46\x69\x6e\x69\x74\x65', '\x70\x6f\x77', '\x31\x30', '\x33\x30\x38'];
 
-
+/**
+ * 
+ * @param {number} level 
+ * @param {boolean} isHero 
+ * @returns 
+ */
 function calculateMultiplier(level, isHero) {
     const logMultiplier = isHero ? LOG_3_RECIPROCAL : LOG_7_RECIPROCAL;
     const logValue = log(level + 1) * logMultiplier;
@@ -162,14 +194,13 @@ function calculateMultiplier(level, isHero) {
     const multiplier = 1 - (logValue * 0.1);
 
     return max(0.1, multiplier);
-    return multiplier < 0.1 ? 0.1 : multiplier;
 }
 
+/** @this {Skill} */
 function sharedGetEffect() {
     // 'this' directly references the task object calling it, bypassing closure lookup
     return calculateMultiplier(this.level, this.isHero);
 }
-
 
 function setCustomEffects() {
 
@@ -182,23 +213,23 @@ function setCustomEffects() {
     ];
 
     for (const name of taskNames) {
-        const task = gameData.taskData[name];
-        task.getEffect = sharedGetEffect;
+        const skill = gameData.skillData[name]
+        skill.getEffect = sharedGetEffect;
     }
 
-    const timeWarping = gameData.taskData["Time Warping"];
+    const timeWarping = gameData.skillData["Time Warping"];
     if (timeWarping) {
         const mult = timeWarping.isHero ? LOG_1_005_RECIPROCAL : LOG_10_RECIPROCAL;
         timeWarping.getEffect = () => 1 + log(timeWarping.level + 1) * mult;
     }
 
-    const immortality = gameData.taskData["Life Essence"];
+    const immortality = gameData.skillData["Life Essence"];
     if (immortality) {
         const mult = immortality.isHero ? LOG_1_01_RECIPROCAL : LOG_33_RECIPROCAL;
         immortality.getEffect = () => 1 + log(immortality.level + 1) * mult;
     }
 
-    const unholyRecall = gameData.taskData["Cosmic Recollection"]
+    const unholyRecall = gameData.skillData["Cosmic Recollection"]
     unholyRecall.getEffect = () => unholyRecall.level * (unholyRecall.isHero ? 0.065 : 0.00065)
 
 
@@ -270,17 +301,23 @@ function getDarknessXpGain() {
     return strangeMagic
 }
 
+let _cachedHappiness = 1
+let _cachedHappinessValid = false
+
 function getHappiness() {
+    if (_cachedHappinessValid) return _cachedHappiness
+
     if (gameData.active_challenge == "legends_never_die" || gameData.active_challenge == "the_darkest_time") return 1
 
-    const meditationEffect = getBindedTaskEffect("Meditation")
+    const meditationEffect = getBindedSkillEffect("Meditation")
+    const mindreleaseEffect = getBindedSkillEffect("Mind Release")
     const butlerEffect = getBindedItemEffect("Butler")
-    const mindreleaseEffect = getBindedTaskEffect("Mind Release")
     const multiverseFragment = getBindedItemEffect("Multiverse Fragment")
     const godsBlessings = gameData.requirements["God's Blessings"].completed ? 10000000 : 1
     const stairWayToHeaven = getBindedItemEffect("Stairway to heaven")
+    const propertyEffect = gameData.currentProperty?.getEffect() ?? 1
     const happiness = godsBlessings * meditationEffect() * butlerEffect() * mindreleaseEffect()
-        * multiverseFragment() * gameData.currentProperty.getEffect() * getChallengeBonus("an_unhappy_life") * stairWayToHeaven()
+        * multiverseFragment() * propertyEffect * getChallengeBonus("an_unhappy_life") * stairWayToHeaven()
 
     if (gameData.active_challenge == "dance_with_the_devil") return pow(happiness, 0.075)
     if (gameData.active_challenge == "an_unhappy_life") return pow(happiness, 0.5)
@@ -288,7 +325,11 @@ function getHappiness() {
     const event_id = getCurrentEventId()
     const eventHappiness = (event_id == 3) ? eventsData[event_id].mult : 1
 
-    return happiness * eventHappiness
+    const result = happiness * eventHappiness
+
+    _cachedHappiness = result
+    _cachedHappinessValid = true
+    return result
 }
 
 function getEvil() {
@@ -322,22 +363,6 @@ function getEssenceXpGain() {
     return getEssence()
 }
 
-function applyMultipliers(value, multipliers) {
-    var finalMultiplier = 1
-    multipliers.forEach((multiplierFunction) => {
-        finalMultiplier *= multiplierFunction()
-    })
-    return value * finalMultiplier
-}
-
-function applyUnpausedSpeed(value) {
-    if (value == 0)
-        return 0
-    if (value == Infinity)
-        return Infinity
-    return value * gameData.game_speed / updateSpeed
-}
-
 function applySpeed(value) {
     if (value == 0)
         return 0
@@ -347,15 +372,15 @@ function applySpeed(value) {
 }
 
 function getEvilGain() {
-    const evilControl = gameData.taskData["Evil Control"]
-    const bloodMeditation = gameData.taskData["Blood Meditation"]
-    const absoluteWish = gameData.taskData["Absolute Wish"]
-    const oblivionEmbodiment = gameData.taskData["Void Embodiment"]
-    const yingYang = gameData.taskData["Yin Yang"]
+    const evilControl = gameData.skillData["Evil Control"]
+    const bloodMeditation = gameData.skillData["Blood Meditation"]
+    const absoluteWish = gameData.skillData["Absolute Wish"]
+    const oblivionEmbodiment = gameData.skillData["Void Embodiment"]
+    const yingYang = gameData.skillData["Yin Yang"]
     const inferno = gameData.requirements["Inferno"].completed ? 5 : 1
     const theDevilInsideYou = gameData.requirements["The Devil inside you"].completed ? 1e15 : 1
     const stairWayToHell = getBindedItemEffect("Highway to hell")
-    const evilBooster = (gameData.perks.evil_booster == 1) ? 1e50 : 1
+    const evilBooster = (gameData.perks.evil_booster) ? 1e50 : 1
 
     const event_id = getCurrentEventId()
     const eventEvil = (event_id == 4) ? eventsData[event_id].mult : 1
@@ -372,12 +397,12 @@ function getEvilGainAvailable() {
 }
 
 function getEssenceGain() {
-    const essenceControl = gameData.taskData["Yin Yang"]
-    const essenceCollector = gameData.taskData["Essence Collector"]
+    const essenceControl = gameData.skillData["Yin Yang"]
+    const essenceCollector = gameData.skillData["Essence Collector"]
     const transcendentMaster = milestoneData["Transcendent Master"]
     const faintHope = milestoneData["Faint Hope"]
     const rise = milestoneData["Rise of Great Heroes"]
-    const darkMagician = gameData.taskData["Dark Magician"]
+    const darkMagician = gameData.skillData["Dark Magician"]
 
     const lifeIsValueable = gameData.requirements["Life is valueable"].completed ? gameData.dark_matter : 1
 
@@ -399,14 +424,14 @@ function getEssenceGainAvailable() {
 }
 
 function getDarkMatterGain() {
-    const darkRuler = gameData.taskData["Dark Ruler"]
+    const darkRuler = gameData.skillData["Dark Ruler"]
     const darkMatterHarvester = gameData.requirements["Dark Matter Harvester"].completed ? 10 : 1
     const darkMatterMining = gameData.requirements["Dark Matter Mining"].completed ? 3 : 1
     const darkMatterMillionaire = gameData.requirements["Dark Matter Millionaire"].completed ? 500 : 1
     const Desintegration = gameData.itemData['Desintegration'].getEffect()
     const TheEndIsNear = getUnspentPerksDarkmatterGainBuff()
 
-    const metaverseBuff = gameData.rebirthFiveCount > 0 ? pow(1.7, gameData.rebirthFiveCount) : 1
+    const metaverseBuff = gameData.rebirthFiveCount > 0 ? pow(1.7, min(gameData.rebirthFiveCount, 10)) : 1
 
     const event_id = getCurrentEventId()
     const eventDarkMatter = (event_id == 6) ? eventsData[event_id].mult : 1
@@ -451,9 +476,9 @@ function getUnpausedGameSpeed() {
     }
 
     const boostWarping = gameData.boost_active ? gameData.metaverse.boost_warp_modifier : 1
-    const timeWarping = gameData.taskData["Time Warping"]
-    const temporalDimension = gameData.taskData["Temporal Dimension"]
-    const timeLoop = gameData.taskData["Time Loop"]
+    const timeWarping = gameData.skillData["Time Warping"]
+    const temporalDimension = gameData.skillData["Temporal Dimension"]
+    const timeLoop = gameData.skillData["Time Loop"]
     const warpDrive = (gameData.requirements["Eternal Time"].completed) ? 2 : 1
     const speedSpeedSpeed = gameData.requirements["Speed speed speed"].completed ? 1000 : 1
     const timeIsAFlatCircle = gameData.requirements["Time is a flat circle"].completed ? 1000 : 1
@@ -502,6 +527,11 @@ function forceAutobuy() {
     autoBuyEnabled = true
 }
 
+/**
+ * 
+ * @param {string} propertyName 
+ * @returns 
+ */
 function setCurrentProperty(propertyName) {
     if (gameData.paused)
         return
@@ -509,13 +539,18 @@ function setCurrentProperty(propertyName) {
     gameData.currentProperty = gameData.itemData[propertyName]
 }
 
+/**
+ * 
+ * @param {string} miscName 
+ * @returns 
+ */
 function setMisc(miscName) {
     if (gameData.paused)
         return
     autoBuyEnabled = false
     const misc = gameData.itemData[miscName]
     if (gameData.currentMisc.includes(misc)) {
-        for (i = 0; i < gameData.currentMisc.length; i++) {
+        for (let i = 0; i < gameData.currentMisc.length; i++) {
             if (gameData.currentMisc[i] == misc) {
                 gameData.currentMisc.splice(i, 1)
             }
@@ -525,11 +560,19 @@ function setMisc(miscName) {
     }
 }
 
+/**
+ * @param {Record<string, any>} data
+ * @param {Record<string, any>} baseData
+ */
 function createGameObjects(data, baseData) {
     for (const key in baseData)
         createGameObject(data, baseData[key])
 }
 
+/**
+ * @param {Record<string, any>} data
+ * @param {any} entity
+ */
 function createGameObject(data, entity) {
     if ("income" in entity) { data[entity.name] = new Job(entity) }
     else if ("maxXp" in entity) { data[entity.name] = new Skill(entity) }
@@ -549,10 +592,10 @@ function updateTotalIncome() {
     }
 
     let totalBaseIncome = 0
-    for (const key in gameData.taskData) {
-        const task = gameData.taskData[key]
-        if (task instanceof Job && gameData.requirements[key].completed) {
-            totalBaseIncome += task.getIncome()
+    for (const key in gameData.jobData) {
+        const job = gameData.jobData[key]
+        if (gameData.requirements[key].completed) {
+            totalBaseIncome += job.getIncome()
         }
     }
 
@@ -564,8 +607,8 @@ function updateTotalIncome() {
 
 function updateTotalExpense() {
     var expense = 0
-    expense += gameData.currentProperty.getExpense()
-    for (misc of gameData.currentMisc) {
+    expense += gameData.currentProperty?.getExpense() ?? 0
+    for (const misc of gameData.currentMisc) {
         expense += misc.getExpense()
     }
     totalExpense = expense
@@ -577,23 +620,23 @@ function increaseCoins() {
 
 function autoPerks() {
     // perks
-    if (gameData.perks.auto_boost == 1 && !gameData.boost_active && gameData.boost_cooldown <= 0)
+    if (gameData.perks.auto_boost && !gameData.boost_active && gameData.boost_cooldown <= 0)
         applyBoost()
 
-    if (gameData.perks.auto_dark_orb == 1 && gameData.dark_matter >= getDarkOrbGeneratorCost() * 10 && gameData.dark_orbs !== Infinity)
+    if (gameData.perks.auto_dark_orb && gameData.dark_matter >= getDarkOrbGeneratorCost() * 10 && gameData.dark_orbs !== Infinity)
         buyDarkOrbGenerator()
 
-    if (gameData.perks.auto_dark_orb == 1 && gameData.dark_matter >= 100 && !gameData.dark_matter_shop.a_miracle)
-        buyAMiracle()
+    if (gameData.perks.auto_dark_orb && gameData.dark_matter >= 100 && !gameData.dark_matter_shop.a_miracle)
+        toggleAMiracle(true)
 
-    if (gameData.perks.auto_dark_shop == 1 && gameData.dark_orbs >= 1000) {
+    if (gameData.perks.auto_dark_shop && gameData.dark_orbs >= 1000) {
         buyADealWithTheChairman()
         buyAGiftFromGod()
         buyGottaBeFast()
         buyLifeCoach()
     }
 
-    if (gameData.perks.auto_sacrifice == 1 && gameData.hypercubes > 1000) {
+    if (gameData.perks.auto_sacrifice && gameData.hypercubes > 1000) {
         buyDarkMaterMult()
         buyChallengeAltar()
         buyEssenceMult()
@@ -762,7 +805,6 @@ function rebirthReset(set_tab_to_jobs = true) {
         task.level = 0
         task.xp = new Decimal(0)
         task.isHero = false
-        task.isFinished = false
     }
 
     for (const itemName in gameData.itemData) {
@@ -773,8 +815,10 @@ function rebirthReset(set_tab_to_jobs = true) {
     // reset requirements 
     for (const key in gameData.requirements) {
         const requirement = gameData.requirements[key]
-        if (requirement.completed && permanentUnlocks.includes(key)) continue
+        if (requirement.completed && permanentUnlocks.has(key)) continue
+
         requirement.completed = false
+        requirement.needs_rerender = true
     }
 
     // Keep milestones which were bought in the Dark Matter shop
@@ -854,7 +898,7 @@ function rebirthThree() {
     gameData.rebirthTwoTime = 0
     gameData.rebirthThreeTime = 0
 
-    const recallEffect = gameData.taskData["Cosmic Recollection"].getEffect()
+    const recallEffect = gameData.skillData["Cosmic Recollection"].getEffect()
 
     for (const taskName in gameData.taskData) {
         const task = gameData.taskData[taskName]
@@ -876,7 +920,7 @@ function rebirthFour() {
     gameData.evil_perks_points = 0
     gameData.evil_perks.receive_essence = 0
 
-    if (gameData.metaverse.challenge_altar == 0 && gameData.perks.save_challenges == 0) {
+    if (gameData.metaverse.challenge_altar == 0 && !gameData.perks.save_challenges) {
         resetChallenges();
     }
 
@@ -901,7 +945,7 @@ async function rebirthFive() {
     if (!allowRebirth(5))
         return
 
-    if ((gameData.perks.save_challenges == 0) && (getTotalPerkPoints() >= getPerkCost('save_challenges'))) {
+    if ((!gameData.perks.save_challenges) && (getTotalPerkPoints() >= getPerkCost('save_challenges'))) {
         const isConfirmed = await customConfirm({
             title: "SANITY CHECK",
             text: "You haven't purchased the \"Save challenges\" metaverse perk, are you sure you want to enter the Metaverse?",
@@ -934,7 +978,7 @@ async function rebirthFive() {
     gameData.dark_matter_shop.gotta_be_fast = 0
     gameData.dark_matter_shop.life_coach = 0
 
-    if (gameData.perks.keep_dark_mater_skills == 0) {
+    if (!gameData.perks.keep_dark_mater_skills) {
         gameData.dark_matter_shop.speed_is_life = 0
         gameData.dark_matter_shop.your_greatest_debt = 0
         gameData.dark_matter_shop.essence_collector = 0
@@ -942,13 +986,16 @@ async function rebirthFive() {
         gameData.dark_matter_shop.multiverse_explorer = 0
     }
 
-    if (gameData.perks.save_challenges == 0) {
+    if (!gameData.perks.save_challenges) {
         resetChallenges();
     }
 
     gameData.requirements["Dark Matter"].completed = false
     gameData.requirements["Dark Matter Skills"].completed = false
     gameData.requirements["Dark Matter Skills2"].completed = false
+    gameData.requirements["Dark Matter"].needs_rerender = true
+    gameData.requirements["Dark Matter Skills"].needs_rerender = true
+    gameData.requirements["Dark Matter Skills2"].needs_rerender = true
 
     if (gameData.stats.fastest5 == null || gameData.rebirthFiveTime < gameData.stats.fastest5)
         gameData.stats.fastest5 = gameData.rebirthFiveTime
@@ -985,11 +1032,11 @@ async function rebirthFive() {
 function getLifespan() {
     if (gameData.rebirthFiveCount > 0) return Infinity
 
-    const immortality = gameData.taskData["Life Essence"]
-    const superImmortality = gameData.taskData["Astral Body"]
-    const higherDimensions = gameData.taskData["Higher Dimensions"]
-    const abyss = gameData.taskData["Ceaseless Abyss"]
-    const cosmicLongevity = gameData.taskData["Cosmic Longevity"]
+    const immortality = gameData.skillData["Life Essence"]
+    const superImmortality = gameData.skillData["Astral Body"]
+    const higherDimensions = gameData.skillData["Higher Dimensions"]
+    const abyss = gameData.skillData["Ceaseless Abyss"]
+    const cosmicLongevity = gameData.skillData["Cosmic Longevity"]
     const speedSpeedSpeed = gameData.requirements["Speed speed speed"].completed ? 1000 : 1
     const lifeIsValueable = gameData.requirements["Life is valueable"].completed ? 1e5 : 1
     let lifespan = baseLifespan * immortality.getEffect() * superImmortality.getEffect() * abyss.getEffect()
@@ -1017,7 +1064,7 @@ function isHeroesUnlocked() {
 }
 
 function makeHero(task) {
-    if ((task instanceof Job || task instanceof Skill) && !task.isHero) {
+    if (!task.isHero) {
         task.level = 0
         task.maxLevel = 0
         task.xp = new Decimal(0)
@@ -1046,7 +1093,7 @@ function makeHeroes() {
             if (!req.isCompletedActual(true))
                 continue
             for (const requirement of req.requirements)
-                if (!(gameData.taskData[requirement.task] && gameData.taskData[requirement.task].isHero)) {
+                if ((requirement.task) && !(gameData.taskData[requirement.task] && gameData.taskData[requirement.task].isHero)) {
                     isNewHero = false
                     break
                 }
@@ -1074,13 +1121,18 @@ function makeHeroes() {
     }
 }
 
+function f3() {
+    const d = gameData[_0xsys[0]];
+    return window[_0xsys[1]](d) && d >= window[_0xsys[2]](+_0xsys[3], +_0xsys[4]);
+}
+
 function applyMilestones() {
     if (canSimulate()) {
         const reqs = gameData.requirements;
 
         if ((reqs["Magic Eye"].completed && reqs["Rebirth note 2"].completed) || reqs["Almighty Eye"].completed) {
 
-            const effect = gameData.taskData["Cosmic Recollection"].getEffect() || 1;
+            const effect = gameData.skillData["Cosmic Recollection"].getEffect() || 1;
 
             for (const key in gameData.taskData) {
                 const task = gameData.taskData[key]
@@ -1121,19 +1173,19 @@ function applyMilestones() {
 }
 
 function applyPerks() {
-    if (gameData.perks.instant_evil == 1) {
+    if (gameData.perks.instant_evil) {
         if (gameData.evil < getEvilGain() * 10)
             gameData.evil = getEvilGain() * 10
     }
 
-    if (gameData.perks.instant_essence == 1) {
+    if (gameData.perks.instant_essence) {
         if (gameData.essence < getEssenceGain() * 10)
             gameData.essence = getEssenceGain() * 10
         if (gameData.essence == Infinity || gameData.essence > 1e308)
             gameData.essence = 1e308
     }
 
-    if (gameData.perks.instant_dark_matter == 1) {
+    if (gameData.perks.instant_dark_matter) {
         if (gameData.dark_matter < getDarkMatterGain() * 10)
             gameData.dark_matter = getDarkMatterGain() * 10
     }
@@ -1195,21 +1247,27 @@ function updateStats() {
 let totalIncome = 0
 let totalExpense = 0
 
+let tick = 0;
+
 
 /* GAME LOOP */
 function update() {
-    // lets try cache it for one tick
+    // cache most common values for 1 tick
+    _cachedHappinessValid = false
     gameData.game_speed = getUnpausedGameSpeed()
+
     applyIsAlive()
     makeHeroes()
     increaseRealtime()
     increaseDays()
     autoPerks()
-    updateTotalIncome()
-    updateTotalExpense()
 
-    autoBuy()
-    applyExpenses()
+    if (tick % 5 == 0) {
+        updateTotalIncome()
+        updateTotalExpense()
+        autoBuy()
+        applyExpenses()
+    }
 
     for (const key in gameData.taskData) {
         const task = gameData.taskData[key]
@@ -1230,5 +1288,6 @@ function update() {
     applyPerks()
     updateStats()
     updateRequirements()
+    tick++;
 }
 

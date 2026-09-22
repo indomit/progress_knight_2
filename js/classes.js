@@ -1,18 +1,18 @@
-class Milestone {
-    constructor(baseData) {
-        this.baseData = baseData
-        this.name = baseData.name
-        this.tier = baseData.tier
-        this.expense = baseData.expense
-        this.description = baseData.description
-        this.unlocked = false
-    }
-}
+class Job extends Task {
 
-class Job extends  Task {
+    /** @param {JobBaseData} baseData */
     constructor(baseData) {
         super(baseData)
-        this.incomeMultipliers = []
+        this.baseData = /** @type {JobBaseData} */ (this.baseData)
+
+        /** @type {(() => number)[]} Dynamic income calculation functions */
+        this.incomeFuncs = []
+
+        /** @type {Skill[]} List of skills that generate income */
+        this.incomeTasks = [];
+
+        /** @type {Item[]} List of items in the inventory providing passive income */
+        this.incomeItems = [];
     }
 
     getIncome() {
@@ -47,13 +47,17 @@ class Job extends  Task {
 }
 
 class Skill extends Task {
+
+    /** @param {SkillBaseData} baseData */
     constructor(baseData) {
         super(baseData)
+        this.baseData = /** @type {SkillBaseData} */ (this.baseData)
+        this.boundEffect = () => { return 1 }
     }
 
     getEffect() {
-        var effect = 1 + this.baseData.effect * (this.isHero ? 1000 * this.level + 8000 : this.level)
-        return effect
+        let effect = this.baseData.effect
+        return 1 + effect * (this.isHero ? 1000 * this.level + 8000 : this.level)
     }
 
     getEffectDescription() {
@@ -62,6 +66,7 @@ class Skill extends Task {
 }
 
 class Item {
+    /** @param {ItemBaseData} baseData */
     constructor(baseData) {
         this.baseData = baseData
         this.name = baseData.name
@@ -70,13 +75,18 @@ class Item {
         this.description = baseData.description
         this.expense = baseData.expense
         this.heromult = baseData.heromult
-        this.expenseMultipliers = []
         this.isHero = false
         this.unlocked = false
         this.isMisc = itemCategories["Misc"]?.includes(this.name) || false;
         this.isProperty = itemCategories["Properties"]?.includes(this.name) || false;
         this.heroExpenseMult = 4 * pow(10, this.heromult) * heroIncomeMult
         this.row = getQuerySelector(this.name)
+
+        /** @type {Skill[]} */
+        this.expenseSkills = []
+
+        /** @type {() => number} */
+        this.boundEffect = () => { return 1 }
     }
 
     getEffect() {
@@ -134,10 +144,10 @@ class Item {
 
         expense *= (this.isHero ? this.heroExpenseMult : 1)
 
-        const tasks = this.expenseTasks;
-        const tLen = tasks.length;
+        const skills = this.expenseSkills;
+        const tLen = skills.length;
         for (let i = 0; i < tLen; i++) {
-            expense *= tasks[i].getEffect();
+            expense *= skills[i].getEffect();
         }
 
         return expense;
@@ -145,17 +155,79 @@ class Item {
 
 }
 
+class Milestone {
+
+    /** @param {MilestoneBaseData} baseData */
+    constructor(baseData) {
+        this.baseData = baseData
+        this.name = baseData.name
+        this.tier = baseData.tier
+        this.expense = baseData.expense
+        this.description = baseData.description
+        this.unlocked = false
+        this.getEffect = () => { return 1 }
+    }
+}
+
+/** 
+* @typedef {Object} CommonRequirementConfig
+ * @property {string} [task]
+ * @property {number} requirement
+ * @property {number} [herequirement]
+*/
+
+/** 
+* @typedef {Object} TaskRequirementConfig
+ * @property {string} task
+ * @property {number} requirement
+ * @property {number} [herequirement]
+*/
+
+/**
+ * Union of all valid data configurations that can initialize a Task or its child classes
+ * @typedef {CommonRequirementConfig | TaskRequirementConfig } RequirementConfig
+ */
+
+
+
 class Requirement {
+
+    /**
+     * 
+     * @param {string[]} querySelectors 
+     * @param {RequirementConfig[]} requirements 
+     */
     constructor(querySelectors, requirements) {
+
+        /** @type {string[]} */
         this.querySelectors = querySelectors
+
+        /** @type {HTMLElement[]} */
         this.elements = []
+
+        /** @type {RequirementConfig[]} */
         this.requirements = requirements
+
+        /** @type {boolean} */
         this.completed = false
+
+        this.needs_rerender = true
+    }
+
+    /**
+     * Abstract method to be implemented by subclasses.
+     * @param {boolean} isHero 
+     * @param {RequirementConfig} requirement 
+     * @returns {boolean}
+     */
+    getCondition(isHero, requirement) {
+        throw new Error("getCondition() must be implemented by a subclass");
     }
 
     queryElements() {
         this.querySelectors.forEach(querySelector => {
-            this.elements.push(...document.querySelectorAll(querySelector))
+            const nodes = /** @type {NodeListOf<HTMLElement>} */ (document.querySelectorAll(querySelector));
+            this.elements.push(...nodes);
         })
     }
 
@@ -167,6 +239,7 @@ class Requirement {
             }
         }
         this.completed = true
+        this.needs_rerender = true
         return true
     }
 
@@ -181,28 +254,47 @@ class Requirement {
 }
 
 class TaskRequirement extends Requirement {
+
+    /**
+     * @inheritdoc
+     * @param {string[]} querySelectors
+     * @param {TaskRequirementConfig[]} requirements
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "task"
     }
 
+    /**
+     * @inheritdoc
+     * @param {boolean} isHero
+     * @param { TaskRequirementConfig } requirement
+     */
     getCondition(isHero, requirement) {
-        // TODO: Переписать на !== или typeof, когда определится точная структура требований (может быть undefined)
-
-        if (isHero && requirement.herequirement != null)
+        if (isHero && requirement.herequirement)
             return gameData.taskData[requirement.task].level >= requirement.herequirement
-        else if (gameData.taskData[requirement.task].isHero && requirement.isHero)
-            return true
         else
             return gameData.taskData[requirement.task].level >= requirement.requirement
     }
 }
 
 class CoinRequirement extends Requirement {
+    /**
+     * 
+     * @param {string[]} querySelectors 
+     * @param {RequirementConfig[]} requirements 
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "coins"
     }
+
+    /**
+     * 
+     * @param {boolean} isHero 
+     * @param {RequirementConfig} requirement 
+     * @returns {boolean}
+     */
 
     getCondition(isHero, requirement) {
         return gameData.coins >= requirement.requirement
@@ -210,37 +302,61 @@ class CoinRequirement extends Requirement {
 }
 
 class AgeRequirement extends Requirement {
+    /**
+     * @param {string[]} querySelectors
+     * @param {RequirementConfig[]} requirements
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "age"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param { RequirementConfig } requirement
+     */
     getCondition(isHero, requirement) {
         return daysToYears(gameData.days) >= requirement.requirement
     }
 }
 
 class EvilRequirement extends Requirement {
+    /**
+     * 
+     * @param {string[]} querySelectors 
+     * @param {RequirementConfig[]} requirements 
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "evil"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param {RequirementConfig} requirement
+     */
     getCondition(isHero, requirement) {
         return gameData.evil >= requirement.requirement
     }
 }
 
 class EssenceRequirement extends Requirement {
+    /**
+     * 
+     * @param {string[]} querySelectors 
+     * @param {RequirementConfig[]} requirements 
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "essence"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param {RequirementConfig} requirement
+     */
     getCondition(isHero, requirement) {
-        // TODO: Переписать на !== или typeof, когда определится точная структура требований (может быть undefined)
-
-        if (isHero && requirement.herequirement != null)
+        if (isHero && requirement.herequirement)
             return gameData.essence >= requirement.herequirement
         else
             return gameData.essence >= requirement.requirement
@@ -248,14 +364,21 @@ class EssenceRequirement extends Requirement {
 }
 
 class DarkMatterRequirement extends Requirement {
+    /**
+    * 
+    * @param {string[]} querySelectors 
+    * @param {RequirementConfig[]} requirements 
+    */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "darkMatter"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param {RequirementConfig} requirement
+     */
     getCondition(isHero, requirement) {
-        // TODO: Переписать на !== или typeof, когда определится точная структура требований (может быть undefined)
-
         if (isHero && requirement.herequirement != null)
             return gameData.dark_matter >= requirement.herequirement
         else
@@ -264,44 +387,80 @@ class DarkMatterRequirement extends Requirement {
 }
 
 class DarkOrbsRequirement extends Requirement {
+    /**
+     * 
+     * @param {string[]} querySelectors 
+     * @param {RequirementConfig[]} requirements 
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "darkOrb"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param {RequirementConfig} requirement
+     */
     getCondition(isHero, requirement) {
         return gameData.dark_orbs >= requirement.requirement
     }
 }
 
 class MetaverseRequirement extends Requirement {
+    /**
+     * 
+     * @param {string[]} querySelectors 
+     * @param {RequirementConfig[]} requirements 
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "metaverse"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param {RequirementConfig} requirement
+     */
     getCondition(isHero, requirement) {
         return gameData.rebirthFiveCount >= requirement.requirement
     }
 }
 
 class HypercubeRequirement extends Requirement {
+    /**
+     * 
+     * @param {string[]} querySelectors 
+     * @param {RequirementConfig[]} requirements 
+     */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "hypercube"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param {RequirementConfig} requirement
+     */
     getCondition(isHero, requirement) {
         return gameData.hypercubes >= requirement.requirement
     }
 }
 
 class PerkPointRequirement extends Requirement {
+    /**
+    * 
+    * @param {string[]} querySelectors 
+    * @param {RequirementConfig[]} requirements 
+    */
     constructor(querySelectors, requirements) {
         super(querySelectors, requirements)
         this.type = "perkpoint"
     }
 
+    /**
+     * @param {boolean} isHero
+     * @param {RequirementConfig} requirement
+     */
     getCondition(isHero, requirement) {
         return gameData.perks_points >= requirement.requirement
     }

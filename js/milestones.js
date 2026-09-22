@@ -1,5 +1,22 @@
+/** 
+ * Structure of a Milestone entity 
+ * @typedef {Object} MilestoneBaseData
+ * @property {string} name
+ * @property {number} expense
+ * @property {number} tier
+ * @property {string} description
+ * @property {number} [effect]
+ */
+
+/** 
+ * This object maps string keys to Milestone objects
+ * @type {Record<string, Milestone>} 
+ */
 var milestoneData = {}
 
+/** 
+ * @type {Record<string, MilestoneBaseData>} 
+ */
 const milestoneBaseData = {
     "Magic Eye": { name: "Magic Eye", expense: 5000, tier: 1, description: "Auto max levels at age 65" },
     "Time Does Not Fly": { name: "Time Does Not Fly", expense: 10000, tier: 2, description: "Unlocks Challenge 3" },
@@ -48,9 +65,9 @@ const milestoneBaseData = {
     "A New Hope": { name: "A New Hope", expense: 1e95, tier: 42, description: "Faint Hope always at maximum" },
     "Time is a flat circle": { name: "Time is a flat circle", expense: 1e100, tier: 45, description: "x1000 Time Warping, x1e50 XP" },
     "The End is near": { name: "The End is near", expense: 1e200, tier: 50, description: "Unspent Multiverse Perk Points buffs Dark Matter, x4 MPP gain" },
-    "The End": { name: "The End", expense: 1e300, tier: 99, description: "Congratulations! You have beaten the game!" },
+    "The End": { name: "The End", expense: 1e308, tier: 99, description: "Congratulations! You have beaten the game!" },
 }
-
+/** @type {Record<string, string[]>} */
 const milestoneCategories = {
     "Essence Milestones": ["Magic Eye", "Time Does Not Fly", "Almighty Eye", "Deal with the Devil", "Transcendent Master",
         "Eternal Time", "Hell Portal", "Inferno", "God's Blessings", "Faint Hope", "Dance With The Devil"],

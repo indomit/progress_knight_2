@@ -1,3 +1,4 @@
+/** @type {number | null} */
 let offlineIntervalId = null;
 let offlineTotalTicks = 0;
 let offlineExecutedTicks = 0;
@@ -26,6 +27,11 @@ function stopOfflineProgress() {
     offlineExecutedTicks = 0;
 }
 
+/**
+ * 
+ * @param {number} ms 
+ * @returns 
+ */
 function calc_offline_progress(ms) {
     if (ms <= 10000) return;
 
@@ -65,6 +71,11 @@ function runOfflineTickLoop() {
     }
 }
 
+/**
+ * 
+ * @param {number} ticksToRun 
+ * @returns 
+ */
 function updateOfflineBatch(ticksToRun) {
     let uiNeedsUpdate = false;
 
@@ -73,6 +84,9 @@ function updateOfflineBatch(ticksToRun) {
             return false;
 
         update();
+
+        if (!gameData.is_alive)
+            return false;
 
         offlineExecutedTicks++;
 
@@ -87,24 +101,22 @@ function updateOfflineBatch(ticksToRun) {
     return true;
 }
 
+/**
+ * 
+ * @param {boolean} showOffline 
+ * @returns 
+ */
 function toggleOfflineUi(showOffline) {
-    const offlineProgressEl = elById("offline_progress");
-    const mainAreaEl = elById("mainarea");
-
-    if (offlineProgressEl) offlineProgressEl.hidden = !showOffline;
-    if (mainAreaEl) mainAreaEl.hidden = showOffline;
+    safeUpdateHidden("offline_progress", !showOffline)
+    safeUpdateHidden("mainarea", showOffline)
 }
 
 function updateOfflinePercentageUi() {
     if (!offlineTotalTicks) return;
 
     const percentage = floor((offlineExecutedTicks * 100) / offlineTotalTicks);
-    const offline_time = elById("offline_time");
     const text = `${percentage}%`;
-
-    if (offline_time && offline_time.textContent !== text) {
-        offline_time.textContent = text;
-    }
+    safeUpdateText("offline_time", text)
 
     renderProgessResource("#offline_progress", percentage);
 }

@@ -6,7 +6,13 @@ const LN_HERO_POW_BASE = log(HERO_POW_BASE);
 
 const BASE_POW_CACHE = new Float64Array(400000);
 const HERO_POW_CACHE = new Float64Array(400000);
-
+/**
+ * 
+ * @param {number} base 
+ * @param {number} lvl 
+ * @param {boolean} isHero 
+ * @returns 
+ */
 function getGrowthMultiplier(base, lvl, isHero) {
     const cache = isHero ? HERO_POW_CACHE : BASE_POW_CACHE;
 
@@ -27,18 +33,16 @@ const TEMP_DECIMAL = new Decimal(0);
 const CONVERGENCE_FACTOR = 0.35;
 
 /**
- * @typedef {object} TaskBaseData
- * @property {string} name
- * @property {number} maxXp
- * @property {number} [heroxp] 
- * @property {number} effect
- * @property {string} [description]
+ * Union of all valid data configurations that can initialize a Task or its child classes
+ * @typedef {JobBaseData | SkillBaseData } TaskBaseData
  */
+
 class Task {
     /**
      * @param {TaskBaseData} baseData
      */
     constructor(baseData) {
+        /** @type {TaskBaseData} */
         this.baseData = baseData;
         this.name = baseData.name;
         this.maxXpBase = baseData.maxXp;
@@ -50,7 +54,7 @@ class Task {
         this.unlocked = false;
         /** @type {(() => number)[]} */
         this.xpMultipliers = [];
-        /** @type {Map<string, HTMLElement | null>} */
+        /** @type {Map<string, HTMLElementNullable>} */
         this.elementsCache = new Map();
         this.heroxp = baseData.heroxp ?? 0
         this.pow10heroxp = pow(10, this.heroxp);
@@ -61,6 +65,15 @@ class Task {
         /** @type {Decimal} */
         this.maxXP = new Decimal(1)
         this.row = getQuerySelector(this.name)
+
+        /** @type {(() => number)[]} */
+        this.xpFuncs = []
+
+        /** @type {Skill[]} */
+        this.xpTasks = []
+
+        /** @type {Item[]} */
+        this.xpItems = []
     }
 
     toJSON() {
@@ -73,8 +86,13 @@ class Task {
             isHero: this.isHero,
             unlocked: this.unlocked
         }
-    }
 
+    }
+    /**
+     * 
+     * @param {number} level 
+     * @returns 
+     */
     getMaxXpForLevel2(level) {
         const heroMultiplier = this.isHero ? this.pow10heroxp : 1;
         const base = this.isHero ? HERO_POW_BASE : BASE_POW_BASE;
@@ -98,7 +116,7 @@ class Task {
             return (10 / (this.maxLevel + 1))
         }
         else {
-            let effect = gameData.taskData['Cosmic Recollection'].getEffect()
+            let effect = gameData.skillData['Cosmic Recollection'].getEffect()
             effect = effect == 0 ? 1 : effect
             return (this.heroxp < 1000) ? 1 + this.maxLevel / 10 : 1 + this.maxLevel / effect
         }
@@ -261,7 +279,14 @@ class Task {
         return formatTime(realSecondsLeft);
     }
 
-
+    /**
+     * 
+     * @param {number} level 
+     * @param {boolean} isHero 
+     * @param {number} maxXpBase 
+     * @param {number} pow10heroxp 
+     * @param {number} heroShift 
+     */
 
     updateMaxXP(level, isHero, maxXpBase, pow10heroxp, heroShift) {
         const heroMultiplier = isHero ? pow10heroxp : 1;
@@ -367,13 +392,13 @@ class Task {
      * 
      * @param {string} selector 
      * @param {HTMLElement} row 
-     * @returns {HTMLElement | null}
+     * @returns {HTMLElementNullable}
      */
     querySelector(selector, row) {
         const cachedElement = this.elementsCache.get(selector);
         if (cachedElement)
             return cachedElement;
-        const element = /** @type {HTMLElement | null} */ (row.querySelector(selector));
+        const element = /** @type {HTMLElementNullable} */ (row.querySelector(selector));
         this.elementsCache.set(selector, element);
         return element;
     }

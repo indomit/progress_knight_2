@@ -1,4 +1,19 @@
-// Глобальный объект для хранения предрассчитанных цен
+/** 
+ * Represents an individual perk configuration with a level limit and cost calculator.
+ * @typedef {Object} EvilPerkConfigElement
+ * @property {number} max The maximum allowed level for this perk.
+ * @property {function(number): number} calc Function that calculates the cost for a given level.
+ */
+
+/**
+ * The configuration object mapping perk IDs to their respective formulas.
+ * @typedef {Record<number, EvilPerkConfigElement>} EvilPerkConfig
+ */
+/** 
+ * Global object acting as a pre-calculated cost cache for each perk ID.
+ * Contains arrays where the index equals the perk level, and the value is the cost.
+ * @type {Record<number, number[]>}
+ */
 const evilPerkCostsCache = {
 	1: [],
 	2: [],
@@ -7,7 +22,13 @@ const evilPerkCostsCache = {
 	5: []
 };
 
+/**
+ * Initializes the global `evilPerkCostsCache` object with pre-calculated values
+ * based on math formulas up to each perk's maximum level limit.
+ * @returns {void}
+ */
 function initEvilPerkCostsCache() {
+	/** @type {EvilPerkConfig} */
 	const config = {
 		1: { max: 10, calc: (lvl) => pow(2, lvl + 1) + 4.6 },
 		2: { max: 14, calc: (lvl) => pow(3, lvl + 1) + 66.6 - 3 },
@@ -22,14 +43,18 @@ function initEvilPerkCostsCache() {
 	};
 
 	for (const num in config) {
-		const { max, calc } = config[num];
+		const perkId = Number(num);
+		const { max, calc } = config[perkId];
+
+		/** @type {number[]} */
 		const cache = [];
 
-		// Заполняем кэш для каждого возможного уровня перка
+		// Fill the cache for each possible perk level
 		for (let lvl = 0; lvl < max; lvl++) {
 			cache.push(calc(lvl));
 		}
-		// Всё, что выше или равно лимиту, возвращает Infinity
+
+		// Anything at or above the limit returns Infinity
 		cache.push(Infinity);
 
 		evilPerkCostsCache[num] = cache;
@@ -51,6 +76,10 @@ function getEvilPerksGeneration() {
 	return log10(gameData.evil + 1) * log10(essence_perk_buff_mult) / 365
 }
 
+/**
+ * @param {number} i
+ * @returns {number}
+ */
 function getEvilPerkAgeRequirement(i) {
 	switch (i) {
 		case 1: return getEyeRequirement()
@@ -58,8 +87,13 @@ function getEvilPerkAgeRequirement(i) {
 		case 3: return getVoidRequirement()
 		case 4: return getCelestialRequirement()
 	}
+	return 0
 }
 
+/**
+ * @param {number} i
+ * @returns {number}
+ */
 function getEvilPerkAgeReduceBy(i) {
 	switch (i) {
 		case 1: return 5
@@ -67,8 +101,13 @@ function getEvilPerkAgeReduceBy(i) {
 		case 3: return 100
 		case 4: return getCelestialReduceYearsBy()
 	}
+	return 0
 }
 
+/**
+ * @param {number} i
+ * @returns {number}
+ */
 function getEvilPerkAgeReduceByTotal(i) {
 	switch (i) {
 		case 1: return 5 * gameData.evil_perks.reduce_eye_requirement
@@ -76,6 +115,7 @@ function getEvilPerkAgeReduceByTotal(i) {
 		case 3: return 100 * gameData.evil_perks.reduce_the_void_requirement
 		case 4: return gameData.evil_perks.reduce_celestial_requirement < 9 ? 1000 * gameData.evil_perks.reduce_celestial_requirement : 9000 + (gameData.evil_perks.reduce_celestial_requirement - 9) * 100
 	}
+	return 0
 }
 
 function getEyeRequirement() {
@@ -120,6 +160,9 @@ function getEssenceRewardPercent() {
 }
 
 
+/**
+ * @param {number} evilperknum
+ */
 function getEvilPerkCost(evilperknum) {
 	const currentLevels = [
 		0,
@@ -137,6 +180,9 @@ function getEvilPerkCost(evilperknum) {
 }
 
 
+/**
+ * @param {number} i
+ */
 function getEvilPerkRank(i) {
 	switch (i) {
 		case 1:
@@ -152,6 +198,9 @@ function getEvilPerkRank(i) {
 	}
 }
 
+/**
+ * @param {number} evilperknum
+ */
 function buyEvilPerk(evilperknum) {
 	switch (evilperknum) {
 		case 1:
@@ -188,6 +237,9 @@ function buyEvilPerk(evilperknum) {
 	}
 }
 
+/**
+ * @param {number} i
+ */
 function hasEvilPerk(i) {
 	switch (i) {
 		case 1: return gameData.evil_perks.reduce_eye_requirement > 0
@@ -196,8 +248,13 @@ function hasEvilPerk(i) {
 		case 4: return gameData.evil_perks.reduce_celestial_requirement > 0
 		case 5: return gameData.evil_perks.receive_essence > 0
 	}
+	return false
 }
 
+/**
+ * 
+ * @returns {number}
+ */
 function getAge0Requirement() {
 	const eyeReq = getEyeRequirement();
 
@@ -212,6 +269,10 @@ function getAge0Requirement() {
 	return ageMap[eyeReq];
 }
 
+/**
+ * 
+ * @returns {number}
+ */
 function getAge1Requirement() {
 	const eyeReq = getEyeRequirement();
 

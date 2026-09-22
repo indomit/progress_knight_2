@@ -14,6 +14,7 @@ declare class Decimal {
     eq(value: number | string | Decimal): boolean;
     toNumber(): number;
     floor(): Decimal;
+    log10(): number;
     toExponential(digits: number): string;
 
     static pow(base: number | string | Decimal, exponent: number | string | Decimal): Decimal;
@@ -22,4 +23,4 @@ declare class Decimal {
     private _isDecimal: boolean;
 }
 
-declare var gameData: any;
+type HTMLElementNullable = HTMLElement | null;

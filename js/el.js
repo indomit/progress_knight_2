@@ -1,4 +1,4 @@
-/** @type {Map<string, HTMLElement | null>} */
+/** @type {Map<string, HTMLElementNullable>} */
 const domCache = new Map();
 
 /** @type {Map<string, HTMLElement[]>} */
@@ -7,7 +7,7 @@ const domCollectionsCache = new Map();
 /**
  * 
  * @param {string} selector 
- * @returns {HTMLElement | null}
+ * @returns {HTMLElementNullable}
  */
 
 function el(selector) {
@@ -16,7 +16,7 @@ function el(selector) {
     if (cachedElement !== undefined) {
         return cachedElement;
     }
-    const element = /** @type {HTMLElement | null} */ (document.querySelector(selector));
+    const element = /** @type {HTMLElementNullable} */ (document.querySelector(selector));
 
     domCache.set(selector, element);
     return element;
@@ -41,7 +41,7 @@ function el(selector) {
 //         console.warn("ОБНОВЛЕНИЕ КЭША НА ПАУЗЕ. Либо этого элемента еще не было, либо кэш трут! Селектор:", selector);
 //     }
 
-//     const element = /** @type {HTMLElement | null} */ (document.querySelector(selector));
+//     const element = /** @type {HTMLElementNullable} */ (document.querySelector(selector));
 //     domCache.set(selector, element);
 //     return element;
 // }
