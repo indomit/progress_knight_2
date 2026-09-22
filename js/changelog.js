@@ -28,11 +28,6 @@ version 2.5.0 / 01.08.2024
 * Added offline progress (up to 1 hour)
 * Minor optimizations
 
-version 2.4.1 / 02.07.2024
-* Improved display on mobile devices
-* Added offline progress (up to 1 hour)
-* Minor optimizations
-
 version 2.4.0 / 20.02.2024
 * Added Evil perks
 
