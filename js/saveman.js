@@ -172,6 +172,7 @@ function loadGameData() {
                 }
             }
 
+
             gameData = gameDataSave
 
             // copy actual requirements
@@ -185,6 +186,12 @@ function loadGameData() {
                     gameData.requirements[name].needs_rerender = true;
                 }
             });
+
+            // fix for old saves
+            if (gameData.dark_orbs > 0 && gameData.dark_matter === 0 && !gameData.requirements["Dark Matter"].completed) {
+                gameData.requirements["Dark Matter"].completed = true
+                gameData.requirements["Dark Matter"].needs_rerender = true
+            }
 
             gameData.coins ??= 0
             gameData.essence ??= 0

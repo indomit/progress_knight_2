@@ -967,8 +967,6 @@ async function rebirthFive() {
     gameData.evil_perks_points = 0
     gameData.evil_perks.receive_essence = 0
 
-
-
     gameData.dark_matter = 0
     gameData.dark_orbs = 0
     gameData.dark_matter_shop.dark_orb_generator = 0
