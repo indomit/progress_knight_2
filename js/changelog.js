@@ -1,4 +1,7 @@
-const changelogText = `version 2.7.0 / xx.xx.2026
+const changelogText = `version 2.7.1 / 25.09.2026
+* fixed bug with incorrect calculations for income/expenses
+
+version 2.7.0 / xx.xx.2026
 * Income calculated from all jobs / Current job removed	
 * Added progress bars for requirements/resources
 * Added enhanced tooltips
