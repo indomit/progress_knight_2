@@ -732,15 +732,16 @@ function renderMilestones() {
         const row = getQuerySelector(milestone.name)
         safeUpdateText(`${row} .essence`, format(milestone.expense))
 
-
-        // TODO: Переписать на !== или typeof, когда определится точная структура требований (может быть undefined)
-
         let desc = milestone.description
 
+        let effect = 1
         if (milestone.getEffect != null)
-            desc = "x" + format(milestone.getEffect(), 1) + " " + desc
+            effect = milestone.getEffect()
         else if (milestone.baseData.effect != null)
-            desc = "x" + format(milestone.baseData.effect, 0) + " " + desc
+            effect = milestone.baseData.effect
+
+        if (effect > 1)
+            desc = "x" + format(effect, 1) + " " + desc
 
         if (key == "Magic Eye")
             desc = desc.replace('65', "" + getEyeRequirement())

@@ -61,7 +61,8 @@ class Skill extends Task {
     }
 
     getEffectDescription() {
-        return "x" + format(this.getEffect(), 2) + " " + this.baseData.description
+        let effect = this.getEffect()
+        return "x" + format(effect, 2) + " " + this.baseData.description
     }
 }
 

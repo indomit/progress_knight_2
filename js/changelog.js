@@ -1,5 +1,6 @@
 const changelogText = `version 2.7.1 / 25.09.2026
 * fixed bug with incorrect calculations for income/expenses
+* fixed bug with save migration
 
 version 2.7.0 / xx.xx.2026
 * Income calculated from all jobs / Current job removed	

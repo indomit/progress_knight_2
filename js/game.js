@@ -1245,6 +1245,7 @@ function updateStats() {
 let totalIncome = 0
 let totalExpense = 0
 
+
 /* GAME LOOP */
 function update() {
     // cache most common values for 1 tick
@@ -1256,10 +1257,12 @@ function update() {
     increaseRealtime()
     increaseDays()
     autoPerks()
+
     updateTotalIncome()
     updateTotalExpense()
     autoBuy()
     applyExpenses()
+
 
     for (const key in gameData.taskData) {
         const task = gameData.taskData[key]

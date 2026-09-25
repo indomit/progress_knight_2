@@ -34,10 +34,14 @@ function createRequirements() {
 function restorePrototypes() {
     for (const key in gameData.taskData) {
         let task = gameData.taskData[key]
-        if ("income" in task.baseData)
+        if ("income" in task.baseData) {
+            task.baseData = jobBaseData[task.name]
             task = Object.assign(new Job(jobBaseData[task.name]), task)
-        else
+        }
+        else {
+            task.baseData = skillBaseData[task.name]
             task = Object.assign(new Skill(skillBaseData[task.name]), task)
+        }
 
 
         task.xp = new Decimal(task.xp || 0)
@@ -53,6 +57,7 @@ function restorePrototypes() {
         else if (t instanceof Skill) gameData.skillData[key] = t;
     }
 
+    // resore base data
     for (const key in gameData.itemData) {
         let item = gameData.itemData[key]
         item.baseData = itemBaseData[item.name]
